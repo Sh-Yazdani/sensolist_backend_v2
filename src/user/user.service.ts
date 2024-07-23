@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { Model, ObjectId } from 'mongoose';
 import { DataResponse, MessageResponseDTO } from 'src/dto/response.dto';
 import { UserDetailDTO } from './dto/user-list.dto';
+import { hash } from "bcrypt"
 
 @Injectable()
 export class UserService {
@@ -55,4 +56,21 @@ export class UserService {
   remove(id: ObjectId) {
     this.userModel.deleteOne({ _id: id }).exec()
   }
+
+  async getPasswordHash(phonenumber: string): Promise<string> {
+
+    const user = await this.userModel.findOne({ phonenumber: phonenumber }, { passwordhash: 1 }).exec()
+
+    if (!user)
+      throw new NotFoundException("user not exists")
+
+    return user.passwordHash
+
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    const saltOrRounds = 10;
+    return await hash(password, saltOrRounds);
+  }
+
 }
