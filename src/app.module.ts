@@ -17,6 +17,7 @@ import { ThingsModule } from './things/things.module';
     CustomRoleModule,
     UserModule,
     ThingsModule,
+    AppModule
   ],
   controllers: [AppController],
   providers: [AppService],
