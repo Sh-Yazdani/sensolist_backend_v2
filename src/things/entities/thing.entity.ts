@@ -3,6 +3,9 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 @Schema({ timestamps: true })
 export class Thing {
 
+    @Prop({ type: String, required: true })
+    name: string
+
     @Prop({ type: String, required: false })
     brand: String
 

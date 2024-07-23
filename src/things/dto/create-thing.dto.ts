@@ -1,6 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger"
 
 export class CreateThingDto {
+    @ApiProperty({ type: String })
+    name: string
+    
     @ApiProperty({ type: String, nullable: true })
     brand?: String
 

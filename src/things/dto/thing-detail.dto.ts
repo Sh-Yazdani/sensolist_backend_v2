@@ -1,25 +1,28 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger"
 
 export class ThingDetailDTO {
-    @ApiProperty({ type: String })
-    brand: String
+    @ApiResponseProperty({ type: String })
+    name?: String
 
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
+    brand?: String
+
+    @ApiResponseProperty({ type: String })
     model: string
 
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
     type: string
 
-    @ApiProperty({ type: [String] })
+    @ApiResponseProperty({ type: [String] })
     actions: string[]
 
-    @ApiProperty({ type: [String] })
+    @ApiResponseProperty({ type: [String] })
     characteristics: string[]
 
-    @ApiProperty({ type: Date })
+    @ApiResponseProperty({ type: Date })
     activition: Date
 
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
     description: string
 
 }
