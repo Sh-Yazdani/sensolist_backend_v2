@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { CustomRoleModule } from './custom-role/custom-role.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CustomRoleModule } from './custom-role/custom-role.module';
     }),
     DatabaseModule,
     CustomRoleModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

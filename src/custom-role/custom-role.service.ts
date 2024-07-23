@@ -4,14 +4,14 @@ import { UpdateCustomRoleDto } from './dto/update-custom-role.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { CustomRole } from './entities/custom-role.entity';
 import { Model, ObjectId } from 'mongoose';
-import { MessageResponse } from 'src/dto/response.dto';
+import { MessageResponseDTO } from 'src/dto/response.dto';
 
 @Injectable()
 export class CustomRoleService {
 
   constructor(@InjectModel(CustomRole.name) private readonly customRoleModel: Model<CustomRole>) { }
 
-  async create(data: CreateCustomRoleDto): Promise<MessageResponse> {
+  async create(data: CreateCustomRoleDto): Promise<MessageResponseDTO> {
     await this.customRoleModel.create(data)
 
     return {
@@ -28,7 +28,7 @@ export class CustomRoleService {
     return this.customRoleModel.findById(id)
   }
 
-  async update(id: ObjectId, data: UpdateCustomRoleDto):Promise<MessageResponse> {
+  async update(id: ObjectId, data: UpdateCustomRoleDto):Promise<MessageResponseDTO> {
     await this.customRoleModel.updateOne({ _id: id }, { data })
 
     return {
@@ -37,7 +37,7 @@ export class CustomRoleService {
     }
   }
 
-  async remove(id: ObjectId):Promise<MessageResponse> {
+  async remove(id: ObjectId):Promise<MessageResponseDTO> {
     await this.customRoleModel.deleteOne({ _id: id })
 
     return {

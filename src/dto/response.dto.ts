@@ -1,6 +1,6 @@
 import { ApiResponseProperty } from "@nestjs/swagger"
 
-export class MessageResponse {
+export class MessageResponseDTO {
 
     @ApiResponseProperty()
     status: number
@@ -10,7 +10,7 @@ export class MessageResponse {
 
 }
 
-export class DataResponse<T> extends MessageResponse {
+export class DataResponse<T> extends MessageResponseDTO {
 
     @ApiResponseProperty()
     data: T
