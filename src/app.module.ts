@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
+import { CustomRoleModule } from './custom-role/custom-role.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { DatabaseModule } from './database/database.module';
       load: [require('./config/configuration')],
     }),
     DatabaseModule,
+    CustomRoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
