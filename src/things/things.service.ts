@@ -6,6 +6,7 @@ import { Thing } from './entities/thing.entity';
 import { Model, ObjectId } from 'mongoose';
 import { DataResponse, MessageResponseDTO } from 'src/dto/response.dto';
 import { ThingDetailDTO } from './dto/thing-detail.dto';
+import { ThingQueryDTO, ThingSortOptions } from './dto/thing-search.dto';
 
 @Injectable()
 export class ThingsService {
@@ -23,8 +24,34 @@ export class ThingsService {
     }
   }
 
-  async findAll(): Promise<ThingDetailDTO[]> {
-    const things = await this.thingModel.find().exec()
+  async findAll(query: ThingQueryDTO): Promise<ThingDetailDTO[]> {
+
+    let thingsDBQuery = this.thingModel.find()
+
+    if (query.filter.actions)
+      thingsDBQuery = thingsDBQuery.find({ actions: { $in: query.filter.actions } })
+    if (query.filter.brand)
+      thingsDBQuery = thingsDBQuery.find({ brand: { $in: query.filter.brand } })
+    if (query.filter.type)
+      thingsDBQuery = thingsDBQuery.find({ type: { $in: query.filter.type } })
+    if (query.filter.charactristics)
+      thingsDBQuery = thingsDBQuery.find({ characteristics: { $in: query.filter.charactristics } })
+
+    if (query.search)
+      thingsDBQuery = thingsDBQuery.find({ name: new RegExp(query.search, 'i') })
+
+    if (query.sort == ThingSortOptions.Name)
+      thingsDBQuery = thingsDBQuery.sort({ name: 1 })
+
+    if (query.sort == ThingSortOptions.Newst)
+      thingsDBQuery = thingsDBQuery.sort({ createt_At: 1 })
+    else if (query.sort == ThingSortOptions.Oldest)
+      thingsDBQuery = thingsDBQuery.sort({ createt_At: -1 })
+
+
+    const things = await thingsDBQuery.exec()
+
+
     return things.map(t => {
       return {
         brand: t.brand,
@@ -69,4 +96,6 @@ export class ThingsService {
   remove(id: ObjectId) {
     this.thingModel.deleteOne({ _id: id }).exec()
   }
+
 }
+

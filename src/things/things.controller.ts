@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ThingsService } from './things.service';
 import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
 import { ObjectId } from 'mongoose';
+import { ThingQueryDTO } from './dto/thing-search.dto';
 
 @Controller('things')
 export class ThingsController {
@@ -14,8 +15,8 @@ export class ThingsController {
   }
 
   @Get()
-  findAll() {
-    return this.thingsService.findAll();
+  findAll(@Query() query:ThingQueryDTO) {
+    return this.thingsService.findAll(query);
   }
 
   @Get(':id')
