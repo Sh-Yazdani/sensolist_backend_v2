@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { CustomRoleModule } from './custom-role/custom-role.module';
 import { UserModule } from './user/user.module';
+import { ThingsModule } from './things/things.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserModule } from './user/user.module';
     DatabaseModule,
     CustomRoleModule,
     UserModule,
+    ThingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
