@@ -1,4 +1,10 @@
+import { ApiProperty } from "@nestjs/swagger"
+
 export class CreateCustomRoleDto {
-    name:string
-    description:string
+    @ApiProperty({ type: String })
+    name: string
+
+    @ApiProperty({ type: String })
+    description: string
 }
+
