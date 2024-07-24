@@ -12,5 +12,5 @@ export class CustomRole {
 }
 
 
-export const CustomRoleScheam = SchemaFactory.createForClass(CustomRole)
+export const CustomRoleSchema = SchemaFactory.createForClass(CustomRole)
 
