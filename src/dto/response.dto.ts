@@ -15,10 +15,10 @@ export class ListResponseDTO {
     status: number
 
     @ApiResponseProperty()
-    page: number
+    page?: number
 
     @ApiResponseProperty()
-    pageCount: number
+    pageCount?: number
 }
 
 
