@@ -1,5 +1,5 @@
 import { Controller, Post } from '@nestjs/common';
-import { CheckOtpDTO, LoginDTO } from './auth.dto';
+import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './auth.dto';
 import { AuthService } from './auth.service';
 
 
@@ -9,12 +9,12 @@ export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
     @Post("login")
-    async login(data: LoginDTO): Promise<DataResponse<string>> {
+    async login(data: LoginDTO): Promise<LoginResponseDTO> {
         return this.authService.login(data)
     }
 
     @Post("otp")
-    async checkOTP(data: CheckOtpDTO): Promise<MessageResponse> {
+    async checkOTP(data: CheckOtpDTO): Promise<CheckOTPResponseDTO> {
         return this.authService.checkOTP(data)
     }
 
