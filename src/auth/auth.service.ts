@@ -46,7 +46,7 @@ export class AuthService {
     }
 
     async checkOTP(data: CheckOtpDTO): Promise<CheckOTPResponseDTO> {
-        const otpObject = await this.otpModel.findOne(data).exec()
+        const otpObject = await this.otpModel.findOne({ token: data.token, otp: data.otp }).exec()
         if (!otpObject)
             throw new BadRequestException("otp not valid")
 
@@ -57,7 +57,7 @@ export class AuthService {
         if (now > expireDate)
             throw new BadRequestException("otp is expired")
 
-        const token = await this.jwtService.signAsync({ sub: data.pohnenumber })
+        const token = await this.jwtService.signAsync({ sub: otpObject.phonenumber })
 
         return {
             status: 200,

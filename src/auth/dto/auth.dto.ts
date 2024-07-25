@@ -13,8 +13,6 @@ export class LoginDTO {
 
 
 export class CheckOtpDTO {
-    @ApiProperty({ type: String, description: "user phone number", default:"09123456"})
-    pohnenumber: String
 
     @ApiProperty({ type: String, description: "the one type password, was sended to user phone", default:"123456"})
     otp: string
