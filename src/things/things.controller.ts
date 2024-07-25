@@ -4,32 +4,47 @@ import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
 import { ObjectId } from 'mongoose';
 import { ThingQueryDTO } from './dto/thing-search.dto';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { MessageResponseDTO } from 'src/dto/response.dto';
+import { ThingListResponseDTO } from './dto/thing.list.dto';
+import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
 
 @Controller('things')
+@ApiTags("Things")
 export class ThingsController {
-  constructor(private readonly thingsService: ThingsService) {}
+  constructor(private readonly thingsService: ThingsService) { }
 
   @Post()
+  @ApiOperation({ summary: "creating a new thing" })
+  @ApiOkResponse({ type: MessageResponseDTO })
   create(@Body() createThingDto: CreateThingDto) {
     return this.thingsService.create(createThingDto);
   }
 
   @Get()
-  findAll(@Query() query:ThingQueryDTO) {
+  @ApiOperation({ summary: "list of all things" })
+  @ApiOkResponse({ type: ThingListResponseDTO })
+  findAll(@Query() query: ThingQueryDTO) {
     return this.thingsService.findAll(query);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: "detail of thing" })
+  @ApiOkResponse({ type: ThingEntityResponseDTO })
   findOne(@Param('id') id: ObjectId) {
     return this.thingsService.findOne(id);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: "updating a thing via id" })
+  @ApiOkResponse({ type: MessageResponseDTO })
   update(@Param('id') id: ObjectId, @Body() updateThingDto: UpdateThingDto) {
     return this.thingsService.update(id, updateThingDto);
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: "deleting a thing via id" })
+  @ApiOkResponse({ type: MessageResponseDTO })
   remove(@Param('id') id: ObjectId) {
     return this.thingsService.remove(id);
   }
