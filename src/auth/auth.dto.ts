@@ -1,3 +1,5 @@
+import { EntityResponseDTO } from "src/dto/response.dto"
+
 export class LoginDTO {
 
     phonenumber: string
@@ -6,16 +8,24 @@ export class LoginDTO {
 
 }
 
-export class CheckOtpDTO{
+export class CheckOtpDTO {
 
-    pohnenumber:String 
-    
-    otp:string
+    pohnenumber: String
 
-    token:string
+    otp: string
+
+    token: string
 
 }
 
+export class LoginResponseDTO extends EntityResponseDTO {
 
+    tempToken: string
+
+}
+
+export class CheckOTPResponseDTO extends EntityResponseDTO {
+    apiToken: string
+}
 
 

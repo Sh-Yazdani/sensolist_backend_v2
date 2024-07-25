@@ -1,6 +1,5 @@
 import { Controller, Post } from '@nestjs/common';
 import { CheckOtpDTO, LoginDTO } from './auth.dto';
-import { DataResponse, MessageResponse } from 'src/dto/response.dto';
 import { AuthService } from './auth.service';
 
 
