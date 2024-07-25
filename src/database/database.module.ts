@@ -12,8 +12,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         dbName: configService.get<string>('MONGODB_NAME'),
         user: configService.get<string>('MONGODB_USER'),
         pass: configService.get<string>('MONGODB_PASS'),
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
       }),
     }),
   ],
