@@ -22,7 +22,7 @@ export class ThingsController {
   }
 
   @Get()
-  @ApiOperation({ summary: "list of all things" })
+  @ApiOperation({ summary: "list of all things", description:"with this API you can search and filter things, for getting all exists things, dont pass the search and filter params"})
   @ApiOkResponse({ type: ThingListResponseDTO })
   findAll(@Query() query: ThingQueryDTO) {
     return this.thingsService.findAll(query);
