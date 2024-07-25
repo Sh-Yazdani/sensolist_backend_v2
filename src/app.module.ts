@@ -6,18 +6,18 @@ import { DatabaseModule } from './database/database.module';
 import { CustomRoleModule } from './custom-role/custom-role.module';
 import { UserModule } from './user/user.module';
 import { ThingsModule } from './things/things.module';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [require('./config/configuration')],
+      load: [configuration],
     }),
     DatabaseModule,
     CustomRoleModule,
     UserModule,
-    ThingsModule,
-    AppModule
+    ThingsModule
   ],
   controllers: [AppController],
   providers: [AppService],
