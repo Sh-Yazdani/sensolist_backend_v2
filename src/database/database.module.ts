@@ -9,10 +9,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
+        dbName: configService.get<string>('MONGODB_NAME'),
+        user: configService.get<string>('MONGODB_USER'),
+        pass: configService.get<string>('MONGODB_PASS'),
       }),
     }),
   ],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }
