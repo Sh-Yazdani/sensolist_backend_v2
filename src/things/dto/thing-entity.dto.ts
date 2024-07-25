@@ -1,6 +1,7 @@
 import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger"
+import { EntityResponseDTO } from "src/dto/response.dto"
 
-export class ThingDetailDTO {
+export class ThingEntityDTO {
     @ApiResponseProperty({ type: String })
     name?: String
 
@@ -24,6 +25,13 @@ export class ThingDetailDTO {
 
     @ApiResponseProperty({ type: String })
     description: string
+
+}
+
+export class ThingEntityResponseDTO extends EntityResponseDTO {
+
+    @ApiResponseProperty({ type: ThingEntityDTO })
+    thing: ThingEntityDTO
 
 }
 
