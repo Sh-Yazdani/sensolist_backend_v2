@@ -20,7 +20,7 @@ export class ThingsService {
     await newThing.save()
 
     return {
-      status: 201,
+      statusCode: 201,
       message: "thing was created"
     }
   }
@@ -54,7 +54,7 @@ export class ThingsService {
 
 
     return {
-      status: 200,
+      statusCode: 200,
       list: things.map(t => {
         return {
           brand: t.brand,
@@ -73,7 +73,7 @@ export class ThingsService {
     const thing = await this.thingModel.findById(id).exec()
 
     return {
-      status: 200,
+      statusCode: 200,
       thing: {
         brand: thing.brand,
         model: thing.model,
@@ -95,7 +95,7 @@ export class ThingsService {
     await user.updateOne(data).exec()
 
     return {
-      status: 200,
+      statusCode: 200,
       message: "user was updated"
     }
   }

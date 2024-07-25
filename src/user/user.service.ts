@@ -24,7 +24,7 @@ export class UserService {
     await newUser.save()
 
     return {
-      status: 201,
+      statusCode: 201,
       message: "user was created"
     }
   }
@@ -33,7 +33,7 @@ export class UserService {
     const data = await this.userModel.find({}, { passwordHash: -1, creator: -1 }).exec()
 
     return {
-      status: 200,
+      statusCode: 200,
       list: data.map(u =>
         ({ id: u._id, firstname: u.firstname, lastname: u.lastname, phonenumber: u.phonenumber })
       )
@@ -45,7 +45,7 @@ export class UserService {
     const user = await this.userModel.findById(id, { passwordHash: -1, creator: -1 }).exec()
 
     return {
-      status: 200,
+      statusCode: 200,
       user: { id: user._id, firstname: user.firstname, lastname: user.lastname, phonenumber: user.phonenumber }
     }
   }
@@ -59,7 +59,7 @@ export class UserService {
     await user.updateOne(data).exec()
 
     return {
-      status: 200,
+      statusCode: 200,
       message: "user was updated"
     }
   }
@@ -68,7 +68,7 @@ export class UserService {
     await this.userModel.deleteOne({ _id: id }).exec()
 
     return {
-      status: 200,
+      statusCode: 200,
       message: "user was deleted"
     }
   }

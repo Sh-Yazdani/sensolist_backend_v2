@@ -38,7 +38,7 @@ export class AuthService {
             await newOtpModel.save()
 
             return {
-                status: 200,
+                statusCode: 200,
                 tempToken: tempToken
             }
         } else
@@ -60,7 +60,7 @@ export class AuthService {
         const token = await this.jwtService.signAsync({ sub: data.pohnenumber })
 
         return {
-            status: 200,
+            statusCode: 200,
             apiToken: token
         }
     }
