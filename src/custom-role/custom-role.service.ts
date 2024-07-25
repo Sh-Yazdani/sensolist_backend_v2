@@ -4,7 +4,7 @@ import { UpdateCustomRoleDto } from './dto/update-custom-role.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { CustomRole } from './entities/custom-role.entity';
 import { Model, ObjectId } from 'mongoose';
-import { MessageResponseDTO } from 'src/dto/response.dto';
+import { DataResponse, MessageResponseDTO } from 'src/dto/response.dto';
 
 @Injectable()
 export class CustomRoleService {
@@ -20,8 +20,12 @@ export class CustomRoleService {
     }
   }
 
-  findAll() {
-    return this.customRoleModel.find()
+  async findAll():Promise<DataResponse> {
+    const toles = await this.customRoleModel.find()
+
+    return {
+      MessageResponseDTO
+    }
   }
 
   findOne(id: ObjectId) {
