@@ -42,7 +42,7 @@ export class UserService {
   }
 
   async findOne(id: ObjectId): Promise<UserEntityResponseDTO> {
-    const user = await this.userModel.findById(id, { passwordHash: -1, creator: -1 }).exec()
+    const user = await this.userModel.findById(id).exec()
 
     return {
       statusCode: 200,
