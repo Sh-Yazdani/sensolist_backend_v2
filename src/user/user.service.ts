@@ -15,7 +15,7 @@ export class UserService {
   constructor(@InjectModel(User.name) private readonly userModel: Model<User>) { }
 
   async create(data: CreateUserDto): Promise<MessageResponseDTO> {
-    const passwordHash = this.hashPassword(data.password)
+    const passwordHash = await this.hashPassword(data.password)
 
     const newUser = new this.userModel({
       passwordHash, ...data
@@ -30,7 +30,7 @@ export class UserService {
   }
 
   async findAll(): Promise<UserListResponseDTO> {
-    const data = await this.userModel.find({}, { passwordHash: -1, creator: -1 }).exec()
+    const data = await this.userModel.find().exec()
 
     return {
       statusCode: 200,
