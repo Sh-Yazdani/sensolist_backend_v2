@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ObjectId } from 'mongoose';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { MessageResponseDTO } from 'src/dto/response.dto';
 import { UserListResponseDTO } from './dto/user-list.dto';
 import { UserEntityResponseDTO } from './dto/user-entity.dto';
@@ -30,6 +30,7 @@ export class UserController {
   @Get(':id')
   @ApiOperation({ summary: "user detail" })
   @ApiOkResponse({ type: UserEntityResponseDTO })
+  @ApiParam({ name: "user id", type: String })
   findOne(@Param('id') id: ObjectId) {
     return this.userService.findOne(id);
   }
@@ -37,6 +38,7 @@ export class UserController {
   @Patch(':id')
   @ApiOperation({ summary: "updating a user via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
+  @ApiParam({ name: "user id", type: String })
   update(@Param('id') id: ObjectId, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
@@ -44,6 +46,7 @@ export class UserController {
   @Delete(':id')
   @ApiOperation({ summary: "deleting a user via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
+  @ApiParam({ name: "user id", type: String })
   remove(@Param('id') id: ObjectId) {
     return this.userService.remove(id);
   }

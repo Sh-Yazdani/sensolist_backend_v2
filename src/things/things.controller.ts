@@ -4,7 +4,7 @@ import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
 import { ObjectId } from 'mongoose';
 import { ThingQueryDTO } from './dto/thing-search.dto';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { MessageResponseDTO } from 'src/dto/response.dto';
 import { ThingListResponseDTO } from './dto/thing.list.dto';
 import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
@@ -22,7 +22,7 @@ export class ThingsController {
   }
 
   @Get()
-  @ApiOperation({ summary: "list of all things", description:"with this API you can search and filter things, for getting all exists things, dont pass the search and filter params"})
+  @ApiOperation({ summary: "list of all things", description: "with this API you can search and filter things, for getting all exists things, dont pass the search and filter params" })
   @ApiOkResponse({ type: ThingListResponseDTO })
   findAll(@Query() query: ThingQueryDTO) {
     return this.thingsService.findAll(query);
@@ -31,6 +31,7 @@ export class ThingsController {
   @Get(':id')
   @ApiOperation({ summary: "detail of thing" })
   @ApiOkResponse({ type: ThingEntityResponseDTO })
+  @ApiParam({ name: "thing id", type: String })
   findOne(@Param('id') id: ObjectId) {
     return this.thingsService.findOne(id);
   }
@@ -38,6 +39,7 @@ export class ThingsController {
   @Patch(':id')
   @ApiOperation({ summary: "updating a thing via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
+  @ApiParam({ name: "thing id", type: String })
   update(@Param('id') id: ObjectId, @Body() updateThingDto: UpdateThingDto) {
     return this.thingsService.update(id, updateThingDto);
   }
@@ -45,6 +47,7 @@ export class ThingsController {
   @Delete(':id')
   @ApiOperation({ summary: "deleting a thing via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
+  @ApiParam({ name: "thing id", type: String })
   remove(@Param('id') id: ObjectId) {
     return this.thingsService.remove(id);
   }
