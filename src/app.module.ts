@@ -7,6 +7,7 @@ import { CustomRoleModule } from './custom-role/custom-role.module';
 import { UserModule } from './user/user.module';
 import { ThingsModule } from './things/things.module';
 import configuration from './config/configuration';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import configuration from './config/configuration';
       load: [configuration],
     }),
     DatabaseModule,
+    AuthModule,
     CustomRoleModule,
     UserModule,
     ThingsModule
