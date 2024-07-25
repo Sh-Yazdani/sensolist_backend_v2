@@ -1,5 +1,5 @@
 import { Controller, Post } from '@nestjs/common';
-import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './auth.dto';
+import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { ApiBadRequestResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 

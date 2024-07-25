@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './auth.dto';
+import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
 import { UserService } from 'src/user/user.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { OTP } from './auth.schema';
+import { OTP } from './entities/auth.schema';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { compare as bcryptCompare } from "bcrypt"
