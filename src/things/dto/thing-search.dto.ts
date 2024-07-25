@@ -34,7 +34,7 @@ export class ThingQueryDTO {
     @ApiProperty({ type: ThingFilterOptions, required: false, default: undefined })
     filter?: ThingFilterOptions
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, required: false })
     @IsObject()
     search?: string
 }
