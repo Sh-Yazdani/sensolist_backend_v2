@@ -1,6 +1,5 @@
 import { EntityResponseDTO } from "src/dto/response.dto"
 import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger"
-import { MessageResponseDTO } from "src/dto/response.dto"
 
 export class LoginDTO {
 
@@ -27,11 +26,14 @@ export class CheckOtpDTO {
 
 export class LoginResponseDTO extends EntityResponseDTO {
 
+    @ApiResponseProperty()
     tempToken: string
 
 }
 
 export class CheckOTPResponseDTO extends EntityResponseDTO {
+
+    @ApiResponseProperty()
     apiToken: string
 }
 
