@@ -24,7 +24,15 @@ export class ListResponseDTO {
 
 export class EntityResponseDTO {
     @ApiResponseProperty()
-    status: number
+    statusCode: number
+}
+
+
+export class ErrorResponseDTO extends MessageResponseDTO {
+
+    @ApiResponseProperty()
+    readonly error: string
+
 }
 
 
