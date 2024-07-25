@@ -8,7 +8,18 @@ export class ThingSeeder implements Seeder {
     constructor(@InjectModel(Thing.name) private readonly thingModel: Model<Thing>) { }
 
     seed(): Promise<any> {
-        const things = DataFactory.createForClass(Thing).generate(15)
+        let things = DataFactory.createForClass(Thing).generate(15)
+
+        things = things.map((thing, index) => {
+            return {
+                ...thing,
+                brand: index % 5 == 0 ? null : thing.brand ,
+                model:index % 5 == 0 ? null : `${thing.model}${++index}`,
+                name:`${thing.name} ${++index}`,
+                type:`${thing.type}${++index}`,
+            }
+        })
+
         return this.thingModel.insertMany(things)
     }
     drop(): Promise<any> {

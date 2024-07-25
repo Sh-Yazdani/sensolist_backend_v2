@@ -3,12 +3,20 @@ import { DataFactory, Seeder } from "nestjs-seeder";
 import { CustomRole } from "./entities/custom-role.entity";
 import { Model } from "mongoose";
 
-export class CustomRoleSeeder implements Seeder{
+export class CustomRoleSeeder implements Seeder {
 
-    constructor(@InjectModel(CustomRole.name) private readonly roleModel:Model<CustomRole>){}
+    constructor(@InjectModel(CustomRole.name) private readonly roleModel: Model<CustomRole>) { }
 
     seed(): Promise<any> {
-        const roles = DataFactory.createForClass(CustomRole).generate(5)
+        let roles = DataFactory.createForClass(CustomRole).generate(8)
+
+        roles = roles.map((role, index) => {
+            return {
+                ...role,
+                name: `${role.name} ${++index}`
+            }
+        })
+
         return this.roleModel.insertMany(roles)
     }
     drop(): Promise<any> {

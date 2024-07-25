@@ -10,8 +10,19 @@ export class UserSeeder implements Seeder {
     constructor(@InjectModel(User.name) private readonly userModel: Model<User>) { }
 
 
-    seed(): Promise<any> {
-        const users = DataFactory.createForClass(User).generate(50)
+    async seed(): Promise<any> {
+        let users = DataFactory.createForClass(User).generate(5)
+
+        const firstUser = new this.userModel(users.pop())
+        await firstUser.save()
+
+        users = users.map((user, index) => {
+            return {
+                ...user,
+                creator: firstUser._id
+            }
+        })
+
         return this.userModel.insertMany(users)
     }
 

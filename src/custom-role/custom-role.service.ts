@@ -4,7 +4,9 @@ import { UpdateCustomRoleDto } from './dto/update-custom-role.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { CustomRole } from './entities/custom-role.entity';
 import { Model, ObjectId } from 'mongoose';
-import { DataResponse, MessageResponseDTO } from 'src/dto/response.dto';
+import { MessageResponseDTO } from 'src/dto/response.dto';
+import { CustomRoleListResponseDTO } from './dto/custom-role-list.dto';
+import { CustomRoleEntity, CustomRoleEntityResponseDTO } from './dto/custom-role-entity.dto';
 
 @Injectable()
 export class CustomRoleService {
@@ -20,33 +22,39 @@ export class CustomRoleService {
     }
   }
 
-  async findAll():Promise<DataResponse> {
-    const toles = await this.customRoleModel.find()
+  async findAll(): Promise<CustomRoleListResponseDTO> {
+    const roles = await this.customRoleModel.find().exec()
 
     return {
-      MessageResponseDTO
+      list: roles.map(r => ({ name: r.name as string, description: r.description as string })),
+      status: 200
     }
   }
 
-  findOne(id: ObjectId) {
-    return this.customRoleModel.findById(id)
+  async findOne(id: ObjectId): Promise<CustomRoleEntityResponseDTO> {
+    const role = await this.customRoleModel.findById(id)
+
+    return {
+      status: 200,
+      role: { name: role.name as string, description: role.description as string }
+    }
   }
 
-  async update(id: ObjectId, data: UpdateCustomRoleDto):Promise<MessageResponseDTO> {
+  async update(id: ObjectId, data: UpdateCustomRoleDto): Promise<MessageResponseDTO> {
     await this.customRoleModel.updateOne({ _id: id }, { data })
 
     return {
-      status:200,
-      message:"role was updated"
+      status: 200,
+      message: "role was updated"
     }
   }
 
-  async remove(id: ObjectId):Promise<MessageResponseDTO> {
+  async remove(id: ObjectId): Promise<MessageResponseDTO> {
     await this.customRoleModel.deleteOne({ _id: id })
 
     return {
-      status:200,
-      message:"role was deleted"
+      status: 200,
+      message: "role was deleted"
     }
   }
 }

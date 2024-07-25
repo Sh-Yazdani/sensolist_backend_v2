@@ -1,3 +1,4 @@
+import { EntityResponseDTO } from "src/dto/response.dto"
 import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger"
 import { MessageResponseDTO } from "src/dto/response.dto"
 
@@ -11,19 +12,27 @@ export class LoginDTO {
 
 }
 
-export class CheckOtpDTO {
 
+export class CheckOtpDTO {
     @ApiProperty({ type: String, description: "user phone number", default:"09123456"})
     pohnenumber: String
 
     @ApiProperty({ type: String, description: "the one type password, was sended to user phone", default:"123456"})
     otp: string
-
+    
     @ApiProperty({ type: String, description: "from `/login` route, response"})
     token: string
 
 }
 
+export class LoginResponseDTO extends EntityResponseDTO {
 
+    tempToken: string
+
+}
+
+export class CheckOTPResponseDTO extends EntityResponseDTO {
+    apiToken: string
+}
 
 

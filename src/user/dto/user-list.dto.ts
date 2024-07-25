@@ -1,19 +1,11 @@
 import { ApiResponseProperty, OmitType } from "@nestjs/swagger";
-import { ObjectId, SchemaTypes } from "mongoose";
+import { ListResponseDTO } from "src/dto/response.dto";
+import { UserEntityDTO } from "./user-entity.dto";
 
-export class UserDetailDTO {
+export class UserListResponseDTO extends ListResponseDTO {
 
-    @ApiResponseProperty({type:String})
-    id:ObjectId
+    @ApiResponseProperty({ type: [UserEntityDTO] })
+    list: UserEntityDTO[]
 
-    @ApiResponseProperty({type:String})
-    phonenumber: string
-
-    @ApiResponseProperty({type:String})
-    firstname: string
-
-    @ApiResponseProperty({type:String})
-    lastname: string
-    
 }
 

@@ -10,12 +10,21 @@ export class MessageResponseDTO {
 
 }
 
-export class DataResponse<T> extends MessageResponseDTO {
+export class ListResponseDTO {
+    @ApiResponseProperty()
+    status: number
 
     @ApiResponseProperty()
-    data: T
+    page?: number
 
+    @ApiResponseProperty()
+    pageCount?: number
 }
 
+
+export class EntityResponseDTO {
+    @ApiResponseProperty()
+    status: number
+}
 
 

@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CheckOtpDTO, LoginDTO } from './auth.dto';
+import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './auth.dto';
 import { UserService } from 'src/user/user.service';
-import { DataResponse, MessageResponseDTO } from 'src/dto/response.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { OTP } from './auth.schema';
 import { Model } from 'mongoose';
@@ -19,7 +18,7 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) { }
 
-    async login(data: LoginDTO): Promise<DataResponse<string>> {
+    async login(data: LoginDTO): Promise<LoginResponseDTO> {
         const passHash = await this.userService.getPasswordHash(data.phonenumber)
 
         const hashIsValid = this.checkPasswordHash(data.password, passHash)
@@ -40,14 +39,13 @@ export class AuthService {
 
             return {
                 status: 200,
-                message: "otp is send",
-                data: tempToken
+                tempToken: tempToken
             }
         } else
             throw new BadRequestException("pass is wrong!")
     }
 
-    async checkOTP(data: CheckOtpDTO): Promise<DataResponse<string>> {
+    async checkOTP(data: CheckOtpDTO): Promise<CheckOTPResponseDTO> {
         const otpObject = await this.otpModel.findOne(data).exec()
         if (!otpObject)
             throw new BadRequestException("otp not valid")
@@ -63,8 +61,7 @@ export class AuthService {
 
         return {
             status: 200,
-            message: "otp is ok",
-            data: token
+            apiToken: token
         }
     }
 

@@ -7,10 +7,16 @@ import { CustomRole, CustomRoleSchema } from "./custom-role/entities/custom-role
 import { CustomRoleSeeder } from "./custom-role/custom-role.seeder";
 import { Thing, ThingSchema } from "./things/entities/thing.entity";
 import { ThingSeeder } from "./things/thing.seeder";
+import { ConfigModule } from "@nestjs/config";
+import configuration from "./config/configuration";
 
 seeder(
     {
         imports: [
+            ConfigModule.forRoot({
+                load: [configuration],
+                isGlobal: true,
+              }),
             DatabaseModule,
             MongooseModule.forFeature([
                 { name: User.name, schema: UserSchema },

@@ -4,9 +4,10 @@ import { UpdateThingDto } from './dto/update-thing.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Thing } from './entities/thing.entity';
 import { Model, ObjectId } from 'mongoose';
-import { DataResponse, MessageResponseDTO } from 'src/dto/response.dto';
-import { ThingDetailDTO } from './dto/thing-detail.dto';
 import { ThingQueryDTO, ThingSortOptions } from './dto/thing-search.dto';
+import { MessageResponseDTO } from 'src/dto/response.dto';
+import { ThingListResponseDTO } from './dto/thing.list.dto';
+import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
 
 @Injectable()
 export class ThingsService {
@@ -24,7 +25,7 @@ export class ThingsService {
     }
   }
 
-  async findAll(query: ThingQueryDTO): Promise<ThingDetailDTO[]> {
+  async findAll(query: ThingQueryDTO): Promise<ThingListResponseDTO> {
 
     let thingsDBQuery = this.thingModel.find()
 
@@ -52,30 +53,36 @@ export class ThingsService {
     const things = await thingsDBQuery.exec()
 
 
-    return things.map(t => {
-      return {
-        brand: t.brand,
-        model: t.model,
-        type: t.type,
-        actions: t.actions,
-        characteristics: t.characteristics,
-        activition: t.activition,
-        description: t.description,
-      }
-    })
+    return {
+      status: 200,
+      list: things.map(t => {
+        return {
+          brand: t.brand,
+          model: t.model,
+          type: t.type,
+          actions: t.actions,
+          characteristics: t.characteristics,
+          activition: t.activition,
+          description: t.description,
+        }
+      })
+    }
   }
 
-  async findOne(id: ObjectId): Promise<ThingDetailDTO> {
+  async findOne(id: ObjectId): Promise<ThingEntityResponseDTO> {
     const thing = await this.thingModel.findById(id).exec()
 
     return {
-      brand: thing.brand,
-      model: thing.model,
-      type: thing.type,
-      actions: thing.actions,
-      characteristics: thing.characteristics,
-      activition: thing.activition,
-      description: thing.description,
+      status: 200,
+      thing: {
+        brand: thing.brand,
+        model: thing.model,
+        type: thing.type,
+        actions: thing.actions,
+        characteristics: thing.characteristics,
+        activition: thing.activition,
+        description: thing.description,
+      }
     }
   }
 
@@ -93,8 +100,13 @@ export class ThingsService {
     }
   }
 
-  remove(id: ObjectId) {
-    this.thingModel.deleteOne({ _id: id }).exec()
+  async remove(id: ObjectId) {
+    await this.thingModel.deleteOne({ _id: id }).exec()
+
+    return {
+      status: 200,
+      message: "user was deleted"
+    }
   }
 
 }
