@@ -1,7 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
 import { AuthService } from './auth.service';
-import { ApiBadRequestResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ErrorResponseDTO } from 'src/dto/response.dto';
 
 
 @Controller("auth")
@@ -13,7 +14,8 @@ export class AuthController {
     @Post("login")
     @ApiOperation({ summary: "validating password and sending OTP", description: "looking for a user with proviede phonenumber if user is exists and provided password is correct, then a OTP is send to user phonenumber" })
     @ApiOkResponse({ type: LoginResponseDTO })
-    @ApiBadRequestResponse()
+    @ApiBadRequestResponse({ type: ErrorResponseDTO })
+    @ApiNotFoundResponse({ type: ErrorResponseDTO })
     async login(@Body() data: LoginDTO): Promise<LoginResponseDTO> {
         return this.authService.login(data)
     }
@@ -21,7 +23,7 @@ export class AuthController {
     @Post("otp")
     @ApiOperation({ summary: "checking otp", description: "checking otp and returning `API` token if otp is correct and not expired" })
     @ApiOkResponse({ type: CheckOTPResponseDTO })
-    @ApiBadRequestResponse({ description: "happen when otp is wrong or expired" })
+    @ApiBadRequestResponse({ type: ErrorResponseDTO, description: "happen when otp is wrong or expired" })
     async checkOTP(@Body() data: CheckOtpDTO): Promise<CheckOTPResponseDTO> {
         return this.authService.checkOTP(data)
     }

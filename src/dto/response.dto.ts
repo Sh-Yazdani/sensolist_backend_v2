@@ -3,7 +3,7 @@ import { ApiResponseProperty } from "@nestjs/swagger"
 export class MessageResponseDTO {
 
     @ApiResponseProperty()
-    status: number
+    statusCode: number
 
     @ApiResponseProperty()
     message: string
@@ -12,7 +12,7 @@ export class MessageResponseDTO {
 
 export class ListResponseDTO {
     @ApiResponseProperty()
-    status: number
+    statusCode: number
 
     @ApiResponseProperty()
     page?: number
@@ -24,7 +24,15 @@ export class ListResponseDTO {
 
 export class EntityResponseDTO {
     @ApiResponseProperty()
-    status: number
+    statusCode: number
+}
+
+
+export class ErrorResponseDTO extends MessageResponseDTO {
+
+    @ApiResponseProperty()
+    readonly error: string
+
 }
 
 

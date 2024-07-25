@@ -17,7 +17,7 @@ export class CustomRoleService {
     await this.customRoleModel.create(data)
 
     return {
-      status: 201,
+      statusCode: 201,
       message: "role is created"
     }
   }
@@ -27,7 +27,7 @@ export class CustomRoleService {
 
     return {
       list: roles.map(r => ({ name: r.name as string, description: r.description as string })),
-      status: 200
+      statusCode: 200
     }
   }
 
@@ -35,7 +35,7 @@ export class CustomRoleService {
     const role = await this.customRoleModel.findById(id)
 
     return {
-      status: 200,
+      statusCode: 200,
       role: { name: role.name as string, description: role.description as string }
     }
   }
@@ -44,7 +44,7 @@ export class CustomRoleService {
     await this.customRoleModel.updateOne({ _id: id }, { data })
 
     return {
-      status: 200,
+      statusCode: 200,
       message: "role was updated"
     }
   }
@@ -53,7 +53,7 @@ export class CustomRoleService {
     await this.customRoleModel.deleteOne({ _id: id })
 
     return {
-      status: 200,
+      statusCode: 200,
       message: "role was deleted"
     }
   }
