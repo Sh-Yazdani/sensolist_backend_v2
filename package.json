@@ -34,6 +34,7 @@
     "class-validator": "^0.14.1",
     "mongoose": "^8.5.1",
     "reflect-metadata": "^0.2.0",
+    "nestjs-seeder": "^0.3.2",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
