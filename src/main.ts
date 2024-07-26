@@ -11,7 +11,17 @@ function initializeSwagger(app: INestApplication) {
     .build()
 
   const documentation = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('docs', app, documentation)
+  SwaggerModule.setup('docs', app, documentation, {
+    customJs: [
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
+    ],
+    customCssUrl: [
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.css',
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.css',
+    ]
+  })
 }
 
 async function bootstrap() {
@@ -19,7 +29,7 @@ async function bootstrap() {
 
   initializeSwagger(app)
 
-  app.enableCors({origin:false})
+  app.enableCors({ origin: false })
 
   await app.listen(3000, () => {
     console.log("server listen on port 3000, docs url: ~/docs")
