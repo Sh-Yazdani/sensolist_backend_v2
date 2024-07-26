@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ErrorResponseDTO } from 'src/dto/response.dto';
+import { ErrorResponseDTO } from '../dto/response.dto';
 
 
 @Controller("auth")

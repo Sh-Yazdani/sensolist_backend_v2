@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import { Model, ObjectId } from 'mongoose';
 import { hash } from "bcrypt"
-import { MessageResponseDTO } from 'src/dto/response.dto';
+import { MessageResponseDTO } from '../dto/response.dto';
 import { UserListResponseDTO } from './dto/user-list.dto';
 import { UserEntityResponseDTO } from './dto/user-entity.dto';
 

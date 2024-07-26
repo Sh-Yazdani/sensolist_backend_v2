@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ObjectId } from 'mongoose';
 import { ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { MessageResponseDTO } from 'src/dto/response.dto';
+import { MessageResponseDTO } from '../dto/response.dto';
 import { UserListResponseDTO } from './dto/user-list.dto';
 import { UserEntityResponseDTO } from './dto/user-entity.dto';
 

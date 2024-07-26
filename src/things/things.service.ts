@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Thing } from './entities/thing.entity';
 import { Model, ObjectId } from 'mongoose';
 import { ThingQueryDTO, ThingSortOptions } from './dto/thing-search.dto';
-import { MessageResponseDTO } from 'src/dto/response.dto';
+import { MessageResponseDTO } from '../dto/response.dto';
 import { ThingListResponseDTO } from './dto/thing.list.dto';
 import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
 

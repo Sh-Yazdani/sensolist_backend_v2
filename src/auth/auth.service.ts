@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { OTP } from './entities/auth.schema';
 import { Model } from 'mongoose';

@@ -4,7 +4,7 @@ import { UpdateCustomRoleDto } from './dto/update-custom-role.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { CustomRole } from './entities/custom-role.entity';
 import { Model, ObjectId } from 'mongoose';
-import { MessageResponseDTO } from 'src/dto/response.dto';
+import { MessageResponseDTO } from '../dto/response.dto';
 import { CustomRoleListResponseDTO } from './dto/custom-role-list.dto';
 import { CustomRoleEntity, CustomRoleEntityResponseDTO } from './dto/custom-role-entity.dto';
 

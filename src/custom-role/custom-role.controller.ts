@@ -4,7 +4,7 @@ import { CreateCustomRoleDto } from './dto/create-custom-role.dto';
 import { UpdateCustomRoleDto } from './dto/update-custom-role.dto';
 import { ObjectId } from 'mongoose';
 import { ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { MessageResponseDTO } from 'src/dto/response.dto';
+import { MessageResponseDTO } from '../dto/response.dto';
 import { CustomRoleListResponseDTO } from './dto/custom-role-list.dto';
 import { CustomRoleEntityResponseDTO } from './dto/custom-role-entity.dto';
 
