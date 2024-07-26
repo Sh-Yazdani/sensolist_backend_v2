@@ -19,6 +19,8 @@ async function bootstrap() {
 
   initializeSwagger(app)
 
+  app.enableCors({origin:false})
+
   await app.listen(3000, () => {
     console.log("server listen on port 3000, docs url: ~/docs")
   });
