@@ -24,7 +24,7 @@ export class UserSeeder implements Seeder {
         const admin = new this.userModel(users.pop())
         admin.systemRole = SystemRoles.Admin
         admin.phonenumber = "+989151234567"
-        admin.passwordHash = await this.userService.hashPassword("123456")
+        admin.passwordHash = await this.userService.hashData("123456")
         await admin.save()
 
         users = users.map((user, index) => {

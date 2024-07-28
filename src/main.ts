@@ -8,6 +8,7 @@ function initializeSwagger(app: INestApplication) {
     .setTitle("Sensolist REST-API documentaion")
     .setDescription("in case of any confusion feel free for asking")
     .setVersion("1")
+    .addBearerAuth({ type: 'http', description: "insert the login token" })
     .build()
 
   const documentation = SwaggerModule.createDocument(app, config)

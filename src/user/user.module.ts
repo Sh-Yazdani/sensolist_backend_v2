@@ -4,13 +4,14 @@ import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './entities/user.entity';
 import { CustomRoleModule } from 'src/custom-role/custom-role.module';
+import { CustomRole, CustomRoleSchema } from 'src/custom-role/entities/custom-role.entity';
 
 @Module({
   controllers: [UserController],
   providers: [UserService],
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    CustomRoleModule
+    MongooseModule.forFeature([{ name: CustomRole.name, schema: CustomRoleSchema }])
   ],
   exports:[UserService]
 })

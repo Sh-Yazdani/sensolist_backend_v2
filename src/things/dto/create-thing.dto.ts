@@ -34,7 +34,7 @@ export class CreateThingDto {
     @ApiProperty({ type: String })
     description: string
 
-    @ApiProperty({ type: ImageModel })
-    images: ImageModel
+    @ApiProperty({ type: [ImageModel] })
+    images: ImageModel[]
 }
 

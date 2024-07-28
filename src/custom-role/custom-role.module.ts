@@ -9,6 +9,9 @@ import { CustomRole, CustomRoleSchema } from './entities/custom-role.entity';
   providers: [CustomRoleService],
   imports: [
     MongooseModule.forFeature([{ name: CustomRole.name, schema: CustomRoleSchema }])
+  ],
+  exports:[
+    CustomRoleService
   ]
 })
 export class CustomRoleModule { }
