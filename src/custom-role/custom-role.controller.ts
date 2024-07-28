@@ -7,7 +7,7 @@ import { ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
 import { MessageResponseDTO } from '../dto/response.dto';
 import { CustomRoleListResponseDTO } from './dto/custom-role-list.dto';
 import { CustomRoleEntityResponseDTO } from './dto/custom-role-entity.dto';
-import { CheckSystemRole } from 'decorator/role.decorator';
+import { CheckSystemRole } from 'src/decorator/role.decorator';
 import { SystemRoles } from 'src/enums/role.enum';
 
 @Controller('custom-role')

@@ -10,9 +10,9 @@ import configuration from './config/configuration';
 import { AuthModule } from './auth/auth.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { AuthenticationGuard } from 'guard/auth.guard';
+import { AuthenticationGuard } from 'src/guard/auth.guard';
 import { AccessTokenModule } from './auth/access-token.module';
-import { SystemRoleGuard } from 'guard/system-role.guard';
+import { SystemRoleGuard } from 'src/guard/system-role.guard';
 import { FileModule } from './sl-file/file.module';
 
 @Module({

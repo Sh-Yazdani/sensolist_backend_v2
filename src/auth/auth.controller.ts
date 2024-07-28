@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorResponseDTO } from '../dto/response.dto';
 import { Response, response } from 'express';
-import { UnAuthorizedRoute } from 'decorator/auth-decorator';
+import { UnAuthorizedRoute } from 'src/decorator/auth-decorator';
 
 
 @Controller("auth")
