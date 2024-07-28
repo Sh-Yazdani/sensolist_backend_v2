@@ -1,5 +1,5 @@
 import { ApiResetContentResponse, ApiResponseProperty } from "@nestjs/swagger";
-import { EntityResponseDTO } from "src/dto/response.dto";
+import { EntityResponseDTO } from "../../dto/response.dto";
 
 export class CustomRoleEntity {
     @ApiResponseProperty()

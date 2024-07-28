@@ -9,6 +9,8 @@ import { Thing, ThingSchema } from "./things/entities/thing.entity";
 import { ThingSeeder } from "./things/thing.seeder";
 import { ConfigModule } from "@nestjs/config";
 import configuration from "./config/configuration";
+import { UserModule } from "./user/user.module";
+import { CustomRoleModule } from "./custom-role/custom-role.module";
 
 seeder(
     {
@@ -22,7 +24,9 @@ seeder(
                 { name: User.name, schema: UserSchema },
                 { name: CustomRole.name, schema: CustomRoleSchema },
                 { name: Thing.name, schema: ThingSchema },
-            ])
+            ]),
+            UserModule,
+            CustomRoleModule
         ]
     }
 ).run([

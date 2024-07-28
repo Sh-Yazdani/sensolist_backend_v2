@@ -1,4 +1,4 @@
-import { ListResponseDTO } from "src/dto/response.dto";
+import { ListResponseDTO } from "../../dto/response.dto";
 import { ThingEntityDTO } from "./thing-entity.dto";
 import { ApiResponseProperty } from "@nestjs/swagger";
 

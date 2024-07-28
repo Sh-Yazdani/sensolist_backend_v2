@@ -1,6 +1,6 @@
 import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger"
 import { ObjectId } from "mongoose"
-import { EntityResponseDTO } from "src/dto/response.dto"
+import { EntityResponseDTO } from "../../dto/response.dto"
 import { ImageModel } from "./create-thing.dto"
 
 export class ThingEntityDTO {

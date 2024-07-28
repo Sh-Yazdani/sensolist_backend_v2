@@ -1,6 +1,6 @@
 import { ApiResponseProperty } from "@nestjs/swagger"
 import { Types } from "mongoose"
-import { EntityResponseDTO } from "src/dto/response.dto"
+import { EntityResponseDTO } from "../../dto/response.dto"
 
 export class UserEntityDTO {
     @ApiResponseProperty({ type: String })

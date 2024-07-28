@@ -1,4 +1,4 @@
-import { EntityResponseDTO } from "src/dto/response.dto"
+import { EntityResponseDTO } from "../../dto/response.dto"
 import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger"
 
 export class LoginDTO {

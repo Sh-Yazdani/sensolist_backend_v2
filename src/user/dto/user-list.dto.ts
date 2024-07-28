@@ -1,5 +1,5 @@
 import { ApiResponseProperty, OmitType } from "@nestjs/swagger";
-import { ListResponseDTO } from "src/dto/response.dto";
+import { ListResponseDTO } from "../../dto/response.dto";
 import { UserEntityDTO } from "./user-entity.dto";
 
 export class UserListResponseDTO extends ListResponseDTO {

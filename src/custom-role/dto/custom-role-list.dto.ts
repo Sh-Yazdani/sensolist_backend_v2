@@ -1,4 +1,4 @@
-import { ListResponseDTO } from "src/dto/response.dto";
+import { ListResponseDTO } from "../../dto/response.dto";
 import { CustomRoleEntity } from "./custom-role-entity.dto";
 import { ApiResponseProperty } from "@nestjs/swagger";
 

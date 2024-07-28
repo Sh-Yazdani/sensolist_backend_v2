@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { CHECK_SYSTEM_ROLE_KEY } from "src/decorator/role.decorator";
+import { CHECK_SYSTEM_ROLE_KEY } from "../decorator/role.decorator";
 import { Request } from "express";
 import { Observable } from "rxjs";
 import { SystemRoles } from '../enums/role.enum';

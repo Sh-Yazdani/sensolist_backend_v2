@@ -1,19 +1,19 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { DataFactory, Seeder } from "nestjs-seeder"
 import { User } from "./entities/user.entity";
 import { Model } from "mongoose";
-import { SystemRoles } from "src/enums/role.enum";
+import { SystemRoles } from "../enums/role.enum";
 import { UserService } from "./user.service";
-import { CustomRoleService } from "src/custom-role/custom-role.service";
+import { CustomRoleService } from "../custom-role/custom-role.service";
 
 @Injectable()
 export class UserSeeder implements Seeder {
 
     constructor(
         @InjectModel(User.name) private readonly userModel: Model<User>,
-        private readonly userService: UserService,
-        private readonly customRoleService: CustomRoleService,
+        @Inject() private readonly userService: UserService,
+        @Inject() private readonly customRoleService: CustomRoleService,
     ) { }
 
 
