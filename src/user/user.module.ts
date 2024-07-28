@@ -3,8 +3,8 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './entities/user.entity';
-import { CustomRoleModule } from 'src/custom-role/custom-role.module';
-import { CustomRole, CustomRoleSchema } from 'src/custom-role/entities/custom-role.entity';
+import { CustomRoleModule } from '../custom-role/custom-role.module';
+import { CustomRole, CustomRoleSchema } from '../custom-role/entities/custom-role.entity';
 
 @Module({
   controllers: [UserController],

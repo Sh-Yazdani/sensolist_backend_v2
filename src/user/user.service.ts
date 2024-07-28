@@ -8,7 +8,7 @@ import { hash } from "bcrypt"
 import { MessageResponseDTO } from '../dto/response.dto';
 import { UserListResponseDTO } from './dto/user-list.dto';
 import { UserEntityDTO, UserEntityResponseDTO } from './dto/user-entity.dto';
-import { CustomRole } from 'src/custom-role/entities/custom-role.entity';
+import { CustomRole } from '../custom-role/entities/custom-role.entity';
 
 @Injectable()
 export class UserService {

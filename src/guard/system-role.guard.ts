@@ -3,7 +3,7 @@ import { Reflector } from "@nestjs/core";
 import { CHECK_SYSTEM_ROLE_KEY } from "src/decorator/role.decorator";
 import { Request } from "express";
 import { Observable } from "rxjs";
-import { SystemRoles } from 'src/enums/role.enum';
+import { SystemRoles } from '../enums/role.enum';
 
 @Injectable()
 export class SystemRoleGuard implements CanActivate {

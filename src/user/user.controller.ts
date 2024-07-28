@@ -7,8 +7,8 @@ import { ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
 import { MessageResponseDTO } from '../dto/response.dto';
 import { UserListResponseDTO } from './dto/user-list.dto';
 import { UserEntityResponseDTO } from './dto/user-entity.dto';
-import { CheckSystemRole } from 'src/decorator/role.decorator';
-import { SystemRoles } from 'src/enums/role.enum';
+import { CheckSystemRole } from '../decorator/role.decorator';
+import { SystemRoles } from '../enums/role.enum';
 
 @Controller('user')
 @ApiTags("User")

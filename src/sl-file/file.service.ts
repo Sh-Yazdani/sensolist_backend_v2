@@ -7,7 +7,7 @@ import { writeFile, rename } from "fs/promises";
 import { join } from 'path';
 import { Response } from 'express';
 import { createReadStream } from 'fs';
-import { completeThePath, createFoldersIfNotExists } from 'src/utils/utils';
+import { completeThePath, createFoldersIfNotExists } from '../utils/utils';
 
 @Injectable()
 export class FileService {
