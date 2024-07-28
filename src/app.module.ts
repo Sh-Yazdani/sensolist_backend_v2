@@ -10,11 +10,13 @@ import configuration from './config/configuration';
 import { AuthModule } from './auth/auth.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { AuthenticationGuard } from 'guard/auth.guard';
+import { AccessTokenModule } from './auth/access-token.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath:join(__dirname, 'node_modules', 'swagger-ui-dist')
+      rootPath: join(__dirname, 'node_modules', 'swagger-ui-dist')
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -24,9 +26,16 @@ import { join } from 'path';
     AuthModule,
     CustomRoleModule,
     UserModule,
-    ThingsModule
+    ThingsModule,
+    AccessTokenModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: "APP_GUARD",
+      useClass: AuthenticationGuard
+    },
+    AppService
+  ],
 })
-export class AppModule {}
+export class AppModule { }

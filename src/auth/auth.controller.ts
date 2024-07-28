@@ -4,10 +4,12 @@ import { AuthService } from './auth.service';
 import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorResponseDTO } from '../dto/response.dto';
 import { Response, response } from 'express';
+import { UnAuthorizedRoute } from 'decorator/auth-decorator';
 
 
 @Controller("auth")
 @ApiTags("Authentication")
+@UnAuthorizedRoute()
 export class AuthController {
 
     constructor(private readonly authService: AuthService) { }
@@ -31,7 +33,7 @@ export class AuthController {
 
     @Post('refresh')
     async refreshToken(@Res() response: Response) {
-        const userId:string = ""//TODO from auth guard
+        const userId: string = ""//TODO from auth guard
         return this.authService.refreshToken(userId, response)
     }
 
