@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ObjectId } from "mongoose";
 import { Factory } from "nestjs-seeder";
+import { ImageModel } from "../dto/create-thing.dto";
 
 @Schema({ timestamps: true })
 export class Thing {
@@ -28,14 +30,17 @@ export class Thing {
     @Prop({ type: [String], required: true })
     characteristics: string[]
 
-    @Factory(faker => faker.date.recent({days:30}))
+    @Factory(faker => faker.date.recent({ days: 30 }))
     @Prop({ type: Date, required: true })
     activition: Date
 
-    @Factory(faker => faker.lorem.paragraph({min:2, max:5}))
+    @Factory(faker => faker.lorem.paragraph({ min: 2, max: 5 }))
     @Prop({ type: String, required: true })
     description: string
 
+    @Factory([{ fileId: "", isCover: false }])
+    @Prop({ type: ImageModel, required: true })
+    images: ImageModel[]
 }
 
 export const ThingSchema = SchemaFactory.createForClass(Thing)
