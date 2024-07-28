@@ -6,6 +6,10 @@ import { SystemRoles } from "src/enums/role.enum";
 @Schema({ timestamps: true })
 export class User {
 
+    @Factory(() => {`U${(new Date()).getTime()}`})
+    @Prop({required:true})
+    customID:string
+
     @Factory(faker => faker.phone.number())
     @Prop({ unique: true, required: true })
     phonenumber: string
@@ -31,6 +35,9 @@ export class User {
     @Factory(SystemRoles.NonAdmin)
     @Prop({ enum: SystemRoles, required: true, default: SystemRoles.NonAdmin })
     systemRole: SystemRoles
+
+    @Prop({ type: SchemaTypes.ObjectId})
+    customRoleId: ObjectId
 
 }
 

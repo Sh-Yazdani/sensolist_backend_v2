@@ -4,7 +4,7 @@ import { EntityResponseDTO } from "src/dto/response.dto"
 
 export class UserEntityDTO {
     @ApiResponseProperty({ type: String })
-    id: Types.ObjectId
+    id: string
 
     @ApiResponseProperty({ type: String })
     phonenumber: string
@@ -14,6 +14,9 @@ export class UserEntityDTO {
 
     @ApiResponseProperty({ type: String })
     lastname: string
+
+    @ApiResponseProperty({type: String})
+    customRole:String
 }
 
 export class UserEntityResponseDTO extends EntityResponseDTO {

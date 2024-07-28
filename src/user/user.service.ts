@@ -7,18 +7,24 @@ import { Model, ObjectId } from 'mongoose';
 import { hash } from "bcrypt"
 import { MessageResponseDTO } from '../dto/response.dto';
 import { UserListResponseDTO } from './dto/user-list.dto';
-import { UserEntityResponseDTO } from './dto/user-entity.dto';
+import { UserEntityDTO, UserEntityResponseDTO } from './dto/user-entity.dto';
+import { CustomRole } from 'src/custom-role/entities/custom-role.entity';
 
 @Injectable()
 export class UserService {
 
-  constructor(@InjectModel(User.name) private readonly userModel: Model<User>) { }
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(CustomRole.name) private readonly customeRoleModel: Model<CustomRole>,
+  ) { }
 
   async create(data: CreateUserDto): Promise<MessageResponseDTO> {
-    const passwordHash = await this.hashData(data.password)
+    const passwordHash = await this.hashPassword(data.password)
+
+    const customID = `U${(new Date()).getTime()}`
 
     const newUser = new this.userModel({
-      passwordHash, ...data
+      customID, passwordHash, ...data
     })
 
     await newUser.save()
@@ -30,23 +36,42 @@ export class UserService {
   }
 
   async findAll(): Promise<UserListResponseDTO> {
-    const data = await this.userModel.find().exec()
+    const users = await this.userModel.find().exec()
+    const mappedUsers: UserEntityDTO[] = []
+
+    for (let user of users) {
+      const role = await this.customeRoleModel.findById(user.customRoleId)
+      mappedUsers.push({
+        id: user.customID,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phonenumber: user.phonenumber,
+        customRole: role.name
+
+      })
+    }
 
     return {
       statusCode: 200,
-      list: data.map(u =>
-        ({ id: u._id, firstname: u.firstname, lastname: u.lastname, phonenumber: u.phonenumber })
-      )
+      list: mappedUsers
     }
 
   }
 
   async findOne(id: ObjectId): Promise<UserEntityResponseDTO> {
     const user = await this.userModel.findById(id).exec()
+    const role = await this.customeRoleModel.findById(user.customRoleId)
 
     return {
       statusCode: 200,
-      user: { id: user._id, firstname: user.firstname, lastname: user.lastname, phonenumber: user.phonenumber }
+      user: {
+        id: user.customID,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phonenumber: user.phonenumber,
+        customRole: role.name
+
+      }
     }
   }
 
@@ -84,19 +109,9 @@ export class UserService {
 
   }
 
-  async storeRefreshToken(token: string, phonenumber: string) {
-    const tokenHash = this.hashData(token)
-    await this.userModel.updateOne({ phonenumber: phonenumber }, { refreshTokenHash: tokenHash })
-
-  }
-
-  async getRefreshToksnHash(phonenumber: string): Promise<string | undefined> {
-    return (await this.userModel.findOne({ phonenumber: phonenumber }, { refreshTokenHash: 1 }).exec()).refreshTokenHash
-  }
-
-  private async hashData(data: string): Promise<string> {
+  async hashPassword(password: string): Promise<string> {
     const saltOrRounds = 10;
-    return await hash(data, saltOrRounds);
+    return await hash(password, saltOrRounds);
   }
 
 }
