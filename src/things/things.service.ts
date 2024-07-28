@@ -64,6 +64,7 @@ export class ThingsService {
           characteristics: t.characteristics,
           activition: t.activition,
           description: t.description,
+          images: t.images
         }
       })
     }
@@ -71,6 +72,8 @@ export class ThingsService {
 
   async findOne(id: ObjectId): Promise<ThingEntityResponseDTO> {
     const thing = await this.thingModel.findById(id).exec()
+
+    const coverImage = thing.images.find(i => i.isCover)
 
     return {
       statusCode: 200,
@@ -82,6 +85,7 @@ export class ThingsService {
         characteristics: thing.characteristics,
         activition: thing.activition,
         description: thing.description,
+        images: [coverImage]
       }
     }
   }
