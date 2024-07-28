@@ -6,17 +6,18 @@ import { Response, response } from 'express';
 
 @Controller('files')
 export class FileController {
-  constructor(private readonly galleryService: FileService) { }
+  constructor(private readonly fileService: FileService) { }
 
   @Post('temp/img/:fileEntity')
   @UseInterceptors(FileInterceptor("file"))
   async create(@Param("fileEntity") entity: FileEntity, @UploadedFile("file") image: Express.Multer.File) {
-    return this.galleryService.storeTempImage(entity, image)
+    return this.fileService.storeTempImage(entity, image)
   }
 
   @Get(":id")
   async get(@Param("id") fileId: string, @Res() response: Response) {
-    return this.galleryService.serveFile(fileId, response)
+    this.fileService.moveFiles([fileId])
+    return this.fileService.serveFile(fileId, response)
   }
 
 }

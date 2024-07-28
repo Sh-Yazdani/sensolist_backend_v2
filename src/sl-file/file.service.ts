@@ -3,10 +3,10 @@ import { UploadTempFileImageResponseDTO } from './dto/file-entity.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { FileEntity, SLFile } from './entities/sl-file.entity';
 import { Model } from 'mongoose';
-import { writeFile, } from "fs/promises";
+import { writeFile, rename } from "fs/promises";
 import { join } from 'path';
 import { Response } from 'express';
-import { createReadStream, existsSync, mkdirSync } from 'fs';
+import { createReadStream } from 'fs';
 import { completeThePath, createFoldersIfNotExists } from 'src/utils/utils';
 
 @Injectable()
@@ -49,13 +49,27 @@ export class FileService {
 
     const file = await this.fileModel.findOne({ _id: fileId }).exec()
 
-    console.dir(file)
-
     response.set("Content-Type", file.mime)
 
     const stream = createReadStream(join(file.dir, `${file._id}.${file.extension}`))
 
     stream.pipe(response)
+
+  }
+
+  async moveFiles(fileIds: string[]) {
+
+    const files = await this.fileModel.find({ _id: { $in: fileIds } }).exec()
+
+    for (let file of files) {
+      const fileName = `${file._id}.${file.extension}`
+      const permanentPath = join(file.dir, "..", fileName)
+      const tempPath = join(file.dir, fileName)
+
+      await rename(tempPath, permanentPath)
+      file.temp = false
+      await file.save()
+    }
 
   }
 
