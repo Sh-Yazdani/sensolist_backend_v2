@@ -12,6 +12,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthenticationGuard } from 'guard/auth.guard';
 import { AccessTokenModule } from './auth/access-token.module';
+import { SystemRoleGuard } from 'guard/system-role.guard';
 
 @Module({
   imports: [
@@ -34,6 +35,10 @@ import { AccessTokenModule } from './auth/access-token.module';
     {
       provide: "APP_GUARD",
       useClass: AuthenticationGuard
+    },
+    {
+      provide: "APP_GUARD",
+      useClass: SystemRoleGuard
     },
     AppService
   ],

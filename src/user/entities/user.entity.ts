@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ObjectId, SchemaTypes } from "mongoose";
 import { Factory } from "nestjs-seeder";
+import { SystemRoles } from "src/enums/role.enum";
 
 @Schema({ timestamps: true })
 export class User {
@@ -24,8 +25,12 @@ export class User {
     @Prop({ type: SchemaTypes.ObjectId, required: false, default: null })
     creator: ObjectId
 
-    @Prop({type:String, required:false})
-    refreshTokenHash?:string
+    @Prop({ type: String, required: false })
+    refreshTokenHash?: string
+
+    @Factory(SystemRoles.NonAdmin)
+    @Prop({ enum: SystemRoles, required: true, default: SystemRoles.NonAdmin })
+    systemRole: SystemRoles
 
 }
 
