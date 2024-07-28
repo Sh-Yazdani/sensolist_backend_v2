@@ -15,7 +15,7 @@ export class UserService {
   constructor(@InjectModel(User.name) private readonly userModel: Model<User>) { }
 
   async create(data: CreateUserDto): Promise<MessageResponseDTO> {
-    const passwordHash = await this.hashPassword(data.password)
+    const passwordHash = await this.hashData(data.password)
 
     const newUser = new this.userModel({
       passwordHash, ...data
@@ -64,7 +64,7 @@ export class UserService {
     }
   }
 
-  async remove(id: ObjectId):Promise<MessageResponseDTO> {
+  async remove(id: ObjectId): Promise<MessageResponseDTO> {
     await this.userModel.deleteOne({ _id: id }).exec()
 
     return {
@@ -84,9 +84,19 @@ export class UserService {
 
   }
 
-  async hashPassword(password: string): Promise<string> {
+  async storeRefreshToken(token: string, phonenumber: string) {
+    const tokenHash = this.hashData(token)
+    await this.userModel.updateOne({ phonenumber: phonenumber }, { refreshTokenHash: tokenHash })
+
+  }
+
+  async getRefreshToksnHash(phonenumber: string): Promise<string | undefined> {
+    return (await this.userModel.findOne({ phonenumber: phonenumber }, { refreshTokenHash: 1 }).exec()).refreshTokenHash
+  }
+
+  private async hashData(data: string): Promise<string> {
     const saltOrRounds = 10;
-    return await hash(password, saltOrRounds);
+    return await hash(data, saltOrRounds);
   }
 
 }

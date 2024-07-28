@@ -24,6 +24,9 @@ export class User {
     @Prop({ type: SchemaTypes.ObjectId, required: false, default: null })
     creator: ObjectId
 
+    @Prop({type:String, required:false})
+    refreshTokenHash?:string
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

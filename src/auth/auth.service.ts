@@ -1,11 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
+import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { TokenPairResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
 import { UserService } from '../user/user.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { OTP } from './entities/auth.schema';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { compare as bcryptCompare } from "bcrypt"
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,9 @@ export class AuthService {
     constructor(
         @InjectModel(OTP.name) private readonly otpModel: Model<OTP>,
         private readonly userService: UserService,
-        private readonly jwtService: JwtService
+        @Inject("RefreshTokenService") private readonly refreshTokenService: JwtService,
+        @Inject("ApiTokenService") private readonly apiTokenService: JwtService,
+        @Inject("AccessTokenService") private readonly accesshTokenService: JwtService,
     ) { }
 
     async login(data: LoginDTO): Promise<LoginResponseDTO> {
@@ -25,8 +28,9 @@ export class AuthService {
 
         if (hashIsValid) {
             const otp = this.generateOTP()
-            const tempToken = await this.jwtService.signAsync({ sub: "login token" })
-            //TODO send OTP
+            const tempToken = await this.apiTokenService.signAsync({ sub: "api token" })
+            const expiresDate = new Date()
+            expiresDate.setSeconds(expiresDate.getSeconds() + 120)
 
             const newOtpModel = new this.otpModel({
                 date: new Date(),
@@ -39,13 +43,21 @@ export class AuthService {
 
             return {
                 statusCode: 200,
-                tempToken: tempToken
+                otpToken: tempToken,
+                expiresOn: expiresDate
             }
         } else
             throw new BadRequestException("pass is wrong!")
     }
 
-    async checkOTP(data: CheckOtpDTO): Promise<CheckOTPResponseDTO> {
+    async checkOTP(data: CheckOtpDTO, res: Response): Promise<TokenPairResponseDTO> {
+        try {
+            await this.apiTokenService.verifyAsync(data.token)
+        }
+        catch (e) {
+            throw new BadRequestException("otp token is not valid or expired")
+        }
+
         const otpObject = await this.otpModel.findOne({ token: data.token, otp: data.otp }).exec()
         if (!otpObject)
             throw new BadRequestException("otp not valid")
@@ -57,12 +69,30 @@ export class AuthService {
         if (now > expireDate)
             throw new BadRequestException("otp is expired")
 
-        const token = await this.jwtService.signAsync({ sub: otpObject.phonenumber })
+        return this.generateTokenPair(otpObject.phonenumber, res)
+    }
 
-        return {
-            statusCode: 200,
-            apiToken: token
+    async refreshToken(userId: string, response: Response): Promise<TokenPairResponseDTO> {
+        const refreshToken = response.getHeader("refresh_token").toString()
+
+        let payload: any
+        try {
+            payload = await this.refreshTokenService.verifyAsync(refreshToken)
         }
+        catch (e) {
+            throw new ForbiddenException("refresh token is not valid or expired")
+        }
+
+        const refreshTokenHash = await this.userService.getRefreshToksnHash(payload.sub)
+        if (!refreshTokenHash)
+            throw new ForbiddenException("refresh token is not valid at all")
+
+
+        const isNew = bcryptCompare(refreshToken, refreshTokenHash)
+        if (!isNew)
+            throw new ForbiddenException("refresh token is not valid please login again")
+
+        return this.generateTokenPair(payload.sub, response)
     }
 
     private async generateOTP() {
@@ -84,7 +114,25 @@ export class AuthService {
         return await bcryptCompare(password, hash);
     }
 
+    private async generateTokenPair(phonenumber: string, res: Response): Promise<TokenPairResponseDTO> {
+        const accessToken = await this.accesshTokenService.signAsync({ sub: phonenumber })
+        const refreshToken = await this.refreshTokenService.signAsync({ sub: phonenumber })
+
+        const accessExpire = new Date()
+        const refreshExpire = new Date()
+        accessExpire.setSeconds(accessExpire.getSeconds() + 900)
+        refreshExpire.setDate(refreshExpire.getDate() + 7)
+
+        await this.userService.storeRefreshToken(refreshToken, phonenumber)
+
+        res.cookie("refresh_token", refreshToken, { httpOnly: true, path: "auth/refresh", expires: refreshExpire })
+
+        return {
+            statusCode: 200,
+            accessToken: accessToken,
+            expiresOn: accessExpire
+        }
+    }
+
 
 }
-
-

@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { CheckOTPResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { TokenPairResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorResponseDTO } from '../dto/response.dto';
+import { Response, response } from 'express';
 
 
 @Controller("auth")
@@ -22,10 +23,16 @@ export class AuthController {
 
     @Post("otp")
     @ApiOperation({ summary: "checking otp", description: "checking otp and returning `API` token if otp is correct and not expired" })
-    @ApiOkResponse({ type: CheckOTPResponseDTO })
+    @ApiOkResponse({ type: TokenPairResponseDTO })
     @ApiBadRequestResponse({ type: ErrorResponseDTO, description: "happen when otp is wrong or expired" })
-    async checkOTP(@Body() data: CheckOtpDTO): Promise<CheckOTPResponseDTO> {
-        return this.authService.checkOTP(data)
+    async checkOTP(@Body() data: CheckOtpDTO, @Res() response: Response): Promise<TokenPairResponseDTO> {
+        return this.authService.checkOTP(data, response)
+    }
+
+    @Post('refresh')
+    async refreshToken(@Res() response: Response) {
+        const userId:string = ""//TODO from auth guard
+        return this.authService.refreshToken(userId, response)
     }
 
 }
