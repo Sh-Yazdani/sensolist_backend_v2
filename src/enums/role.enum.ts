@@ -1,5 +1,5 @@
 export enum SystemRoles {
-    Admin,
-    NonAdmin
+    Admin="Admin",
+    NonAdmin="NonAdmin"
 }
 
