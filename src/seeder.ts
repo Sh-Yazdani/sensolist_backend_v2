@@ -26,9 +26,9 @@ seeder(
         ]
     }
 ).run([
-    UserSeeder,
     CustomRoleSeeder,
-    ThingSeeder
+    UserSeeder,
+    ThingSeeder,
 ])
 
 

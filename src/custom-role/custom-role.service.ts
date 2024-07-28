@@ -57,4 +57,9 @@ export class CustomRoleService {
       message: "role was deleted"
     }
   }
+
+  async getRoles(){
+    return await this.customRoleModel.find()
+  }
+
 }

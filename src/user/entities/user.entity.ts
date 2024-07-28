@@ -36,8 +36,8 @@ export class User {
     @Prop({ enum: SystemRoles, required: true, default: SystemRoles.NonAdmin })
     systemRole: SystemRoles
 
-    @Prop({ type: SchemaTypes.ObjectId})
-    customRoleId: ObjectId
+    @Prop({ type: SchemaTypes.ObjectId, required:false})
+    customRoleId?: ObjectId
 
 }
 

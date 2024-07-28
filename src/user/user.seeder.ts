@@ -3,23 +3,35 @@ import { InjectModel } from "@nestjs/mongoose";
 import { DataFactory, Seeder } from "nestjs-seeder"
 import { User } from "./entities/user.entity";
 import { Model } from "mongoose";
+import { SystemRoles } from "src/enums/role.enum";
+import { UserService } from "./user.service";
+import { CustomRoleService } from "src/custom-role/custom-role.service";
 
 @Injectable()
 export class UserSeeder implements Seeder {
 
-    constructor(@InjectModel(User.name) private readonly userModel: Model<User>) { }
+    constructor(
+        @InjectModel(User.name) private readonly userModel: Model<User>,
+        private readonly userService: UserService,
+        private readonly customRoleService: CustomRoleService,
+    ) { }
 
 
     async seed(): Promise<any> {
         let users = DataFactory.createForClass(User).generate(5)
+        let customRoles = this.customRoleService.getRoles()
 
-        const firstUser = new this.userModel(users.pop())
-        await firstUser.save()
+        const admin = new this.userModel(users.pop())
+        admin.systemRole = SystemRoles.Admin
+        admin.phonenumber = "+989151234567"
+        admin.passwordHash = await this.userService.hashPassword("123456")
+        await admin.save()
 
         users = users.map((user, index) => {
             return {
                 ...user,
-                creator: firstUser._id
+                customRoleId: customRoles[0]._id,
+                creator: admin._id,
             }
         })
 
