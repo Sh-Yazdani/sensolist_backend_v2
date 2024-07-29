@@ -87,7 +87,7 @@ export class AuthService {
             throw new ForbiddenException("refresh token is not valid or expired")
         }
 
-        const [refreshTokenHash, systemRole] = await this.userService.getRefreshToksnHash(payload.sub.phonenumber)
+        const [refreshTokenHash, systemRole] = await this.userService.getRefreshToksnHash(payload.sub.phonenumber) ?? []
         if (!refreshTokenHash)
             throw new ForbiddenException("refresh token is not valid at all")
 
