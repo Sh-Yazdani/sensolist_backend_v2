@@ -1,10 +1,13 @@
 import { ApiResponseProperty } from "@nestjs/swagger"
-import { Types } from "mongoose"
+import { ObjectId, Types } from "mongoose"
 import { EntityResponseDTO } from "../../dto/response.dto"
 
 export class UserEntityDTO {
+    @ApiResponseProperty({ type: Types.ObjectId })
+    id: Types.ObjectId
+
     @ApiResponseProperty({ type: String })
-    id: string
+    username: string
 
     @ApiResponseProperty({ type: String })
     phonenumber: string

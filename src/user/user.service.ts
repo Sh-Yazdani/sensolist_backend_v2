@@ -43,11 +43,12 @@ export class UserService {
     for (let user of users) {
       const role = await this.customeRoleModel.findById(user.customRoleId)
       mappedUsers.push({
-        id: user.customID,
+        id: user._id,
+        username: user.customID,
         firstname: user.firstname,
         lastname: user.lastname,
         phonenumber: user.phonenumber,
-        customRole: role.name
+        customRole: role?.name ?? "unknown"
 
       })
     }
@@ -61,16 +62,21 @@ export class UserService {
 
   async findOne(id: ObjectId): Promise<UserEntityResponseDTO> {
     const user = await this.userModel.findById(id).exec()
+
+    if (!user)
+      throw new NotFoundException("user is not exists")
+
     const role = await this.customeRoleModel.findById(user.customRoleId)
 
     return {
       statusCode: 200,
       user: {
-        id: user.customID,
+        id: user._id,
+        username: user.customID,
         firstname: user.firstname,
         lastname: user.lastname,
         phonenumber: user.phonenumber,
-        customRole: role.name
+        customRole: role?.name ?? "unknown"
 
       }
     }
@@ -82,7 +88,7 @@ export class UserService {
     if (user == undefined)
       throw new NotFoundException("id is not found")
 
-    await user.updateOne(data).exec()
+    await user.updateOne({ ...data }).exec()
 
     return {
       statusCode: 200,
@@ -122,14 +128,14 @@ export class UserService {
   }
 
   async getRefreshToksnHash(phonenumber: string): Promise<[string, SystemRoles] | undefined> {
-     const user = await this.userModel.findOne({ phonenumber: phonenumber }).exec()
-     if(!user)
+    const user = await this.userModel.findOne({ phonenumber: phonenumber }).exec()
+    if (!user)
       return undefined
 
-     return [user.refreshTokenHash, user.systemRole]
+    return [user.refreshTokenHash, user.systemRole]
   }
 
-  async getSystemRole(phonenumber: string):Promise<SystemRoles> {
+  async getSystemRole(phonenumber: string): Promise<SystemRoles> {
     return (await this.userModel.findOne({ phonenumber: phonenumber }).exec()).systemRole
   }
 
