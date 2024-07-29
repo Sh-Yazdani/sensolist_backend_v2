@@ -21,7 +21,7 @@ export class FileController {
   @Get(":id")
   @ApiOperation({ summary: "fetching files", description: "use this route for fetching files like thing image" })
   @ApiParam({ name: "id", type: String })
-  async get(@Param("id") fileId: string, @Res() response: Response) {
+  async get(@Param("id") fileId: string, @Res({ passthrough: false }) response: Response) {
     this.fileService.moveFiles([fileId])
     return this.fileService.serveFile(fileId, response)
   }

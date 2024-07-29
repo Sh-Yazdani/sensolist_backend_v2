@@ -1,9 +1,9 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { TokenPairResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
 import { AuthService } from './auth.service';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { ErrorResponseDTO } from '../dto/response.dto';
-import { Response, response } from 'express';
+import { Request, Response } from 'express';
 import { UnAuthorizedRoute } from '../decorator/auth-decorator';
 
 
@@ -24,17 +24,19 @@ export class AuthController {
     }
 
     @Post("otp")
-    @ApiOperation({ summary: "checking otp", description: "checking otp and returning `API` token if otp is correct and not expired" })
+    @ApiOperation({ summary: "checking otp", description: "checking otp and returning access token in response and refresh token as http-only coockie, if otp is correct and not expired" })
     @ApiOkResponse({ type: TokenPairResponseDTO })
     @ApiBadRequestResponse({ type: ErrorResponseDTO, description: "happen when otp is wrong or expired" })
-    async checkOTP(@Body() data: CheckOtpDTO, @Res() response: Response): Promise<TokenPairResponseDTO> {
+    async checkOTP(@Body() data: CheckOtpDTO, @Res({ passthrough: false }) response: Response): Promise<TokenPairResponseDTO> {
         return this.authService.checkOTP(data, response)
     }
 
     @Post('refresh')
-    async refreshToken(@Res() response: Response) {
-        const userId: string = ""//TODO from auth guard
-        return this.authService.refreshToken(userId, response)
+    @ApiOperation({ summary: "refreshing access token", description: "use this route when user access token is expired" })
+    @ApiOkResponse({ type: TokenPairResponseDTO })
+    @ApiUnauthorizedResponse({ type: ErrorResponseDTO, description: "happen when refresh token is not valid, you should redirect user to login page" })
+    async refreshToken(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
+        return this.authService.refreshToken(request, response)
     }
 
 }
