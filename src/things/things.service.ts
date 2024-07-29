@@ -27,17 +27,19 @@ export class ThingsService {
 
     let thingsDBQuery = this.thingModel.find()
 
-    if (query.actions)
-      thingsDBQuery = thingsDBQuery.find({ actions: { $in: query.actions } })
-    if (query.brand)
-      thingsDBQuery = thingsDBQuery.find({ brand: { $in: query.brand } })
-    if (query.type)
-      thingsDBQuery = thingsDBQuery.find({ type: { $in: query.type } })
-    if (query.charactristics)
-      thingsDBQuery = thingsDBQuery.find({ characteristics: { $in: query.charactristics } })
+    const actions: string[] = query.actions ?? []
+    const brand: string[] = query.brand ?? []
+    const type: string[] = query.type ?? []
+    const charactristics: string[] = query.charactristics ?? []
+    const search: string = query.search ?? ""
 
-    if (query.search)
-      thingsDBQuery = thingsDBQuery.find({ name: new RegExp(query.search, 'i') })
+    thingsDBQuery = thingsDBQuery.find({
+      name: new RegExp(query.search, 'i'),
+      actions: { $in: actions },
+      brand: { $in: brand },
+      type: { $in: type },
+      charactristics: { $in: charactristics },
+    })
 
     if (query.sort == ThingSortOptions.Name)
       thingsDBQuery = thingsDBQuery.sort({ name: 1 })
@@ -101,7 +103,7 @@ export class ThingsService {
     if (thing == undefined)
       throw new NotFoundException("id is not found")
 
-    await thing.updateOne({...data}).exec()
+    await thing.updateOne({ ...data }).exec()
 
     return {
       statusCode: 200,
