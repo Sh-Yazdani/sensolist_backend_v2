@@ -26,7 +26,7 @@ export class CustomRoleService {
     const roles = await this.customRoleModel.find().exec()
 
     return {
-      list: roles.map(r => ({ name: r.name as string, description: r.description as string })),
+      list: roles.map(r => ({ id:r._id, name: r.name as string, description: r.description as string })),
       statusCode: 200
     }
   }
@@ -36,7 +36,7 @@ export class CustomRoleService {
 
     return {
       statusCode: 200,
-      role: { name: role.name as string, description: role.description as string }
+      role: {id:role._id, name: role.name as string, description: role.description as string }
     }
   }
 
