@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common';
 import { TokenPairResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
@@ -15,6 +15,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
     @Post("login")
+    @HttpCode(200)
     @ApiOperation({ summary: "validating password and sending OTP", description: "looking for a user with proviede phonenumber if user is exists and provided password is correct, then a OTP is send to user phonenumber" })
     @ApiOkResponse({ type: LoginResponseDTO })
     @ApiBadRequestResponse({ type: ErrorResponseDTO })
@@ -24,6 +25,7 @@ export class AuthController {
     }
 
     @Post("otp")
+    @HttpCode(200)
     @ApiOperation({ summary: "checking otp", description: "checking otp and returning access token in response and refresh token as http-only coockie, if otp is correct and not expired" })
     @ApiOkResponse({ type: TokenPairResponseDTO })
     @ApiBadRequestResponse({ type: ErrorResponseDTO, description: "happen when otp is wrong or expired" })
@@ -32,6 +34,7 @@ export class AuthController {
     }
 
     @Post('refresh')
+    @HttpCode(200)
     @ApiOperation({ summary: "refreshing access token", description: "use this route when user access token is expired" })
     @ApiOkResponse({ type: TokenPairResponseDTO })
     @ApiUnauthorizedResponse({ type: ErrorResponseDTO, description: "happen when refresh token is not valid, you should redirect user to login page" })
