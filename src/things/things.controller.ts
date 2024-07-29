@@ -4,7 +4,7 @@ import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
 import { ObjectId } from 'mongoose';
 import { ThingQueryDTO } from './dto/thing-search.dto';
-import { ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { MessageResponseDTO } from '../dto/response.dto';
 import { ThingListResponseDTO } from './dto/thing.list.dto';
 import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
@@ -14,6 +14,7 @@ import { SystemRoles } from '../enums/role.enum';
 @Controller('things')
 @ApiTags("Things")
 @CheckSystemRole([SystemRoles.Admin, SystemRoles.NonAdmin])
+@ApiBearerAuth("access_token")
 export class ThingsController {
   constructor(private readonly thingsService: ThingsService) { }
 

@@ -1,7 +1,10 @@
 import { ApiResetContentResponse, ApiResponseProperty } from "@nestjs/swagger";
 import { EntityResponseDTO } from "../../dto/response.dto";
+import { ObjectId, Types } from "mongoose";
 
 export class CustomRoleEntity {
+    @ApiResponseProperty({ type: String })
+    id: Types.ObjectId
     @ApiResponseProperty()
     name: string
     @ApiResponseProperty()

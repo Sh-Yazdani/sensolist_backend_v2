@@ -3,7 +3,7 @@ import { CustomRoleService } from './custom-role.service';
 import { CreateCustomRoleDto } from './dto/create-custom-role.dto';
 import { UpdateCustomRoleDto } from './dto/update-custom-role.dto';
 import { ObjectId } from 'mongoose';
-import { ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { MessageResponseDTO } from '../dto/response.dto';
 import { CustomRoleListResponseDTO } from './dto/custom-role-list.dto';
 import { CustomRoleEntityResponseDTO } from './dto/custom-role-entity.dto';
@@ -13,6 +13,7 @@ import { SystemRoles } from '../enums/role.enum';
 @Controller('custom-role')
 @ApiTags("CustomRole")
 @CheckSystemRole([SystemRoles.Admin])
+@ApiBearerAuth("access_token")
 export class CustomRoleController {
   constructor(private readonly customRoleService: CustomRoleService) { }
 

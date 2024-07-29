@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ObjectId } from 'mongoose';
-import { ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { MessageResponseDTO } from '../dto/response.dto';
 import { UserListResponseDTO } from './dto/user-list.dto';
 import { UserEntityResponseDTO } from './dto/user-entity.dto';
@@ -13,6 +13,7 @@ import { SystemRoles } from '../enums/role.enum';
 @Controller('user')
 @ApiTags("User")
 @CheckSystemRole([SystemRoles.Admin])
+@ApiBearerAuth("access_token")
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
