@@ -100,7 +100,7 @@ export class UserService {
 
   async getPasswordHash(phonenumber: string): Promise<string> {
 
-    const user = await this.userModel.findOne({ phonenumber: phonenumber }, { passwordhash: 1 }).exec()
+    const user = await this.userModel.findOne({ phonenumber: phonenumber }).exec()
 
     if (!user)
       throw new NotFoundException("user not exists")
@@ -115,7 +115,7 @@ export class UserService {
   }
 
   async storeRefreshToken(token: string, phonenumber: string) {
-    const tokenHash = this.hashData(token)
+    const tokenHash = await this.hashData(token)
     await this.userModel.updateOne({ phonenumber: phonenumber }, { refreshTokenHash: tokenHash })
 
   }
