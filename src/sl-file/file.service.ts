@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, StreamableFile } from '@nestjs/common';
-import { UploadTempFileImageResponseDTO } from './dto/file-entity.dto';
+import { UploadTempFileResponseDTO } from './dto/file-entity.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { FileEntity, SLFile } from './entities/sl-file.entity';
 import { Model } from 'mongoose';
@@ -14,7 +14,7 @@ export class FileService {
 
   constructor(@InjectModel(SLFile.name) private readonly fileModel: Model<SLFile>) { }
 
-  async storeTempImage(entity: FileEntity, image: Express.Multer.File): Promise<UploadTempFileImageResponseDTO> {
+  async storeTempImage(entity: FileEntity, image: Express.Multer.File): Promise<UploadTempFileResponseDTO> {
 
     if (!image)
       throw new BadRequestException("image not valid")
