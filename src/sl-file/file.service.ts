@@ -17,7 +17,7 @@ export class FileService {
   async storeTempImage(entity: FileEntity, image: Express.Multer.File): Promise<UploadTempFileResponseDTO> {
 
     if (!image)
-      throw new BadRequestException("image not valid")
+      throw new BadRequestException("file not valid")
 
     const imageExtension = image.originalname.split(".").reverse()[0]
     const dirs = ["public", "images", "things", "temp"]
