@@ -33,9 +33,9 @@ export class ThingsController {
   }
 
   @Get(':id')
-  @ApiParam({name:"id", type:String, description:"the thing id"})
+  @ApiOperation({summary:"a list of things", description:"you can define filter,sort and search parameters"})
   @ApiOkResponse({ type: ThingEntityResponseDTO })
-  @ApiParam({ name: "thing id", type: String })
+  @ApiParam({name:"id", type:String, description:"the thing id"})
   findOne(@Param('id') id: ObjectId) {
     return this.thingsService.findOne(id);
   }

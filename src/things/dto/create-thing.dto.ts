@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
+import { IsDate } from "class-validator"
 import { ObjectId } from "mongoose"
 
 export class ImageModel {
@@ -28,7 +29,8 @@ export class CreateThingDto {
     @ApiProperty({ type: String })
     characteristics: string[]
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, default: new Date()})
+    @IsDate()
     activition: Date
 
     @ApiProperty({ type: String })
