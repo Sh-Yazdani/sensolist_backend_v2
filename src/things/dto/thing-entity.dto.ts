@@ -1,11 +1,16 @@
 import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger"
-import { ObjectId } from "mongoose"
+import { ObjectId, Types } from "mongoose"
 import { EntityResponseDTO } from "../../dto/response.dto"
 import { ImageModel } from "./create-thing.dto"
 
 export class ThingEntityDTO {
+
     @ApiResponseProperty({ type: String })
-    name?: String
+    id: Types.ObjectId
+
+
+    @ApiResponseProperty({ type: String })
+    name: String
 
     @ApiResponseProperty({ type: String })
     brand?: String
