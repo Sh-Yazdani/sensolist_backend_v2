@@ -3,7 +3,7 @@ import { CustomRoleService } from './custom-role.service';
 import { CreateCustomRoleDto } from './dto/create-custom-role.dto';
 import { UpdateCustomRoleDto } from './dto/update-custom-role.dto';
 import { ObjectId } from 'mongoose';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { MessageResponseDTO } from '../dto/response.dto';
 import { CustomRoleListResponseDTO } from './dto/custom-role-list.dto';
 import { CustomRoleEntityResponseDTO } from './dto/custom-role-entity.dto';
@@ -19,7 +19,7 @@ export class CustomRoleController {
 
   @Post()
   @ApiOperation({ summary: "creating new custom role", description: "custom role can create by admin" })
-  @ApiOkResponse({ type: MessageResponseDTO })
+  @ApiCreatedResponse({ type: MessageResponseDTO })
   create(@Body() createCustomRoleDto: CreateCustomRoleDto) {
     return this.customRoleService.create(createCustomRoleDto);
   }
@@ -34,7 +34,7 @@ export class CustomRoleController {
   @Get(':id')
   @ApiOperation({ summary: "role detail" })
   @ApiOkResponse({ type: CustomRoleEntityResponseDTO })
-  @ApiParam({name:"role id", type:String})
+  @ApiParam({name:"id", type:String, description:"the role id"})
   findOne(@Param('id') id: ObjectId) {
     return this.customRoleService.findOne(id);
   }
@@ -42,7 +42,7 @@ export class CustomRoleController {
   @Patch(':id')
   @ApiOperation({summary:"updating a role via id"})
   @ApiOkResponse({ type: MessageResponseDTO })
-  @ApiParam({name:"role id", type:String})
+  @ApiParam({name:"id", type:String, description:"the role id"})
   update(@Param('id') id: ObjectId, @Body() updateCustomRoleDto: UpdateCustomRoleDto) {
     return this.customRoleService.update(id, updateCustomRoleDto);
   }
@@ -50,7 +50,7 @@ export class CustomRoleController {
   @Delete(':id')
   @ApiOperation({summary:"deleting a role via id"})
   @ApiOkResponse({ type: MessageResponseDTO })
-  @ApiParam({name:"role id", type:String})
+  @ApiParam({name:"id", type:String, description:"the role id"})
   remove(@Param('id') id: ObjectId) {
     return this.customRoleService.remove(id);
   }

@@ -3,7 +3,8 @@ import { FileService } from './file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileEntity } from './entities/sl-file.entity';
 import { Response, response } from 'express';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { UploadTempFileResponseDTO } from './dto/file-entity.dto';
 
 @Controller('files')
 @ApiTags("files")
@@ -13,6 +14,7 @@ export class FileController {
   @Post('temp/img/:fileEntity')
   @ApiOperation({ summary: "up;oading a file", description: "using for uploading files like things images, this api store files and return a fileID then you can use this id for creating a entity like thing" })
   @ApiParam({ name: "fileEntity", enum: FileEntity })
+  @ApiCreatedResponse({ type: UploadTempFileResponseDTO })
   @UseInterceptors(FileInterceptor("file"))
   async create(@Param("fileEntity") entity: FileEntity, @UploadedFile("file") image: Express.Multer.File) {
     return this.fileService.storeTempImage(entity, image)

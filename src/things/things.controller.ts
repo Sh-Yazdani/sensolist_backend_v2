@@ -4,7 +4,7 @@ import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
 import { ObjectId } from 'mongoose';
 import { ThingQueryDTO } from './dto/thing-search.dto';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { MessageResponseDTO } from '../dto/response.dto';
 import { ThingListResponseDTO } from './dto/thing.list.dto';
 import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
@@ -20,7 +20,7 @@ export class ThingsController {
 
   @Post()
   @ApiOperation({ summary: "creating a new thing" })
-  @ApiOkResponse({ type: MessageResponseDTO })
+  @ApiCreatedResponse({ type: MessageResponseDTO })
   create(@Body() createThingDto: CreateThingDto) {
     return this.thingsService.create(createThingDto);
   }
@@ -33,7 +33,7 @@ export class ThingsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: "detail of thing" })
+  @ApiParam({name:"id", type:String, description:"the thing id"})
   @ApiOkResponse({ type: ThingEntityResponseDTO })
   @ApiParam({ name: "thing id", type: String })
   findOne(@Param('id') id: ObjectId) {
@@ -43,7 +43,7 @@ export class ThingsController {
   @Patch(':id')
   @ApiOperation({ summary: "updating a thing via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
-  @ApiParam({ name: "thing id", type: String })
+  @ApiParam({name:"id", type:String, description:"the thing id"})
   update(@Param('id') id: ObjectId, @Body() updateThingDto: UpdateThingDto) {
     return this.thingsService.update(id, updateThingDto);
   }
@@ -51,7 +51,7 @@ export class ThingsController {
   @Delete(':id')
   @ApiOperation({ summary: "deleting a thing via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
-  @ApiParam({ name: "thing id", type: String })
+  @ApiParam({name:"id", type:String, description:"the thing id"})
   remove(@Param('id') id: ObjectId) {
     return this.thingsService.remove(id);
   }
