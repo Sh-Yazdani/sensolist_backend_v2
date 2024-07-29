@@ -59,7 +59,7 @@ export class CustomRoleService {
   }
 
   async getRoles(){
-    return await this.customRoleModel.find()
+    return await this.customRoleModel.find().exec()
   }
 
 }

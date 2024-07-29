@@ -6,7 +6,7 @@ import { SystemRoles } from "../../enums/role.enum";
 @Schema({ timestamps: true })
 export class User {
 
-    @Factory(() => {`U${(new Date()).getTime()}`})
+    @Factory(() => `U${(new Date()).getTime()}`)
     @Prop({required:true})
     customID:string
 
