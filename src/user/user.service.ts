@@ -9,6 +9,7 @@ import { MessageResponseDTO } from '../dto/response.dto';
 import { UserListResponseDTO } from './dto/user-list.dto';
 import { UserEntityDTO, UserEntityResponseDTO } from './dto/user-entity.dto';
 import { CustomRole } from '../custom-role/entities/custom-role.entity';
+import { SystemRoles } from '../enums/role.enum';
 
 @Injectable()
 export class UserService {
@@ -120,8 +121,16 @@ export class UserService {
 
   }
 
-  async getRefreshToksnHash(phonenumber: string): Promise<string | undefined> {
-    return (await this.userModel.findOne({ phonenumber: phonenumber }, { refreshTokenHash: 1 }).exec()).refreshTokenHash
+  async getRefreshToksnHash(phonenumber: string): Promise<[string, SystemRoles] | undefined> {
+     const user = await this.userModel.findOne({ phonenumber: phonenumber }).exec()
+     if(!user)
+      return undefined
+
+     return [user.refreshTokenHash, user.systemRole]
+  }
+
+  async getSystemRole(phonenumber: string):Promise<SystemRoles> {
+    return (await this.userModel.findOne({ phonenumber: phonenumber }).exec()).systemRole
   }
 
 }

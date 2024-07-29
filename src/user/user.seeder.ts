@@ -21,8 +21,6 @@ export class UserSeeder implements Seeder {
         let users = DataFactory.createForClass(User).generate(5)
         let customRoles = await this.customRoleService.getRoles()
 
-        console.table(customRoles)
-
         const admin = new this.userModel(users.pop())
         admin.systemRole = SystemRoles.Admin
         admin.phonenumber = "+989151234567"
