@@ -7,6 +7,7 @@ import { Model, ObjectId } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { compare as bcryptCompare } from "bcrypt"
 import { Response, Request } from 'express';
+import { SystemRoles } from '../enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -68,10 +69,12 @@ export class AuthService {
         if (!otpObject)
             throw new BadRequestException("otp not valid")
 
-        return this.generateTokenPair(otpObject.phonenumber, res)
+        const systemRole = await this.userService.getSystemRole(otpObject.phonenumber)
+
+        return this.generateTokenPair(otpObject.phonenumber, systemRole, res)
     }
 
-    async refreshToken(request:Request, response: Response): Promise<TokenPairResponseDTO> {
+    async refreshToken(request: Request, response: Response): Promise<TokenPairResponseDTO> {
         const refreshToken = this.fetchRefreshTokenFromCookie(request.get("cookie"))
         if (!refreshToken)
             throw new UnauthorizedException("refresh token is not exists")
@@ -84,7 +87,7 @@ export class AuthService {
             throw new ForbiddenException("refresh token is not valid or expired")
         }
 
-        const refreshTokenHash = await this.userService.getRefreshToksnHash(payload.sub)
+        const [refreshTokenHash, systemRole] = await this.userService.getRefreshToksnHash(payload.sub.phonenumber)
         if (!refreshTokenHash)
             throw new ForbiddenException("refresh token is not valid at all")
 
@@ -93,7 +96,7 @@ export class AuthService {
         if (!isNew)
             throw new ForbiddenException("refresh token is not valid please login again")
 
-        return this.generateTokenPair(payload.sub, response)
+        return this.generateTokenPair(payload.sub.phonenumber, systemRole, response)
     }
 
     fetchRefreshTokenFromCookie(cookies: string | undefined): string | undefined {
@@ -130,9 +133,9 @@ export class AuthService {
         return await bcryptCompare(password, hash);
     }
 
-    private async generateTokenPair(phonenumber: string, res: Response): Promise<TokenPairResponseDTO> {
-        const accessToken = await this.accesshTokenService.signAsync({ sub: phonenumber })
-        const refreshToken = await this.refreshTokenService.signAsync({ sub: phonenumber })
+    private async generateTokenPair(phonenumber: string, systemRole: SystemRoles, res: Response): Promise<TokenPairResponseDTO> {
+        const accessToken = await this.accesshTokenService.signAsync({ sub: { phonenumber, systemRole } })
+        const refreshToken = await this.refreshTokenService.signAsync({ sub: { phonenumber, systemRole } })
 
         const accessExpire = new Date()
         const refreshExpire = new Date()
