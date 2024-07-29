@@ -27,7 +27,7 @@ export class AuthController {
     @ApiOperation({ summary: "checking otp", description: "checking otp and returning access token in response and refresh token as http-only coockie, if otp is correct and not expired" })
     @ApiOkResponse({ type: TokenPairResponseDTO })
     @ApiBadRequestResponse({ type: ErrorResponseDTO, description: "happen when otp is wrong or expired" })
-    async checkOTP(@Body() data: CheckOtpDTO, @Res({ passthrough: false }) response: Response): Promise<TokenPairResponseDTO> {
+    async checkOTP(@Body() data: CheckOtpDTO, @Res({ passthrough: true }) response: Response): Promise<TokenPairResponseDTO> {
         return this.authService.checkOTP(data, response)
     }
 
