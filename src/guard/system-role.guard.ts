@@ -12,8 +12,6 @@ export class SystemRoleGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
 
-        return true
-
         const requiredRoles = this.reflector.getAllAndOverride<SystemRoles[]>(CHECK_SYSTEM_ROLE_KEY, [
             context.getHandler(),
             context.getClass()
@@ -23,7 +21,7 @@ export class SystemRoleGuard implements CanActivate {
             return true
 
         const req: Request = context.switchToHttp().getRequest()
-        const role = req['userRole']
+        const role = req['systemRole']
 
         const haveRole = requiredRoles.find(r => r == role)
 

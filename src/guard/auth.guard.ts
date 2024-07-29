@@ -15,8 +15,6 @@ export class AuthenticationGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
 
-        return true
-
         const unAuthRoute: boolean = this.reflector.getAllAndOverride(IS_PUBLIC_KEY, [
             context.getHandler(),
             context.getClass()
@@ -39,7 +37,8 @@ export class AuthenticationGuard implements CanActivate {
             throw new UnauthorizedException("token is not valid or expired")
         }
 
-        req['phonunumber'] = payload.sub
+        req['phonunumber'] = payload.sub.phonenumber
+        req['systemRole'] = payload.sub.systemRole
 
         return true
 
