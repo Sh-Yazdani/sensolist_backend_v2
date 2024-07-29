@@ -25,8 +25,6 @@ export class ThingsService {
 
   async findAll(query: ThingQueryDTO): Promise<ThingListResponseDTO> {
 
-    console.dir(query)
-
     let thingsDBQuery = this.thingModel.find()
 
     if (query.actions)
@@ -42,12 +40,12 @@ export class ThingsService {
       thingsDBQuery = thingsDBQuery.find({ name: new RegExp(query.search, 'i') })
 
     if (query.sort == ThingSortOptions.Name)
-      thingsDBQuery = thingsDBQuery.sort({ ["name"]: 1 })
+      thingsDBQuery = thingsDBQuery.sort({ name: 1 })
 
     if (query.sort == ThingSortOptions.Newst)
-      thingsDBQuery = thingsDBQuery.sort({ ["createt_At"]: 1 })
+      thingsDBQuery = thingsDBQuery.sort({ createdAt: -1 })
     else if (query.sort == ThingSortOptions.Oldest)
-      thingsDBQuery = thingsDBQuery.sort({ ["createt_At"]: -1 })
+      thingsDBQuery = thingsDBQuery.sort({ createdAt: 1 })
 
 
     const things = await thingsDBQuery.exec()
