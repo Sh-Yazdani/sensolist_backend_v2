@@ -18,7 +18,7 @@ export class UserSeeder implements Seeder {
 
 
     async seed(): Promise<any> {
-        let users = DataFactory.createForClass(User).generate(5)
+        let users = DataFactory.createForClass(User).generate(2)
         let customRoles = await this.customRoleService.getRoles()
 
         const admin = new this.userModel(users.pop())
