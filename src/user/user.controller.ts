@@ -3,8 +3,8 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ObjectId } from 'mongoose';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { MessageResponseDTO } from '../dto/response.dto';
+import { ApiBearerAuth, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ErrorResponseDTO, MessageResponseDTO } from '../dto/response.dto';
 import { UserListResponseDTO } from './dto/user-list.dto';
 import { UserEntityResponseDTO } from './dto/user-entity.dto';
 import { CheckSystemRole } from '../decorator/role.decorator';
@@ -20,12 +20,14 @@ export class UserController {
   @Post()
   @ApiOperation({ summary: "creating a new user" })
   @ApiCreatedResponse({ type: MessageResponseDTO })
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Get()
   @ApiOperation({ summary: "list of all users" })
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @ApiOkResponse({ type: UserListResponseDTO })
   findAll() {
     return this.userService.findAll();
@@ -34,7 +36,9 @@ export class UserController {
   @Get(':id')
   @ApiOperation({ summary: "user detail" })
   @ApiOkResponse({ type: UserEntityResponseDTO })
-  @ApiParam({name:"id", type:String, description:"the user id"})
+  @ApiParam({ name: "id", type: String, description: "the user id" })
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  @ApiNotFoundResponse({ type: ErrorResponseDTO })
   findOne(@Param('id') id: ObjectId) {
     return this.userService.findOne(id);
   }
@@ -42,7 +46,9 @@ export class UserController {
   @Patch(':id')
   @ApiOperation({ summary: "updating a user via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
-  @ApiParam({name:"id", type:String, description:"the user id"})
+  @ApiParam({ name: "id", type: String, description: "the user id" })
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  @ApiNotFoundResponse({ type: ErrorResponseDTO })
   update(@Param('id') id: ObjectId, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
@@ -50,7 +56,8 @@ export class UserController {
   @Delete(':id')
   @ApiOperation({ summary: "deleting a user via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
-  @ApiParam({name:"id", type:String, description:"the user id"})
+  @ApiParam({ name: "id", type: String, description: "the user id" })
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   remove(@Param('id') id: ObjectId) {
     return this.userService.remove(id);
   }
