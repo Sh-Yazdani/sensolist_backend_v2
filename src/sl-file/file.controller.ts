@@ -5,7 +5,7 @@ import { FileEntity } from './entities/sl-file.entity';
 import { Response, response } from 'express';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UploadTempFileResponseDTO } from './dto/file-entity.dto';
-import { ErrorResponseDTO } from 'src/dto/response.dto';
+import { ErrorResponseDTO } from '../dto/response.dto';
 
 @Controller('files')
 @ApiTags("files")
