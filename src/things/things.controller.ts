@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException } from '@nestjs/common';
 import { ThingsService } from './things.service';
 import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
@@ -22,16 +22,26 @@ export class ThingsController {
   @ApiOperation({ summary: "creating a new thing" })
   @ApiCreatedResponse({ type: MessageResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  create(@Body() createThingDto: CreateThingDto) {
-    return this.thingsService.create(createThingDto);
+  async create(@Body() createThingDto: CreateThingDto): Promise<MessageResponseDTO> {
+    await this.thingsService.create(createThingDto);
+
+    return {
+      statusCode: 201,
+      message: "thing was created"
+    }
   }
 
   @Get()
   @ApiOperation({ summary: "list of all things", description: "with this API you can search and filter things, for getting all exists things, dont pass the search and filter params" })
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  findAll(@Query() query: ThingQueryDTO) {
-    return this.thingsService.findAll(query);
+  async findAll(@Query() query: ThingQueryDTO): Promise<ThingListResponseDTO> {
+    const things = await this.thingsService.findAll(query);
+
+    return {
+      statusCode: 200,
+      list: things
+    }
   }
 
   @Get(':id')
@@ -40,8 +50,16 @@ export class ThingsController {
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
-  findOne(@Param('id') id: ObjectId) {
-    return this.thingsService.findOne(id);
+  async findOne(@Param('id') id: ObjectId): Promise<ThingEntityResponseDTO> {
+    const thing = await this.thingsService.findOne(id);
+
+    if (!thing)
+      throw new NotFoundException("thing is not exists")
+
+    return {
+      statusCode: 200,
+      thing: thing
+    }
   }
 
   @Patch(':id')
@@ -50,8 +68,16 @@ export class ThingsController {
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  update(@Param('id') id: ObjectId, @Body() updateThingDto: UpdateThingDto) {
-    return this.thingsService.update(id, updateThingDto);
+  async update(@Param('id') id: ObjectId, @Body() updateThingDto: UpdateThingDto) {
+    const updated = await this.thingsService.update(id, updateThingDto);
+
+    if (!updated)
+      throw new NotFoundException("thing not found")
+
+    return {
+      statusCode: 200,
+      message: "user was updated"
+    }
   }
 
   @Delete(':id')
@@ -59,7 +85,12 @@ export class ThingsController {
   @ApiOkResponse({ type: MessageResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  remove(@Param('id') id: ObjectId) {
-    return this.thingsService.remove(id);
+  async remove(@Param('id') id: ObjectId): Promise<MessageResponseDTO> {
+    await this.thingsService.remove(id);
+
+    return {
+      statusCode: 200,
+      message: "user was deleted"
+    }
   }
 }
