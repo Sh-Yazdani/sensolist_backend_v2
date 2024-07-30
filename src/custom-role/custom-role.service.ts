@@ -42,8 +42,15 @@ export class CustomRoleService {
     }
   }
 
-  async update(id: ObjectId, data: UpdateCustomRoleDto): Promise<void> {
-    await this.customRoleModel.updateOne({ _id: id }, { ...data }).exec()
+  async update(id: ObjectId, data: UpdateCustomRoleDto): Promise<boolean> {
+    const role = await this.customRoleModel.findById(id).exec()
+
+    if (!role)
+      return false
+
+    await role.updateOne({ ...data }).exec()
+
+    return true
   }
 
   async remove(id: ObjectId): Promise<void> {

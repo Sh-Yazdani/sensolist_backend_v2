@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CustomRoleService } from './custom-role.service';
 import { CreateCustomRoleDto } from './dto/create-custom-role.dto';
 import { UpdateCustomRoleDto } from './dto/update-custom-role.dto';
@@ -67,9 +67,13 @@ export class CustomRoleController {
   @ApiOperation({ summary: "updating a role via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the role id" })
+  @ApiNotFoundResponse({ type: ErrorResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   async update(@Param('id') id: ObjectId, @Body() updateCustomRoleDto: UpdateCustomRoleDto) {
-    await this.customRoleService.update(id, updateCustomRoleDto);
+    const updated = await this.customRoleService.update(id, updateCustomRoleDto);
+
+    if (!updated)
+      throw new NotFoundException("role is not exists")
 
     return {
       statusCode: 200,
