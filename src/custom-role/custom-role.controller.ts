@@ -20,17 +20,28 @@ export class CustomRoleController {
   @Post()
   @ApiOperation({ summary: "creating new custom role", description: "custom role can create by admin" })
   @ApiCreatedResponse({ type: MessageResponseDTO })
-  @ApiInternalServerErrorResponse({type: ErrorResponseDTO})
-  create(@Body() createCustomRoleDto: CreateCustomRoleDto) {
-    return this.customRoleService.create(createCustomRoleDto);
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  async create(@Body() createCustomRoleDto: CreateCustomRoleDto): Promise<MessageResponseDTO> {
+    await this.customRoleService.create(createCustomRoleDto);
+
+    return {
+      statusCode: 201,
+      message: "role is created"
+    }
   }
 
   @Get()
   @ApiOperation({ summary: "a list of all roles" })
   @ApiOkResponse({ type: CustomRoleListResponseDTO })
-  @ApiInternalServerErrorResponse({type: ErrorResponseDTO})
-  findAll() {
-    return this.customRoleService.findAll();
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  async findAll(): Promise<CustomRoleListResponseDTO> {
+    const roles = await this.customRoleService.findAll();
+
+    return {
+      list: roles,
+      statusCode: 200
+    }
+
   }
 
   @Get(':id')
@@ -38,27 +49,46 @@ export class CustomRoleController {
   @ApiOkResponse({ type: CustomRoleEntityResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the role id" })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
-  @ApiInternalServerErrorResponse({type: ErrorResponseDTO})
-  findOne(@Param('id') id: ObjectId) {
-    return this.customRoleService.findOne(id);
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  async findOne(@Param('id') id: ObjectId): Promise<CustomRoleEntityResponseDTO> {
+    const role = await this.customRoleService.findOne(id);
+
+    if (!role)
+      throw new NotFoundException("role is not exists")
+
+    return {
+      statusCode: 200,
+      role: role
+    }
+
   }
 
   @Patch(':id')
   @ApiOperation({ summary: "updating a role via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the role id" })
-  @ApiInternalServerErrorResponse({type: ErrorResponseDTO})
-  update(@Param('id') id: ObjectId, @Body() updateCustomRoleDto: UpdateCustomRoleDto) {
-    return this.customRoleService.update(id, updateCustomRoleDto);
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  async update(@Param('id') id: ObjectId, @Body() updateCustomRoleDto: UpdateCustomRoleDto) {
+    await this.customRoleService.update(id, updateCustomRoleDto);
+
+    return {
+      statusCode: 200,
+      message: "role was updated"
+    }
   }
 
   @Delete(':id')
   @ApiOperation({ summary: "deleting a role via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the role id" })
-  @ApiInternalServerErrorResponse({type: ErrorResponseDTO})
-  remove(@Param('id') id: ObjectId) {
-    return this.customRoleService.remove(id);
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  async remove(@Param('id') id: ObjectId) {
+    await this.customRoleService.remove(id);
+
+    return {
+      statusCode: 200,
+      message: "role was deleted"
+    }
   }
 }
 

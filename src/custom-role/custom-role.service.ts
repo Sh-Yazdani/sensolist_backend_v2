@@ -13,52 +13,41 @@ export class CustomRoleService {
 
   constructor(@InjectModel(CustomRole.name) private readonly customRoleModel: Model<CustomRole>) { }
 
-  async create(data: CreateCustomRoleDto): Promise<MessageResponseDTO> {
+  async create(data: CreateCustomRoleDto): Promise<void> {
     await this.customRoleModel.create(data)
+  }
+
+  async findAll(): Promise<CustomRoleEntity[]> {
+    const roles = await this.customRoleModel.find().lean().exec()
+
+    return roles.map(r => {
+      return {
+        id: r._id,
+        name: r.name.toString(),
+        description: r.description.toString()
+      }
+    })
+  }
+
+  async findOne(id: ObjectId): Promise<CustomRoleEntity | undefined> {
+    const role = await this.customRoleModel.findById(id).exec()
+
+    if (!role)
+      return undefined
 
     return {
-      statusCode: 201,
-      message: "role is created"
+      id: role._id,
+      name: role.name.toString(),
+      description: role.description.toString()
     }
   }
 
-  async findAll(): Promise<CustomRoleListResponseDTO> {
-    const roles = await this.customRoleModel.find().exec()
-
-    return {
-      list: roles.map(r => ({ id: r._id, name: r.name as string, description: r.description as string })),
-      statusCode: 200
-    }
-  }
-
-  async findOne(id: ObjectId): Promise<CustomRoleEntityResponseDTO> {
-    const role = await this.customRoleModel.findById(id)
-
-    if(!role)
-      throw new NotFoundException("role is not exists")
-
-    return {
-      statusCode: 200,
-      role: { id: role._id, name: role.name as string, description: role.description as string }
-    }
-  }
-
-  async update(id: ObjectId, data: UpdateCustomRoleDto): Promise<MessageResponseDTO> {
+  async update(id: ObjectId, data: UpdateCustomRoleDto): Promise<void> {
     await this.customRoleModel.updateOne({ _id: id }, { ...data }).exec()
-
-    return {
-      statusCode: 200,
-      message: "role was updated"
-    }
   }
 
-  async remove(id: ObjectId): Promise<MessageResponseDTO> {
+  async remove(id: ObjectId): Promise<void> {
     await this.customRoleModel.deleteOne({ _id: id })
-
-    return {
-      statusCode: 200,
-      message: "role was deleted"
-    }
   }
 
   async getRoles() {
