@@ -49,8 +49,11 @@ export class UserService {
     return mappedUsers
   }
 
-  async findOne(id: ObjectId): Promise<UserEntityDTO> {
+  async findOne(id: ObjectId): Promise<UserEntityDTO | undefined> {
     const user = await this.userModel.findById(id).exec()
+
+    if (!user)
+      return undefined
 
     const role = await this.customeRoleModel.findById(user.customRoleId)
 
@@ -64,13 +67,15 @@ export class UserService {
     }
   }
 
-  async update(id: ObjectId, data: UpdateUserDto): Promise<void> {
+  async update(id: ObjectId, data: UpdateUserDto): Promise<boolean> {
     const user = await this.userModel.findById(id).exec()
 
-    if (user == undefined)
-      throw new NotFoundException("id is not found")
+    if (!user)
+      return false
 
     await user.updateOne({ ...data }).exec()
+
+    return true
   }
 
   async remove(id: ObjectId): Promise<void> {

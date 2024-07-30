@@ -76,7 +76,10 @@ export class UserController {
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
   async update(@Param('id') id: ObjectId, @Body() updateUserDto: UpdateUserDto): Promise<MessageResponseDTO> {
-    await this.userService.update(id, updateUserDto);
+    const updated = await this.userService.update(id, updateUserDto);
+
+    if (!updated)
+      throw new NotFoundException("user is not exists")
 
     return {
       statusCode: 200,
