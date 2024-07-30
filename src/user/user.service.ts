@@ -19,24 +19,17 @@ export class UserService {
     @InjectModel(CustomRole.name) private readonly customeRoleModel: Model<CustomRole>,
   ) { }
 
-  async create(data: CreateUserDto): Promise<MessageResponseDTO> {
-    const passwordHash = await this.hashData(data.password)
-
+  async create(user: CreateUserDto, passHash: string): Promise<void> {
     const customID = `U${(new Date()).getTime()}`
 
     const newUser = new this.userModel({
-      customID, passwordHash, ...data
+      customID, passHash, ...user
     })
 
     await newUser.save()
-
-    return {
-      statusCode: 201,
-      message: "user was created"
-    }
   }
 
-  async findAll(): Promise<UserListResponseDTO> {
+  async findAll(): Promise<UserEntityDTO[]> {
     const users = await this.userModel.find().exec()
     const mappedUsers: UserEntityDTO[] = []
 
@@ -53,56 +46,35 @@ export class UserService {
       })
     }
 
-    return {
-      statusCode: 200,
-      list: mappedUsers
-    }
-
+    return mappedUsers
   }
 
-  async findOne(id: ObjectId): Promise<UserEntityResponseDTO> {
+  async findOne(id: ObjectId): Promise<UserEntityDTO> {
     const user = await this.userModel.findById(id).exec()
-
-    if (!user)
-      throw new NotFoundException("user is not exists")
 
     const role = await this.customeRoleModel.findById(user.customRoleId)
 
     return {
-      statusCode: 200,
-      user: {
-        id: user._id,
-        username: user.customID,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        phonenumber: user.phonenumber,
-        customRole: role?.name ?? "unknown"
-
-      }
+      id: user._id,
+      username: user.customID,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      phonenumber: user.phonenumber,
+      customRole: role?.name ?? "unknown"
     }
   }
 
-  async update(id: ObjectId, data: UpdateUserDto): Promise<MessageResponseDTO> {
+  async update(id: ObjectId, data: UpdateUserDto): Promise<void> {
     const user = await this.userModel.findById(id).exec()
 
     if (user == undefined)
       throw new NotFoundException("id is not found")
 
     await user.updateOne({ ...data }).exec()
-
-    return {
-      statusCode: 200,
-      message: "user was updated"
-    }
   }
 
-  async remove(id: ObjectId): Promise<MessageResponseDTO> {
+  async remove(id: ObjectId): Promise<void> {
     await this.userModel.deleteOne({ _id: id }).exec()
-
-    return {
-      statusCode: 200,
-      message: "user was deleted"
-    }
   }
 
   async getPasswordHash(phonenumber: string): Promise<string> {
