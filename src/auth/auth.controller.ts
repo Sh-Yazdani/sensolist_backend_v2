@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common';
 import { TokenPairResponseDTO, CheckOtpDTO, LoginDTO, LoginResponseDTO } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
@@ -22,7 +22,19 @@ export class AuthController {
     @ApiNotFoundResponse({ type: ErrorResponseDTO })
     @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
     async login(@Body() data: LoginDTO): Promise<LoginResponseDTO> {
-        return this.authService.login(data)
+        try {
+            this.authService.validateUserCredential(data.phonenumber, data.password)
+            const { tempToken, expiresDate } = await this.authService.sendOTP(data.phonenumber)
+
+            return {
+                statusCode: 200,
+                otpToken: tempToken,
+                expiresOn: expiresDate
+            }
+        }
+        catch {
+            throw new BadRequestException("invalid credential")
+        }
     }
 
     @Post("otp")
@@ -32,7 +44,17 @@ export class AuthController {
     @ApiBadRequestResponse({ type: ErrorResponseDTO, description: "happen when otp is wrong or expired" })
     @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
     async checkOTP(@Body() data: CheckOtpDTO, @Res({ passthrough: true }) response: Response): Promise<TokenPairResponseDTO> {
-        return this.authService.checkOTP(data, response)
+        const { phone, systemRole } = await this.authService.verifyOTP(data)
+
+        const tokens = await this.authService.generateTokenPair(phone, systemRole)
+
+        response.cookie("refresh_token", tokens.refreshToken, { httpOnly: true, path: "/auth/refresh", expires: tokens.refreshExpire })
+
+        return {
+            statusCode: 200,
+            accessToken: tokens.accessToken,
+            expiresOn: tokens.accessExpire
+        }
     }
 
     @Post('refresh')
@@ -42,7 +64,17 @@ export class AuthController {
     @ApiUnauthorizedResponse({ type: ErrorResponseDTO, description: "happen when refresh token is not valid, you should redirect user to login page" })
     @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
     async refreshToken(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
-        return this.authService.refreshToken(request, response)
+        const {phone, systemRole} = await this.authService.refresh(request, response)
+
+        const newTokens = await this.authService.generateTokenPair(phone, systemRole)
+
+        response.cookie("refresh_token", newTokens.refreshToken, { httpOnly: true, path: "/auth/refresh", expires: newTokens.refreshExpire })
+
+        return {
+            statusCode: 200,
+            accessToken: newTokens.accessToken,
+            expiresOn: newTokens.accessExpire
+        }
     }
 
 }
