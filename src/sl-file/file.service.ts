@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, StreamableFile } from '@nestjs/common'
 import { UploadTempFileResponseDTO } from './dto/file-entity.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { FileEntity, SLFile } from './entities/sl-file.entity';
-import { Model } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import { writeFile, rename } from "fs/promises";
 import { join } from 'path';
 import { Response } from 'express';
@@ -14,47 +14,38 @@ export class FileService {
 
   constructor(@InjectModel(SLFile.name) private readonly fileModel: Model<SLFile>) { }
 
-  async storeTempImage(entity: FileEntity, image: Express.Multer.File): Promise<UploadTempFileResponseDTO> {
+  async writeFileIntoStorage(file: Express.Multer.File, fileEntity: SLFile): Promise<void> {
+    const filename = join(fileEntity.dir, `${fileEntity._id}.${fileEntity.extension}`)
+    await writeFile(filename, file.buffer)
+  }
 
-    if (!image)
-      throw new BadRequestException("file not valid")
-
-    const imageExtension = image.originalname.split(".").reverse()[0]
+  async storeFileInfo(entity: FileEntity, originalname: string, mime: string): Promise<SLFile> {
     const dirs = ["public", "images", "things", "temp"]
 
     createFoldersIfNotExists(dirs)
 
+    //absolote path of destination directory
     const dirPath = completeThePath(dirs)
+
+    const extension = originalname.split(".").reverse()[0]
 
     const imageEntity = new this.fileModel({
       entity: entity,
-      extension: imageExtension,
-      mime: image.mimetype,
+      extension: extension,
+      mime: mime,
       dir: dirPath
     })
 
-    await imageEntity.save()
-
-
-    await writeFile(join(dirPath, `${imageEntity._id}.${imageExtension}`), image.buffer)
-
-    return {
-      statusCode: 201,
-      fileId: imageEntity._id
-    }
-
+    return await imageEntity.save()
   }
 
-  async serveFile(fileId: string, response: Response) {
-
+  async getFileInfo(fileId: string): Promise<SLFile | undefined> {
     const file = await this.fileModel.findOne({ _id: fileId }).exec()
 
-    response.set("Content-Type", file.mime)
+    if (!file)
+      return undefined
 
-    const stream = createReadStream(join(file.dir, `${file._id}.${file.extension}`))
-
-    stream.pipe(response)
-
+    return file
   }
 
   async moveFiles(fileIds: string[]) {
