@@ -34,7 +34,7 @@ async function bootstrap() {
     origin: "*",
     optionsSuccessStatus: 200,
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-    methods: ['OPTIONS, GET, POST, PATCH, DELETE'],
+    methods: ['OPTIONS', 'GET', 'POST', 'PATCH', 'DELETE'],
     credentials:true,
     preflightContinue:false
   })
