@@ -31,13 +31,21 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: "*",
+    origin: false,
     optionsSuccessStatus: 204,
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
     methods: ['OPTIONS', 'GET', 'POST', 'PATCH', 'DELETE'],
-    credentials:true,
-    preflightContinue:false
+    credentials: true,
+    preflightContinue: false
   })
+
+  app.use((req, res, next) => {
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200);
+    } else {
+      next();
+    }
+  });
 
   initializeSwagger(app)
 
