@@ -41,6 +41,7 @@ async function bootstrap() {
 
   app.use((req, res, next) => {
     if (req.method === 'OPTIONS') {
+      console.debug("option is handled")
       res.sendStatus(200);
     } else {
       next();
