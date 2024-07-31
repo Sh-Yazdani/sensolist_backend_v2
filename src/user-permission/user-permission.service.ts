@@ -4,7 +4,7 @@ import { Model, ObjectId } from 'mongoose';
 import { UserPermissionEntityDTO } from './dto/user-permission-entity.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserPermission } from './entities/user-permission.entity';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class UserPermissionService {

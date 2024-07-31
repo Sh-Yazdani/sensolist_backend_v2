@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } 
 import { UserPermissionService } from './user-permission.service';
 import { UpdateUserPermissionDto } from './dto/update-user-permission.dto';
 import { ObjectId } from 'mongoose';
-import { ErrorResponseDTO, MessageResponseDTO } from 'src/dto/response.dto';
+import { ErrorResponseDTO, MessageResponseDTO } from '../dto/response.dto';
 import { ApiBearerAuth, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { CheckSystemRole } from 'src/decorator/role.decorator';
-import { SystemRoles } from 'src/enums/role.enum';
-import { UploadTempFileResponseDTO } from 'src/sl-file/dto/file-entity.dto';
+import { CheckSystemRole } from '../decorator/role.decorator';
+import { SystemRoles } from '../enums/role.enum';
+import { UploadTempFileResponseDTO } from '../sl-file/dto/file-entity.dto';
 import { UserPermissionEntityResponseDTO } from './dto/user-permission-entity.dto';
 
 @Controller('user-permission')
