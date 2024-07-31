@@ -2,13 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 function initializeSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle("Sensolist REST-API documentaion")
     .setDescription("in case of any confusion feel free for asking")
     .setVersion("1")
-    .addBearerAuth({ type: 'http', description: "insert the access token", scheme:"bearer", bearerFormat:"JWT" }, "access_token")
+    .addBearerAuth({ type: 'http', description: "insert the access token", scheme: "bearer", bearerFormat: "JWT" }, "access_token")
+    .addServer("https://sensolist-backend.vercel.app")
     .build()
 
   const documentation = SwaggerModule.createDocument(app, config)
@@ -26,11 +28,18 @@ function initializeSwagger(app: INestApplication) {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.enableCors({
+    origin: "*",
+    optionsSuccessStatus: 200,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+    methods: ['OPTIONS, GET, POST, PATCH, DELETE'],
+    credentials:true,
+    preflightContinue:false
+  })
 
   initializeSwagger(app)
-
-  app.enableCors({ origin: false })
 
   await app.listen(3000, () => {
     console.log("server listen on port 3000, docs url: ~/docs")
