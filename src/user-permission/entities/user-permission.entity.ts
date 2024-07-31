@@ -1,18 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ObjectId, SchemaType, SchemaTypes } from "mongoose";
-
-export enum PermissionAccess {
-    View = "View",
-    Add = "Add",
-    Delete = "Delete",
-    Edit = "Edit",
-
-}
-
-export class PermissionModel {
-    entityId: ObjectId
-    accesses: PermissionAccess[]
-}
+import { PermissionModel } from "../dto/permission-model.dto";
 
 @Schema({ timestamps: true })
 export class UserPermission {
