@@ -12,14 +12,25 @@ export class UserPermissionService {
     @InjectModel(UserPermission.name) private readonly permissionModel: Model<UserPermission>
   ) { }
 
-  async getAll(userId: ObjectId): Promise<UserPermissionEntityDTO[]> {
+  async getUserPermissions(userId: ObjectId): Promise<UserPermissionEntityDTO[]> {
     const permissions = await this.permissionModel.find({ userId: userId }).exec()
 
     return permissions
   }
 
-  update(id: number, updateUserPermissionDto: UpdateUserPermissionDto) {
-    return `This action updates a #${id} userPermission`;
+  async updateUersPermissions(data: UpdateUserPermissionDto) {
+    let permission = await this.permissionModel.findOne({ userId: data.userId }).exec()
+
+    if (!permission)
+      permission = new this.permissionModel({
+        userId: data.userId
+      })
+
+    permission.thingsPermissions = data.thingsPermissions
+    permission.apletsPermissions = data.apletsPermissions
+    permission.dashboardsPermissions = data.dashboardsPermissions
+
+    await permission.save()
   }
 
 }

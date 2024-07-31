@@ -16,3 +16,4 @@ export class PermissionModel {
     @ApiProperty({ enum: PermissionAccess })
     accesses: PermissionAccess[]
 }
+
