@@ -14,6 +14,7 @@ import { AuthenticationGuard } from './guard/auth.guard';
 import { AccessTokenModule } from './auth/access-token.module';
 import { SystemRoleGuard } from './guard/system-role.guard';
 import { FileModule } from './sl-file/file.module';
+import { UserPermissionModule } from './user-permission/user-permission.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { FileModule } from './sl-file/file.module';
     UserModule,
     ThingsModule,
     AccessTokenModule,
-    FileModule
+    FileModule,
+    UserPermissionModule
   ],
   controllers: [AppController],
   providers: [
