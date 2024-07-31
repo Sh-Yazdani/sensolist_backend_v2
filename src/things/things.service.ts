@@ -23,9 +23,11 @@ export class ThingsService {
     }
   }
 
-  async findAll(query: ThingQueryDTO): Promise<ThingListResponseDTO> {
+  async findAll(page: number, query: ThingQueryDTO): Promise<ThingListResponseDTO> {
 
     let thingsDBQuery = this.thingModel.find()
+
+    const dbQuery = {}
 
     const actions: string[] = query.actions ?? []
     const brand: string[] = query.brand ?? []
@@ -33,13 +35,22 @@ export class ThingsService {
     const charactristics: string[] = query.charactristics ?? []
     const search: string = query.search ?? ""
 
-    thingsDBQuery = thingsDBQuery.find({
-      name: new RegExp(query.search, 'i'),
-      actions: { $in: actions },
-      brand: { $in: brand },
-      type: { $in: type },
-      charactristics: { $in: charactristics },
-    })
+    if (actions.length > 0)
+      dbQuery['actions'] = { $in: actions }
+
+    if (brand.length > 0)
+      dbQuery['brand'] = { $in: brand }
+
+    if (type.length > 0)
+      dbQuery['type'] = { $in: type }
+
+    if (charactristics.length > 0)
+      dbQuery['charactristics'] = { $in: charactristics }
+
+    if (search.length > 0)
+      dbQuery['name'] = new RegExp(search, 'i')
+
+    thingsDBQuery = thingsDBQuery.find(dbQuery)
 
     if (query.sort == ThingSortOptions.Name)
       thingsDBQuery = thingsDBQuery.sort({ name: 1 })
@@ -50,12 +61,14 @@ export class ThingsService {
       thingsDBQuery = thingsDBQuery.sort({ createdAt: 1 })
 
 
-    const things = await thingsDBQuery.exec()
+    const things = await thingsDBQuery.paginate({ page: page })
 
 
     return {
       statusCode: 200,
-      list: things.map(t => {
+      page: page,
+      pageCount: things.totalPages,
+      list: things.docs.map(t => {
         return {
           id: t._id,
           name: t.name,

@@ -36,11 +36,11 @@ export class UserService {
     }
   }
 
-  async findAll(): Promise<UserListResponseDTO> {
-    const users = await this.userModel.find().exec()
+  async findAll(page: number): Promise<UserListResponseDTO> {
+    const users = await this.userModel.find().paginate({ page: page })
     const mappedUsers: UserEntityDTO[] = []
 
-    for (let user of users) {
+    for (let user of users.docs) {
       const role = await this.customeRoleModel.findById(user.customRoleId)
       mappedUsers.push({
         id: user._id,
@@ -55,6 +55,8 @@ export class UserService {
 
     return {
       statusCode: 200,
+      page: page,
+      pageCount: users.totalPages,
       list: mappedUsers
     }
 

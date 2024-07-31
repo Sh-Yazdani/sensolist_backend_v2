@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
 import { ThingsService } from './things.service';
 import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
@@ -26,12 +26,13 @@ export class ThingsController {
     return this.thingsService.create(createThingDto);
   }
 
-  @Get()
+  @Get(":page")
   @ApiOperation({ summary: "list of all things", description: "with this API you can search and filter things, for getting all exists things, dont pass the search and filter params" })
+  @ApiParam({ name: "page", type: Number, description: "page number"})
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  findAll(@Query() query: ThingQueryDTO) {
-    return this.thingsService.findAll(query);
+  findAll(@Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page:number) {
+    return this.thingsService.findAll(page, query);
   }
 
   @Get(':id')

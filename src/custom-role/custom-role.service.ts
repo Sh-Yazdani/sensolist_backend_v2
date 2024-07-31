@@ -22,19 +22,24 @@ export class CustomRoleService {
     }
   }
 
-  async findAll(): Promise<CustomRoleListResponseDTO> {
-    const roles = await this.customRoleModel.find().exec()
+  async findAll(page: number): Promise<CustomRoleListResponseDTO> {
+
+    page = page ?? 1
+
+    const roles = await this.customRoleModel.find().paginate({ page: page })
 
     return {
-      list: roles.map(r => ({ id: r._id, name: r.name as string, description: r.description as string })),
-      statusCode: 200
+      statusCode: 200,
+      page: page,
+      pageCount: roles.totalPages,
+      list: roles.docs.map(r => ({ id: r._id, name: r.name as string, description: r.description as string })),
     }
   }
 
   async findOne(id: ObjectId): Promise<CustomRoleEntityResponseDTO> {
     const role = await this.customRoleModel.findById(id)
 
-    if(!role)
+    if (!role)
       throw new NotFoundException("role is not exists")
 
     return {

@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import mongoose, { Mongoose } from 'mongoose';
+import * as paginate from "mongoose-paginate-v2"
 
 @Module({
   imports: [
@@ -16,4 +18,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
 })
-export class DatabaseModule { }
+export class DatabaseModule {
+  constructor() {
+    mongoose.plugin(paginate)
+  }
+}
