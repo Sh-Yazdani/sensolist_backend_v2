@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
-import { Model, ObjectId } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import { hash } from "bcrypt"
 import { MessageResponseDTO } from '../dto/response.dto';
 import { UserListResponseDTO } from './dto/user-list.dto';
@@ -82,6 +82,17 @@ export class UserService {
 
       }
     }
+  }
+
+  async userIsExists(userId: string): Promise<boolean> {
+    try {
+      const user = await this.userModel.findOne({ _id: userId }).select({ _id: 1 }).exec()
+      return user != undefined
+    }
+    catch {
+      return false
+    }
+
   }
 
   async update(id: ObjectId, data: UpdateUserDto): Promise<MessageResponseDTO> {

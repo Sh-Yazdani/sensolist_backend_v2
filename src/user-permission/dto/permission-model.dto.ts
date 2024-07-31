@@ -13,7 +13,7 @@ export class PermissionModel {
     @ApiProperty({ type: Types.ObjectId })
     entityId: Types.ObjectId
 
-    @ApiProperty({ enum: PermissionAccess })
+    @ApiProperty({ enum: PermissionAccess, isArray: true })
     accesses: PermissionAccess[]
 }
 

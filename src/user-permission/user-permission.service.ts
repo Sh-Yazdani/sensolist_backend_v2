@@ -4,18 +4,24 @@ import { Model, ObjectId } from 'mongoose';
 import { UserPermissionEntityDTO } from './dto/user-permission-entity.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserPermission } from './entities/user-permission.entity';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class UserPermissionService {
 
   constructor(
-    @InjectModel(UserPermission.name) private readonly permissionModel: Model<UserPermission>
+    @InjectModel(UserPermission.name) private readonly permissionModel: Model<UserPermission>,
+    private readonly userService: UserService
   ) { }
 
-  async getUserPermissions(userId: ObjectId): Promise<UserPermissionEntityDTO[]> {
-    const permissions = await this.permissionModel.find({ userId: userId }).exec()
+  async getUserPermissions(userId: ObjectId): Promise<UserPermissionEntityDTO> {
+    const permissions = await this.permissionModel.findOne({ userId: userId }).select({ _id: 0 }).exec()
 
     return permissions
+  }
+
+  async userIsExists(userId: string): Promise<boolean> {
+    return await this.userService.userIsExists(userId)
   }
 
   async updateUersPermissions(data: UpdateUserPermissionDto) {

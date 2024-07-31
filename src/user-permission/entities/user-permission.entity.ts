@@ -5,7 +5,7 @@ import { PermissionModel } from "../dto/permission-model.dto";
 @Schema({ timestamps: true })
 export class UserPermission {
 
-    @Prop({ type: Types.ObjectId, required: true , unique:true})
+    @Prop({ type: Types.ObjectId, required: true, unique: true})
     userId: Types.ObjectId
 
     @Prop({ type: [PermissionModel], required: true })
