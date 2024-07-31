@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserPermissionDto } from './dto/create-user-permission.dto';
 import { UpdateUserPermissionDto } from './dto/update-user-permission.dto';
+import { Model, ObjectId } from 'mongoose';
+import { UserPermissionEntityDTO } from './dto/user-permission-entity.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { UserPermission } from './entities/user-permission.entity';
 
 @Injectable()
 export class UserPermissionService {
-  create(createUserPermissionDto: CreateUserPermissionDto) {
-    return 'This action adds a new userPermission';
-  }
 
-  findAll() {
-    return `This action returns all userPermission`;
-  }
+  constructor(
+    @InjectModel(UserPermission.name) private readonly permissionModel: Model<UserPermission>
+  ) { }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userPermission`;
+  async getAll(userId: ObjectId): Promise<UserPermissionEntityDTO[]> {
+    const permissions = await this.permissionModel.find({ userId: userId }).exec()
+
+    return permissions
   }
 
   update(id: number, updateUserPermissionDto: UpdateUserPermissionDto) {
     return `This action updates a #${id} userPermission`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} userPermission`;
-  }
 }
