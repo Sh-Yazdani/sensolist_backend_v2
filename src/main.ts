@@ -31,7 +31,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: false,
+    origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
     optionsSuccessStatus: 204,
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
     methods: ['OPTIONS', 'GET', 'POST', 'PATCH', 'DELETE'],
