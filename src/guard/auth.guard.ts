@@ -25,9 +25,6 @@ export class AuthenticationGuard implements CanActivate {
             return true
         
         const req = context.switchToHttp().getRequest()
-        req['phonunumber'] = "+989151234567"
-        req['systemRole'] = "Admin"
-        return true
         const token = this.fetchToken(req)
 
         if (!token)
