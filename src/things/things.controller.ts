@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, Req } from '@nestjs/common';
 import { ThingsService } from './things.service';
 import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
@@ -13,6 +13,7 @@ import { SystemRoles } from '../enums/role.enum';
 import { PermissionSubject, RequiredPermission } from 'src/decorator/permission.decorator';
 import { Thing } from './entities/thing.entity';
 import { PermissionAccess } from 'src/user-permission/dto/permission-model.dto';
+import { Request } from 'supertest';
 
 @Controller('things')
 @ApiTags("Things")
@@ -32,16 +33,16 @@ export class ThingsController {
   }
 
   @Get(":page")
-  @ApiOperation({ summary: "list of all things", description: "with this API you can search and filter things, for getting all exists things, dont pass the search and filter params" })
+  @ApiOperation({ summary: "list of all things", description: "with this API you can search and filter things, for getting all exists things, dont pass the search and filter params. for nonAdmin users its return just granted things with View access" })
   @ApiParam({ name: "page", type: Number, description: "page number" })
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  findAll(@Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page: number) {
-    return this.thingsService.findAll(page, query);
+  findAll(@Req() request:Request, @Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page: number) {
+    return this.thingsService.findAll(request['phonumber'], page, query);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: "a list of things", description: "you can define filter,sort and search parameters" })
+  @ApiOperation({ summary: "thing detail"})
   @ApiOkResponse({ type: ThingEntityResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })

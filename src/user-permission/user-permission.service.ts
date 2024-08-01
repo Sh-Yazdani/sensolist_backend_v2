@@ -1,11 +1,11 @@
 import { Injectable, Type } from '@nestjs/common';
 import { UpdateUserPermissionDto } from './dto/update-user-permission.dto';
-import { Model, ObjectId } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import { UserPermissionEntityDTO } from './dto/user-permission-entity.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserPermission } from './entities/user-permission.entity';
 import { UserService } from 'src/user/user.service';
-import { PermissionAccess } from './dto/permission-model.dto';
+import { PermissionAccess, PermissionModel } from './dto/permission-model.dto';
 import { Thing } from 'src/things/entities/thing.entity';
 
 @Injectable()
@@ -66,7 +66,7 @@ export class UserPermissionService {
 
   }
 
-  async userHaveCreatePermission(phonenumber:string, permissionSubJect: Type<any>){
+  async userHaveCreatePermission(phonenumber: string, permissionSubJect: Type<any>) {
     const userId = await this.userService.getUserIdByPhonunmber(phonenumber)
 
     if (!userId)
@@ -82,6 +82,23 @@ export class UserPermissionService {
 
     return permissions != undefined
 
+  }
+
+  async getAllowedEntities(phonenumber: string, entity: Type<any>): Promise<Types.ObjectId[] | undefined> {
+    const userId = await this.userService.getUserIdByPhonunmber(phonenumber)
+
+    if (!userId)
+      return undefined
+
+    const dbQuery = { userId: userId }
+
+    let propertyKey = 'thingsPermissions'//TODO check entity
+
+    dbQuery[propertyKey] = { $elemMatch: { accesses: PermissionAccess.View } }
+
+    const permissions = await this.permissionModel.findOne(dbQuery).exec()
+
+    return permissions[propertyKey].map((p: PermissionModel) => p.entityId)
   }
 
 }
