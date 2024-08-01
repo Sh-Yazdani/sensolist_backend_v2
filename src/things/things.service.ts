@@ -9,6 +9,7 @@ import { MessageResponseDTO } from '../dto/response.dto';
 import { ThingListResponseDTO } from './dto/thing.list.dto';
 import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
 import { UserPermissionService } from 'src/user-permission/user-permission.service';
+import { SystemRoles } from 'src/enums/role.enum';
 
 @Injectable()
 export class ThingsService {
@@ -27,11 +28,14 @@ export class ThingsService {
     }
   }
 
-  async findAll(userPhonenumber: string, page: number, query: ThingQueryDTO): Promise<ThingListResponseDTO> {
+  async findAll(systemRole: SystemRoles, userPhonenumber: string, page: number, query: ThingQueryDTO): Promise<ThingListResponseDTO> {
 
-    const allowedThings = await this.permissionService.getAllowedEntities(userPhonenumber, Thing)
-
-    const dbQuery = { _id: { $in: allowedThings } }
+    let dbQuery = {}
+    
+    if (systemRole != SystemRoles.Admin) {
+      const allowedThings = await this.permissionService.getAllowedEntities(userPhonenumber, Thing)
+      dbQuery = { _id: { $in: allowedThings } }
+    }
 
     const actions: string[] = query.actions ?? []
     const brand: string[] = query.brand ?? []

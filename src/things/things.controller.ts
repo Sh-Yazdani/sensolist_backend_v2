@@ -38,7 +38,7 @@ export class ThingsController {
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   findAll(@Req() request:Request, @Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page: number) {
-    return this.thingsService.findAll(request['phonumber'], page, query);
+    return this.thingsService.findAll(request['systemRole'], request['phonumber'], page, query);
   }
 
   @Get(':id')
