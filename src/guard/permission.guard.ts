@@ -1,0 +1,46 @@
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable, Type } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { Request } from "express";
+import { Observable } from "rxjs";
+import { PERMISSION_SUBJECT_KEY, REQUIRED_PERMISSION_KEY } from "src/decorator/permission.decorator";
+import { SystemRoles } from "src/enums/role.enum";
+import { PermissionAccess } from "src/user-permission/dto/permission-model.dto";
+import { UserPermissionService } from "src/user-permission/user-permission.service";
+
+@Injectable()
+export class PermissionGuard implements CanActivate {
+
+    constructor(
+        private readonly reflector: Reflector,
+        private readonly permissionService: UserPermissionService
+    ) { }
+
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        const permissions = this.reflector.getAllAndOverride<PermissionAccess[]>(REQUIRED_PERMISSION_KEY, [
+            context.getHandler(),
+            context.getClass()
+        ])
+        const entity = this.reflector.getAllAndOverride<Type>(PERMISSION_SUBJECT_KEY, [
+            context.getHandler(),
+            context.getClass()
+        ])
+
+        const req: Request = context.switchToHttp().getRequest()
+        const systemRole = req["systemRole"]
+        const userId = req["userId"]
+        const targetEntityId = req.params["id"]
+
+        if (systemRole == SystemRoles.Admin)
+            return true
+
+        const haveAccess = await this.permissionService.userHavPermissions(userId, entity, targetEntityId, permissions)
+
+        if (!haveAccess)
+            throw new ForbiddenException("permission not granted")
+
+        return true
+
+    }
+
+}
+

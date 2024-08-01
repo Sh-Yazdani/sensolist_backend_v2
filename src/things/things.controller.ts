@@ -10,11 +10,15 @@ import { ThingListResponseDTO } from './dto/thing.list.dto';
 import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
 import { CheckSystemRole } from '../decorator/role.decorator';
 import { SystemRoles } from '../enums/role.enum';
+import { PermissionSubject, RequiredPermissions } from 'src/decorator/permission.decorator';
+import { Thing } from './entities/thing.entity';
+import { PermissionAccess } from 'src/user-permission/dto/permission-model.dto';
 
 @Controller('things')
 @ApiTags("Things")
 @CheckSystemRole([SystemRoles.Admin, SystemRoles.NonAdmin])
 @ApiBearerAuth("access_token")
+@PermissionSubject(Thing)
 export class ThingsController {
   constructor(private readonly thingsService: ThingsService) { }
 
@@ -28,10 +32,10 @@ export class ThingsController {
 
   @Get(":page")
   @ApiOperation({ summary: "list of all things", description: "with this API you can search and filter things, for getting all exists things, dont pass the search and filter params" })
-  @ApiParam({ name: "page", type: Number, description: "page number"})
+  @ApiParam({ name: "page", type: Number, description: "page number" })
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  findAll(@Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page:number) {
+  findAll(@Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page: number) {
     return this.thingsService.findAll(page, query);
   }
 
@@ -41,6 +45,7 @@ export class ThingsController {
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
+  @RequiredPermissions([PermissionAccess.View])
   findOne(@Param('id') id: ObjectId) {
     return this.thingsService.findOne(id);
   }
@@ -51,6 +56,7 @@ export class ThingsController {
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  @RequiredPermissions([PermissionAccess.Edit])
   update(@Param('id') id: ObjectId, @Body() updateThingDto: UpdateThingDto) {
     return this.thingsService.update(id, updateThingDto);
   }
@@ -60,6 +66,7 @@ export class ThingsController {
   @ApiOkResponse({ type: MessageResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  @RequiredPermissions([PermissionAccess.Delete])
   remove(@Param('id') id: ObjectId) {
     return this.thingsService.remove(id);
   }
