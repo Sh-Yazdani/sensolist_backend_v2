@@ -152,4 +152,9 @@ export class UserService {
     return (await this.userModel.findOne({ phonenumber: phonenumber }).exec()).systemRole
   }
 
+  async getUserIdByPhonunmber(phonenumber: string): Promise<Types.ObjectId | undefined> {
+    const user = await this.userModel.findOne({ phonenumber: phonenumber }, { _id: 1 }).exec()
+    return user?._id
+  }
+
 }

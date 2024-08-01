@@ -8,11 +8,16 @@ import { ThingQueryDTO, ThingSortOptions } from './dto/thing-search.dto';
 import { MessageResponseDTO } from '../dto/response.dto';
 import { ThingListResponseDTO } from './dto/thing.list.dto';
 import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
+import { UserPermissionService } from 'src/user-permission/user-permission.service';
+import { SystemRoles } from 'src/enums/role.enum';
 
 @Injectable()
 export class ThingsService {
 
-  constructor(@InjectModel(Thing.name) private readonly thingModel: Model<Thing>) { }
+  constructor(
+    @InjectModel(Thing.name) private readonly thingModel: Model<Thing>,
+    private readonly permissionService: UserPermissionService
+  ) { }
 
   async create(data: CreateThingDto): Promise<MessageResponseDTO> {
     const newThing = await this.thingModel.create(data)
@@ -23,11 +28,14 @@ export class ThingsService {
     }
   }
 
-  async findAll(page: number, query: ThingQueryDTO): Promise<ThingListResponseDTO> {
+  async findAll(systemRole: SystemRoles, userPhonenumber: string, page: number, query: ThingQueryDTO): Promise<ThingListResponseDTO> {
 
-    let thingsDBQuery = this.thingModel.find()
-
-    const dbQuery = {}
+    let dbQuery = {}
+    
+    if (systemRole != SystemRoles.Admin) {
+      const allowedThings = await this.permissionService.getAllowedEntities(userPhonenumber, Thing)
+      dbQuery = { _id: { $in: allowedThings } }
+    }
 
     const actions: string[] = query.actions ?? []
     const brand: string[] = query.brand ?? []
@@ -50,12 +58,11 @@ export class ThingsService {
     if (search.length > 0)
       dbQuery['name'] = new RegExp(search, 'i')
 
-    thingsDBQuery = thingsDBQuery.find(dbQuery)
+    let thingsDBQuery = this.thingModel.find(dbQuery)
 
     if (query.sort == ThingSortOptions.Name)
       thingsDBQuery = thingsDBQuery.sort({ name: 1 })
-
-    if (query.sort == ThingSortOptions.Newst)
+    else if (query.sort == ThingSortOptions.Newst)
       thingsDBQuery = thingsDBQuery.sort({ createdAt: -1 })
     else if (query.sort == ThingSortOptions.Oldest)
       thingsDBQuery = thingsDBQuery.sort({ createdAt: 1 })

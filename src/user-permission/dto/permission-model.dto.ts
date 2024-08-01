@@ -1,3 +1,4 @@
+import { Prop } from "@nestjs/mongoose"
 import { ApiProperty } from "@nestjs/swagger"
 import { Types } from "mongoose"
 
@@ -10,10 +11,12 @@ export enum PermissionAccess {
 }
 
 export class PermissionModel {
-    @ApiProperty({ type: Types.ObjectId })
+    @ApiProperty({ type: String })
+    @Prop({ required: true, unique: true })
     entityId: Types.ObjectId
 
     @ApiProperty({ enum: PermissionAccess, isArray: true })
+    @Prop({ required: true, unique: true })
     accesses: PermissionAccess[]
 }
 
