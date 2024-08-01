@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, Req, UseGuards } from '@nestjs/common';
 import { ThingsService } from './things.service';
 import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
@@ -14,11 +14,13 @@ import { PermissionSubject, RequiredPermission } from 'src/decorator/permission.
 import { Thing } from './entities/thing.entity';
 import { PermissionAccess } from 'src/user-permission/dto/permission-model.dto';
 import { Request } from 'supertest';
+import { PermissionGuard } from 'src/guard/permission.guard';
 
 @Controller('things')
 @ApiTags("Things")
 @CheckSystemRole([SystemRoles.Admin, SystemRoles.NonAdmin])
 @ApiBearerAuth("access_token")
+@UseGuards(PermissionGuard)
 @PermissionSubject(Thing)
 export class ThingsController {
   constructor(private readonly thingsService: ThingsService) { }

@@ -32,8 +32,8 @@ export class PermissionGuard implements CanActivate {
             context.getClass()
         ])
 
-        if (!permission || !entity)
-            return true
+        // if (!permission || !entity)
+        //     return true
 
         let haveAccess = false
 

@@ -11,7 +11,7 @@ export enum PermissionAccess {
 }
 
 export class PermissionModel {
-    @ApiProperty({ type: Types.ObjectId })
+    @ApiProperty({ type: String })
     @Prop({ required: true, unique: true })
     entityId: Types.ObjectId
 

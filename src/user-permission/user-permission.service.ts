@@ -19,7 +19,15 @@ export class UserPermissionService {
   async getUserPermissions(userId: ObjectId): Promise<UserPermissionEntityDTO> {
     const permissions = await this.permissionModel.findOne({ userId: userId }).select({ _id: 0 }).exec()
 
-    return permissions
+    return {
+      userId: permissions.userId,
+      thingsPermissions: permissions.thingsPermissions,
+      canCreateThings: permissions.canCreateThings,
+      apletsPermissions: permissions.apletsPermissions,
+      canCreateAplets: permissions.canCreateAplets,
+      dashboardsPermissions: permissions.dashboardsPermissions,
+      canCreateDashboards: permissions.canCreateDashboards,
+    }
   }
 
   async userIsExists(userId: string): Promise<boolean> {
@@ -54,11 +62,11 @@ export class UserPermissionService {
     if (targetEntityId == undefined)
       return false
 
-    const dbQuery = { userId: userId }
+    const dbQuery = { userId: userId.toString() }
 
     let propertyKey = 'thingsPermissions'//TODO check permissionSunject
-
-    dbQuery[propertyKey] = { $elemMatch: { entityId: targetEntityId, accesses: requiredPermission } }
+    
+    dbQuery[propertyKey] = { '$elemMatch': { 'entityId': targetEntityId, 'accesses': requiredPermission } }
 
     const permissions = await this.permissionModel.findOne(dbQuery).exec()
 
