@@ -27,13 +27,13 @@ export class PermissionGuard implements CanActivate {
 
         const req: Request = context.switchToHttp().getRequest()
         const systemRole = req["systemRole"]
-        const userId = req["userId"]
+        const phonenumner = req["phonunumber"]
         const targetEntityId = req.params["id"]
 
         if (systemRole == SystemRoles.Admin)
             return true
 
-        const haveAccess = await this.permissionService.userHavPermissions(userId, entity, targetEntityId, permissions)
+        const haveAccess = await this.permissionService.userHavPermissions(phonenumner, entity, targetEntityId, permissions)
 
         if (!haveAccess)
             throw new ForbiddenException("permission not granted")

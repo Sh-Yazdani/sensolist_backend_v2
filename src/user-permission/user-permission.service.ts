@@ -41,7 +41,12 @@ export class UserPermissionService {
     await permission.save()
   }
 
-  async userHavPermissions(userId: ObjectId, permissionSubJect: Type<any>, targetEntityId: string | undefined, requiredPermissions: PermissionAccess[]): Promise<boolean> {
+  async userHavPermissions(phonenumber: string, permissionSubJect: Type<any>, targetEntityId: string | undefined, requiredPermissions: PermissionAccess[]): Promise<boolean> {
+
+    const userId = await this.userService.getUserIdByPhonunmber(phonenumber)
+
+    if (!userId)
+      return false
 
     if (targetEntityId == undefined)
       return false
