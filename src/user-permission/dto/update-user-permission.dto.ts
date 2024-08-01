@@ -10,9 +10,18 @@ export class UpdateUserPermissionDto {
     @ApiProperty({ type: [PermissionModel] })
     thingsPermissions: PermissionModel[]
 
+    @ApiProperty({ type: Boolean, default: false, description: "if operator select `add all` thats mean user can create `Things`" })
+    canCreateThings: boolean
+
     @ApiProperty({ type: [PermissionModel] })
     apletsPermissions: PermissionModel[]
 
+    @ApiProperty({ type: Boolean, default: false, description: "if operator select `add all` thats mean user can create `Aplets`" })
+    canCreateAplets: boolean
+
     @ApiProperty({ type: [PermissionModel] })
     dashboardsPermissions: PermissionModel[]
+
+    @ApiProperty({ type: Boolean, default: false, description: "if operator select `add all` thats mean user can create `Dashboards`" })
+    canCreateDashboards: boolean
 }

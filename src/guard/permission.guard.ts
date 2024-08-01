@@ -16,7 +16,14 @@ export class PermissionGuard implements CanActivate {
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const permissions = this.reflector.getAllAndOverride<PermissionAccess[]>(REQUIRED_PERMISSION_KEY, [
+        const req: Request = context.switchToHttp().getRequest()
+        const systemRole = req["systemRole"]
+        const phonenumner = req["phonunumber"]
+
+        if (systemRole == SystemRoles.Admin)
+            return true
+
+        const permission = this.reflector.getAllAndOverride<PermissionAccess>(REQUIRED_PERMISSION_KEY, [
             context.getHandler(),
             context.getClass()
         ])
@@ -25,15 +32,15 @@ export class PermissionGuard implements CanActivate {
             context.getClass()
         ])
 
-        const req: Request = context.switchToHttp().getRequest()
-        const systemRole = req["systemRole"]
-        const phonenumner = req["phonunumber"]
-        const targetEntityId = req.params["id"]
+        let haveAccess = false
 
-        if (systemRole == SystemRoles.Admin)
-            return true
-
-        const haveAccess = await this.permissionService.userHavPermissions(phonenumner, entity, targetEntityId, permissions)
+        if (permission == PermissionAccess.Add) {
+            haveAccess = await this.permissionService.userHaveCreatePermission(phonenumner, entity)
+        }
+        else {
+            const targetEntityId = req.params["id"]
+            haveAccess = await this.permissionService.userHavPermissions(phonenumner, entity, targetEntityId, permission)
+        }
 
         if (!haveAccess)
             throw new ForbiddenException("permission not granted")

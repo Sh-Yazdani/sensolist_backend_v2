@@ -10,7 +10,7 @@ import { ThingListResponseDTO } from './dto/thing.list.dto';
 import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
 import { CheckSystemRole } from '../decorator/role.decorator';
 import { SystemRoles } from '../enums/role.enum';
-import { PermissionSubject, RequiredPermissions } from 'src/decorator/permission.decorator';
+import { PermissionSubject, RequiredPermission } from 'src/decorator/permission.decorator';
 import { Thing } from './entities/thing.entity';
 import { PermissionAccess } from 'src/user-permission/dto/permission-model.dto';
 
@@ -26,6 +26,7 @@ export class ThingsController {
   @ApiOperation({ summary: "creating a new thing" })
   @ApiCreatedResponse({ type: MessageResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  @RequiredPermission(PermissionAccess.Add)
   create(@Body() createThingDto: CreateThingDto) {
     return this.thingsService.create(createThingDto);
   }
@@ -45,7 +46,7 @@ export class ThingsController {
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
-  @RequiredPermissions([PermissionAccess.View])
+  @RequiredPermission(PermissionAccess.View)
   findOne(@Param('id') id: ObjectId) {
     return this.thingsService.findOne(id);
   }
@@ -56,7 +57,7 @@ export class ThingsController {
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  @RequiredPermissions([PermissionAccess.Edit])
+  @RequiredPermission(PermissionAccess.Edit)
   update(@Param('id') id: ObjectId, @Body() updateThingDto: UpdateThingDto) {
     return this.thingsService.update(id, updateThingDto);
   }
@@ -66,7 +67,7 @@ export class ThingsController {
   @ApiOkResponse({ type: MessageResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  @RequiredPermissions([PermissionAccess.Delete])
+  @RequiredPermission(PermissionAccess.Delete)
   remove(@Param('id') id: ObjectId) {
     return this.thingsService.remove(id);
   }

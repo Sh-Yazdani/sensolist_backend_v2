@@ -5,17 +5,26 @@ import { PermissionModel } from "../dto/permission-model.dto";
 @Schema({ timestamps: true })
 export class UserPermission {
 
-    @Prop({ type: Types.ObjectId, required: true, unique: true})
+    @Prop({ type: Types.ObjectId, required: true, unique: true })
     userId: Types.ObjectId
 
     @Prop({ type: [PermissionModel], required: true })
     thingsPermissions: PermissionModel[]
 
+    @Prop({ type: Boolean, required: true, default: false })
+    canCreateThings: boolean
+
     @Prop({ type: [PermissionModel], required: true })
     apletsPermissions: PermissionModel[]
 
+    @Prop({ type: Boolean, required: true, default: false })
+    canCreateAplets: boolean
+
     @Prop({ type: [PermissionModel], required: true })
     dashboardsPermissions: PermissionModel[]
+
+    @Prop({ type: Boolean, required: true, default: false })
+    canCreateDashboards: boolean
 }
 
 
