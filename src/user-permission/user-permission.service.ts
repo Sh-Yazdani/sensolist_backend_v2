@@ -6,7 +6,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserPermission } from './entities/user-permission.entity';
 import { UserService } from '../user/user.service';
 import { PermissionAccess, PermissionModel } from './dto/permission-model.dto';
-import { Thing } from 'src/things/entities/thing.entity';
 
 @Injectable()
 export class UserPermissionService {

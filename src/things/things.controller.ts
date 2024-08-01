@@ -10,11 +10,11 @@ import { ThingListResponseDTO } from './dto/thing.list.dto';
 import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
 import { CheckSystemRole } from '../decorator/role.decorator';
 import { SystemRoles } from '../enums/role.enum';
-import { PermissionSubject, RequiredPermission } from 'src/decorator/permission.decorator';
+import { PermissionSubject, RequiredPermission } from '../decorator/permission.decorator';
 import { Thing } from './entities/thing.entity';
-import { PermissionAccess } from 'src/user-permission/dto/permission-model.dto';
+import { PermissionAccess } from '../user-permission/dto/permission-model.dto';
 import { Request } from 'supertest';
-import { PermissionGuard } from 'src/guard/permission.guard';
+import { PermissionGuard } from '../guard/permission.guard';
 
 @Controller('things')
 @ApiTags("Things")
