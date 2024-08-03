@@ -15,6 +15,7 @@ import { AccessTokenModule } from './auth/access-token.module';
 import { SystemRoleGuard } from './guard/system-role.guard';
 import { FileModule } from './sl-file/file.module';
 import { UserPermissionModule } from './user-permission/user-permission.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { UserPermissionModule } from './user-permission/user-permission.module';
     ThingsModule,
     AccessTokenModule,
     FileModule,
-    UserPermissionModule
+    UserPermissionModule,
+    DashboardModule
   ],
   controllers: [AppController],
   providers: [
