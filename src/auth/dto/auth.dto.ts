@@ -3,10 +3,10 @@ import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger"
 
 export class LoginDTO {
 
-    @ApiProperty({ type: String, description: "user phone number", default: "+989151234567" })
+    @ApiProperty({ type: String, description: "user phone number", default: "+19139633589" })
     phonenumber: string
 
-    @ApiProperty({ type: String, description: "user password", default: "123456" })
+    @ApiProperty({ type: String, description: "user password", default: "sensolist@admin" })
     password: string
 
 }

@@ -11,6 +11,8 @@ import { ConfigModule } from "@nestjs/config";
 import configuration from "./config/configuration";
 import { UserModule } from "./user/user.module";
 import { CustomRoleModule } from "./custom-role/custom-role.module";
+import { DashboardSeeder } from "./dashboard/dashboard.seeder";
+import { Dashboard, DashboardSchema } from "./dashboard/entities/dashboard.entity";
 
 seeder(
     {
@@ -24,6 +26,7 @@ seeder(
                 { name: User.name, schema: UserSchema },
                 { name: CustomRole.name, schema: CustomRoleSchema },
                 { name: Thing.name, schema: ThingSchema },
+                { name: Dashboard.name, schema: DashboardSchema },
             ]),
             UserModule,
             CustomRoleModule
@@ -33,6 +36,7 @@ seeder(
     CustomRoleSeeder,
     UserSeeder,
     ThingSeeder,
+    DashboardSeeder
 ])
 
 
