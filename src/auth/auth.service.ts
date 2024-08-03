@@ -7,8 +7,7 @@ import { Model, ObjectId } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { compare as bcryptCompare } from "bcrypt"
 import { Response, Request } from 'express';
-import { SystemRoles } from '../enums/role.enum';
-import { IdentityDTO } from 'src/dto/identity.dto';
+import { IdentityDTO } from '../dto/identity.dto';
 
 @Injectable()
 export class AuthService {

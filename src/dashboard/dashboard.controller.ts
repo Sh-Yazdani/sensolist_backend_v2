@@ -14,8 +14,8 @@ import { PermissionAccess } from '../user-permission/dto/permission-model.dto';
 import { PermissionGuard } from '../guard/permission.guard';
 import { DashboardListResponseDTO } from './dto/lsit-dashboard.dto';
 import { DashboardListQueryhDTO } from './dto/dashboard-search.dto';
-import { Identifier } from 'src/decorator/auth-decorator';
-import { IdentityDTO } from 'src/dto/identity.dto';
+import { Identifier } from '../decorator/auth-decorator';
+import { IdentityDTO } from '../dto/identity.dto';
 
 @Controller('dashboard')
 @ApiTags("Dashboard")

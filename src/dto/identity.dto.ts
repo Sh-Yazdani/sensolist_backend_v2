@@ -1,5 +1,5 @@
 import { ObjectId, Types } from "mongoose";
-import { SystemRoles } from "src/enums/role.enum";
+import { SystemRoles } from "../enums/role.enum";
 
 export class IdentityDTO {
     userId: Types.ObjectId

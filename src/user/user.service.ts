@@ -7,7 +7,7 @@ import { Model, ObjectId, Types } from 'mongoose';
 import { hash } from "bcrypt"
 import { UserEntityDTO } from './dto/user-entity.dto';
 import { CustomRole } from '../custom-role/entities/custom-role.entity';
-import { IdentityDTO } from 'src/dto/identity.dto';
+import { IdentityDTO } from '../dto/identity.dto';
 
 @Injectable()
 export class UserService {

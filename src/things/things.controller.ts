@@ -13,10 +13,9 @@ import { SystemRoles } from '../enums/role.enum';
 import { PermissionSubject, RequiredPermission } from '../decorator/permission.decorator';
 import { Thing } from './entities/thing.entity';
 import { PermissionAccess } from '../user-permission/dto/permission-model.dto';
-import { Request } from 'supertest';
 import { PermissionGuard } from '../guard/permission.guard';
-import { Identifier } from 'src/decorator/auth-decorator';
-import { IdentityDTO } from 'src/dto/identity.dto';
+import { Identifier } from '../decorator/auth-decorator';
+import { IdentityDTO } from '../dto/identity.dto';
 
 @Controller('things')
 @ApiTags("Things")

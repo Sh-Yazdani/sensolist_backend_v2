@@ -6,7 +6,7 @@ import { PERMISSION_SUBJECT_KEY, REQUIRED_PERMISSION_KEY } from "../decorator/pe
 import { SystemRoles } from "../enums/role.enum";
 import { PermissionAccess } from "../user-permission/dto/permission-model.dto";
 import { UserPermissionService } from "../user-permission/user-permission.service";
-import { IdentityDTO } from "src/dto/identity.dto";
+import { IdentityDTO } from "../dto/identity.dto";
 
 @Injectable()
 export class PermissionGuard implements CanActivate {

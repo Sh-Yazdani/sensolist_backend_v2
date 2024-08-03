@@ -7,9 +7,9 @@ import { Model, ObjectId } from 'mongoose';
 import { DashboardListQueryhDTO } from './dto/dashboard-search.dto';
 import { SortOptions } from '../enums/sort-option.enum';
 import { DashboardEntityDTO } from './dto/dashboard-entity.dto';
-import { IdentityDTO } from 'src/dto/identity.dto';
-import { SystemRoles } from 'src/enums/role.enum';
-import { UserPermissionService } from 'src/user-permission/user-permission.service';
+import { IdentityDTO } from '../dto/identity.dto';
+import { SystemRoles } from '../enums/role.enum';
+import { UserPermissionService } from '../user-permission/user-permission.service';
 
 @Injectable()
 export class DashboardService {

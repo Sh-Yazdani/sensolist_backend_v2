@@ -8,7 +8,7 @@ import { ThingQueryDTO, ThingSortOptions } from './dto/thing-search.dto';
 import { ThingEntityDTO } from './dto/thing-entity.dto';
 import { UserPermissionService } from '../user-permission/user-permission.service';
 import { SystemRoles } from '../enums/role.enum';
-import { IdentityDTO } from 'src/dto/identity.dto';
+import { IdentityDTO } from '../dto/identity.dto';
 
 @Injectable()
 export class ThingsService {
