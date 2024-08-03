@@ -55,22 +55,20 @@ export class DashboardService {
 
   }
 
-  async getAll(): Promise<{ totlaPages: number, list: DashboardEntityDTO[] }> {
-    const dashboards = await this.dashboardModel.find().paginate()
+  async getAll(): Promise<DashboardEntityDTO[]> {
+    const dashboards = await this.dashboardModel.find().exec()
 
-    return {
-      totlaPages: dashboards.totalPages,
-      list: dashboards.docs.map(d => {
-        return {
-          id: d._id,
-          name: d.name,
-          description: d.description,
-          imageId: d.imageId.toString(),
-          pinned: d.pinned,
-        }
-      })
-    }
+    return dashboards.map(d => {
+      return {
+        id: d._id,
+        name: d.name,
+        description: d.description,
+        imageId: d.imageId.toString(),
+        pinned: d.pinned,
+      }
+    })
   }
+
 
   async findOne(id: ObjectId): Promise<DashboardEntityDTO | undefined> {
     const dashboard = await this.dashboardModel.findById(id).exec()
@@ -101,6 +99,34 @@ export class DashboardService {
   async remove(id: ObjectId): Promise<void> {
     await this.dashboardModel.deleteOne({ _id: id }).exec()
   }
+
+  async pin(id: ObjectId, pin: boolean): Promise<boolean> {
+    const dash = await this.dashboardModel.findById(id)
+
+    if (!dash)
+      return false
+
+    dash.pinned = pin
+
+    await dash.save()
+
+    return true
+  }
+
+  async getPinnedDashes(): Promise<DashboardEntityDTO[]> {
+    const dashboards = await this.dashboardModel.find({ pinned: true }).exec()
+
+    return dashboards.map(d => {
+      return {
+        id: d._id,
+        name: d.name,
+        description: d.description,
+        imageId: d.imageId.toString(),
+        pinned: d.pinned,
+      }
+    })
+  }
+
 }
 
 

@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, Req, UseGuards, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, Req, UseGuards, NotFoundException, ParseBoolPipe } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import { CreateDashboardDto } from './dto/create-dashboard.dto';
-import { UpdateDashboardDto } from './dto/update-dashboard.dto';
+import { UpdateDashboardDto, UpdateDashboardPinDTO } from './dto/update-dashboard.dto';
 import { ObjectId } from 'mongoose';
-import { ApiBearerAuth, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ErrorResponseDTO, MessageResponseDTO } from '../dto/response.dto';
 import { DashboardEntityResponseDTO } from './dto/dashboard-entity.dto';
 import { CheckSystemRole } from '../decorator/role.decorator';
@@ -44,7 +44,7 @@ export class DashboardController {
   @ApiParam({ name: "page", type: Number, description: "page number" })
   @ApiOkResponse({ type: DashboardListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  async search(@Query() query: DashboardListQueryhDTO, @Param("page", ParseIntPipe) page: number):Promise<DashboardListResponseDTO> {
+  async search(@Query() query: DashboardListQueryhDTO, @Param("page", ParseIntPipe) page: number): Promise<DashboardListResponseDTO> {
     const dashboards = await this.dashboardService.search(query, page);
 
     return {
@@ -64,7 +64,7 @@ export class DashboardController {
 
     return {
       statusCode: 200,
-      list: dashboards.list
+      list: dashboards
     }
   }
 
@@ -120,4 +120,35 @@ export class DashboardController {
       message: "dashboard was deleted"
     }
   }
+
+  @Patch("change-pin/:id")
+  @ApiOperation({ summary: "change a dashboard pin status" })
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  @ApiNotFoundResponse({ type: ErrorResponseDTO })
+  @ApiParam({ name: "id", type: String, description: "the dashboard id" })
+  @ApiOkResponse({ type: MessageResponseDTO })
+  async changeDashboardPin(@Param("id") id: ObjectId, @Body() data: UpdateDashboardPinDTO): Promise<MessageResponseDTO> {
+    await this.dashboardService.pin(id, data.pin)
+
+    return {
+      statusCode: 200,
+      message: `dashboard was ${data.pin ? "pinned" : "unpinned"}`
+    }
+  }
+
+  @Get("all/pinned")
+  @ApiOperation({ summary: "list of pinned dashboard", description: "this api return all pinned dashboards, that user have access to them" })
+  @ApiOkResponse({ type: DashboardListResponseDTO })
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  async getPinnedDashes(@Req() request: Request): Promise<DashboardListResponseDTO> {
+    const dashboards = await this.dashboardService.getPinnedDashes()
+
+    return {
+      statusCode: 200,
+      list: dashboards
+    }
+  }
+
 }
+
+
