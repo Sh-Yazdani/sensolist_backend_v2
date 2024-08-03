@@ -23,7 +23,7 @@ export class AuthController {
     @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
     async login(@Body() data: LoginDTO): Promise<LoginResponseDTO> {
         try {
-            this.authService.validateUserCredential(data.phonenumber, data.password)
+            await this.authService.validateUserCredential(data.phonenumber, data.password)
             const { tempToken, expiresDate } = await this.authService.sendOTP(data.phonenumber)
 
             return {
@@ -44,9 +44,9 @@ export class AuthController {
     @ApiBadRequestResponse({ type: ErrorResponseDTO, description: "happen when otp is wrong or expired" })
     @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
     async checkOTP(@Body() data: CheckOtpDTO, @Res({ passthrough: true }) response: Response): Promise<TokenPairResponseDTO> {
-        const { phone, systemRole } = await this.authService.verifyOTP(data)
+        const identity = await this.authService.verifyOTP(data)
 
-        const tokens = await this.authService.generateTokenPair(phone, systemRole)
+        const tokens = await this.authService.generateTokenPair(identity)
 
         response.cookie("refresh_token", tokens.refreshToken, { httpOnly: true, path: "/auth/refresh", expires: tokens.refreshExpire })
 
@@ -64,9 +64,9 @@ export class AuthController {
     @ApiUnauthorizedResponse({ type: ErrorResponseDTO, description: "happen when refresh token is not valid, you should redirect user to login page" })
     @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
     async refreshToken(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
-        const {phone, systemRole} = await this.authService.refresh(request, response)
+        const identity = await this.authService.refresh(request, response)
 
-        const newTokens = await this.authService.generateTokenPair(phone, systemRole)
+        const newTokens = await this.authService.generateTokenPair(identity)
 
         response.cookie("refresh_token", newTokens.refreshToken, { httpOnly: true, path: "/auth/refresh", expires: newTokens.refreshExpire })
 

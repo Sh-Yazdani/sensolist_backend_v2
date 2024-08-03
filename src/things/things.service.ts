@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateThingDto, ImageModel } from './dto/create-thing.dto';
+import { Injectable } from '@nestjs/common';
+import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Thing } from './entities/thing.entity';

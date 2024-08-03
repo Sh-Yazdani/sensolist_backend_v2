@@ -7,7 +7,7 @@ import { Model, ObjectId, Types } from 'mongoose';
 import { hash } from "bcrypt"
 import { UserEntityDTO } from './dto/user-entity.dto';
 import { CustomRole } from '../custom-role/entities/custom-role.entity';
-import { SystemRoles } from '../enums/role.enum';
+import { IdentityDTO } from 'src/dto/identity.dto';
 
 @Injectable()
 export class UserService {
@@ -111,22 +111,28 @@ export class UserService {
     return await hash(password, saltOrRounds);
   }
 
-  async storeRefreshToken(token: string, phonenumber: string) {
+  async storeRefreshToken(token: string, userId: Types.ObjectId) {
     const tokenHash = await this.hashData(token)
-    await this.userModel.updateOne({ phonenumber: phonenumber }, { refreshTokenHash: tokenHash })
+    await this.userModel.updateOne({ _id: userId }, { refreshTokenHash: tokenHash })
 
   }
 
-  async getRefreshToksnHash(phonenumber: string): Promise<[string, SystemRoles] | undefined> {
-    const user = await this.userModel.findOne({ phonenumber: phonenumber }).exec()
+  async getRefreshToksnHash(phonenumber: string): Promise<string | undefined> {
+    const user = await this.userModel.findOne({ phonenumber: phonenumber }, { refreshTokenHash: 1 }).exec()
     if (!user)
       return undefined
 
-    return [user.refreshTokenHash, user.systemRole]
+    return user.refreshTokenHash
   }
 
-  async getSystemRole(phonenumber: string): Promise<SystemRoles> {
-    return (await this.userModel.findOne({ phonenumber: phonenumber }).exec()).systemRole
+  async getUserIdentity(phonenumber: string): Promise<IdentityDTO> {
+    const user = await this.userModel.findOne({ phonenumber: phonenumber }).exec()
+
+    return {
+      userId: user._id,
+      phonenumber: user.phonenumber,
+      systemRole: user.systemRole
+    }
   }
 
   async getUserIdByPhonunmber(phonenumber: string): Promise<Types.ObjectId | undefined> {

@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { compare as bcryptCompare } from "bcrypt"
 import { Response, Request } from 'express';
 import { SystemRoles } from '../enums/role.enum';
+import { IdentityDTO } from 'src/dto/identity.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +25,7 @@ export class AuthService {
 
     async validateUserCredential(phone: string, password: string) {
         const passHash = await this.userService.getPasswordHash(phone)
-        const valid = await bcryptCompare(phone, passHash)
+        const valid = await bcryptCompare(password, passHash)
         if (!valid)
             throw new Error("password is wrong")
     }
@@ -50,7 +51,7 @@ export class AuthService {
         }
     }
 
-    async verifyOTP(data: CheckOtpDTO): Promise<{ phone: string, systemRole: SystemRoles }> {
+    async verifyOTP(data: CheckOtpDTO): Promise<IdentityDTO> {
         try {
             await this.apiTokenService.verifyAsync(data.token)
         }
@@ -62,15 +63,12 @@ export class AuthService {
         if (!otpObject)
             throw new BadRequestException("otp not valid")
 
-        const systemRole = await this.userService.getSystemRole(otpObject.phonenumber)
+        const identity = await this.userService.getUserIdentity(otpObject.phonenumber)
 
-        return {
-            phone: otpObject.phonenumber,
-            systemRole: systemRole
-        }
+        return identity
     }
 
-    async refresh(request: Request, response: Response): Promise<{ phone: string, systemRole: SystemRoles }> {
+    async refresh(request: Request, response: Response): Promise<IdentityDTO> {
         const refreshToken = this.fetchRefreshTokenFromCookie(request.get("cookie"))
         if (!refreshToken)
             throw new UnauthorizedException("refresh token is not exists")
@@ -83,31 +81,32 @@ export class AuthService {
             throw new ForbiddenException("refresh token is not valid or expired")
         }
 
-        const [refreshTokenHash, systemRole] = await this.userService.getRefreshToksnHash(payload.sub.phonenumber) ?? []
+        const refreshTokenHash = await this.userService.getRefreshToksnHash(payload.sub.phonenumber)
         if (!refreshTokenHash)
             throw new ForbiddenException("refresh token is not valid at all")
 
 
-        const isNew = bcryptCompare(refreshToken, refreshTokenHash)
+        const isNew = await bcryptCompare(refreshToken, refreshTokenHash)
         if (!isNew)
             throw new ForbiddenException("refresh token is not valid please login again")
 
         return {
-            phone: payload.sub.phonenumber,
-            systemRole: systemRole
+            userId: payload.sub.userId,
+            phonenumber: payload.sub.phonenumber,
+            systemRole: payload.sub.systemRole,
         }
     }
 
-    async generateTokenPair(phonenumber: string, systemRole: SystemRoles): Promise<{accessToken:string, refreshToken:string, accessExpire:Date, refreshExpire:Date}> {
-        const accessToken = await this.accesshTokenService.signAsync({ sub: { phonenumber, systemRole } })
-        const refreshToken = await this.refreshTokenService.signAsync({ sub: { phonenumber, systemRole } })
+    async generateTokenPair(identity: IdentityDTO): Promise<{ accessToken: string, refreshToken: string, accessExpire: Date, refreshExpire: Date }> {
+        const accessToken = await this.accesshTokenService.signAsync({ sub: identity })
+        const refreshToken = await this.refreshTokenService.signAsync({ sub: identity })
 
         const accessExpire = new Date()
         const refreshExpire = new Date()
         accessExpire.setSeconds(accessExpire.getSeconds() + 900)
         refreshExpire.setDate(refreshExpire.getDate() + 7)
 
-        await this.userService.storeRefreshToken(refreshToken, phonenumber)
+        await this.userService.storeRefreshToken(refreshToken, identity.userId)
 
         return {
             accessToken,

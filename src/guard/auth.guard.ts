@@ -38,8 +38,7 @@ export class AuthenticationGuard implements CanActivate {
             throw new UnauthorizedException("token is not valid or expired")
         }
 
-        req['phonunumber'] = payload.sub.phonenumber
-        req['systemRole'] = payload.sub.systemRole
+        req.identity = payload.sub
 
         return true
 

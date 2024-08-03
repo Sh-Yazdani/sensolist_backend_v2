@@ -15,6 +15,8 @@ import { Thing } from './entities/thing.entity';
 import { PermissionAccess } from '../user-permission/dto/permission-model.dto';
 import { Request } from 'supertest';
 import { PermissionGuard } from '../guard/permission.guard';
+import { Identifier } from 'src/decorator/auth-decorator';
+import { IdentityDTO } from 'src/dto/identity.dto';
 
 @Controller('things')
 @ApiTags("Things")
@@ -44,19 +46,16 @@ export class ThingsController {
   @ApiParam({ name: "page", type: Number, description: "page number" })
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  search(@Req() request:Request, @Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page: number) {
-    return this.thingsService.search(request['systemRole'], request['phonunumber'], page, query);
+  search(@Identifier() identity: IdentityDTO, @Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page: number) {
+    return this.thingsService.search(identity.systemRole, identity.phonenumber, page, query);
   }
 
   @Get("all")
   @ApiOperation({ summary: "list of all things", description: "this api return all things, that user have access to them" })
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  async findAll(@Req() request:Request, @Query() query: ThingQueryDTO): Promise<ThingListResponseDTO> {
-    const userPhone = request["phonunumber"]
-    const systemRole = request["systemRole"]
-
-    const things = await this.thingsService.getAll(userPhone, systemRole);
+  async findAll(@Identifier() identity: IdentityDTO, @Query() query: ThingQueryDTO): Promise<ThingListResponseDTO> {
+    const things = await this.thingsService.getAll(identity.systemRole, identity.phonenumber);
 
     return {
       statusCode: 200,
@@ -65,7 +64,7 @@ export class ThingsController {
   }
 
   @Get('detail/:id')
-  @ApiOperation({ summary: "thing detail"})
+  @ApiOperation({ summary: "thing detail" })
   @ApiOkResponse({ type: ThingEntityResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })

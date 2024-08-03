@@ -15,6 +15,8 @@ import { Request } from 'supertest';
 import { PermissionGuard } from '../guard/permission.guard';
 import { DashboardListResponseDTO } from './dto/lsit-dashboard.dto';
 import { DashboardListQueryhDTO } from './dto/dashboard-search.dto';
+import { Identifier } from 'src/decorator/auth-decorator';
+import { IdentityDTO } from 'src/dto/identity.dto';
 
 @Controller('dashboard')
 @ApiTags("Dashboard")
@@ -59,7 +61,7 @@ export class DashboardController {
   @ApiOperation({ summary: "list of all dashboard", description: "this api return all dashboard, that user have access to them" })
   @ApiOkResponse({ type: DashboardListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  async getAll(@Req() request: Request): Promise<DashboardListResponseDTO> {
+  async getAll(@Identifier() identity:IdentityDTO): Promise<DashboardListResponseDTO> {
     const dashboards = await this.dashboardService.getAll()
 
     return {
@@ -140,7 +142,7 @@ export class DashboardController {
   @ApiOperation({ summary: "list of pinned dashboard", description: "this api return all pinned dashboards, that user have access to them" })
   @ApiOkResponse({ type: DashboardListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  async getPinnedDashes(@Req() request: Request): Promise<DashboardListResponseDTO> {
+  async getPinnedDashes(@Identifier() identity:IdentityDTO): Promise<DashboardListResponseDTO> {
     const dashboards = await this.dashboardService.getPinnedDashes()
 
     return {
