@@ -6,6 +6,7 @@ import { PERMISSION_SUBJECT_KEY, REQUIRED_PERMISSION_KEY } from "../decorator/pe
 import { SystemRoles } from "../enums/role.enum";
 import { PermissionAccess } from "../user-permission/dto/permission-model.dto";
 import { UserPermissionService } from "../user-permission/user-permission.service";
+import { IdentityDTO } from "src/dto/identity.dto";
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -17,10 +18,13 @@ export class PermissionGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const req: Request = context.switchToHttp().getRequest()
-        const systemRole = req["systemRole"]
-        const phonenumner = req["phonunumber"]
+        const identity: IdentityDTO = {
+            userId: req['identity'].userId,
+            phonenumber: req['identity'].phonenumber,
+            systemRole: req['identity'].systemRole,
+        }
 
-        if (systemRole == SystemRoles.Admin)
+        if (identity.systemRole == SystemRoles.Admin)
             return true
 
         const permission = this.reflector.getAllAndOverride<PermissionAccess>(REQUIRED_PERMISSION_KEY, [
@@ -38,11 +42,11 @@ export class PermissionGuard implements CanActivate {
         let haveAccess = false
 
         if (permission == PermissionAccess.Add) {
-            haveAccess = await this.permissionService.userHaveCreatePermission(phonenumner, entity)
+            haveAccess = await this.permissionService.userHaveCreatePermission(identity.userId, entity)
         }
         else {
             const targetEntityId = req.params["id"]
-            haveAccess = await this.permissionService.userHavPermissions(phonenumner, entity, targetEntityId, permission)
+            haveAccess = await this.permissionService.userHavPermissions(identity.userId, entity, targetEntityId, permission)
         }
 
         if (!haveAccess)

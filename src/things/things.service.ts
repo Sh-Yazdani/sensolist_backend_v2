@@ -3,11 +3,12 @@ import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Thing } from './entities/thing.entity';
-import { Model, ObjectId } from 'mongoose';
+import { Model, ObjectId, TypeExpressionOperatorReturningObjectId, Types } from 'mongoose';
 import { ThingQueryDTO, ThingSortOptions } from './dto/thing-search.dto';
 import { ThingEntityDTO } from './dto/thing-entity.dto';
 import { UserPermissionService } from '../user-permission/user-permission.service';
 import { SystemRoles } from '../enums/role.enum';
+import { IdentityDTO } from 'src/dto/identity.dto';
 
 @Injectable()
 export class ThingsService {
@@ -21,12 +22,12 @@ export class ThingsService {
     await this.thingModel.create(data)
   }
 
-  async search(systemRole: SystemRoles, userPhonenumber: string, page: number, query: ThingQueryDTO): Promise<{list:ThingEntityDTO[], totalPages:number}> {
+  async search(identity:IdentityDTO, page: number, query: ThingQueryDTO): Promise<{ list: ThingEntityDTO[], totalPages: number }> {
 
     let dbQuery = {}
 
-    if (systemRole != SystemRoles.Admin) {
-      const allowedThings = await this.permissionService.getAllowedEntities(userPhonenumber, Thing)
+    if (identity.systemRole != SystemRoles.Admin) {
+      const allowedThings = await this.permissionService.getAllowedEntities(identity.userId, Thing)
       dbQuery = { _id: { $in: allowedThings } }
     }
 
@@ -82,12 +83,12 @@ export class ThingsService {
     }
   }
 
-  async getAll(systemRole: SystemRoles, userPhonenumber: string): Promise<ThingEntityDTO[]> {
+  async getAll(identity:IdentityDTO): Promise<ThingEntityDTO[]> {
 
     let dbQuery = {}
 
-    if (systemRole != SystemRoles.Admin) {
-      const allowedThings = await this.permissionService.getAllowedEntities(userPhonenumber, Thing)
+    if (identity.systemRole != SystemRoles.Admin) {
+      const allowedThings = await this.permissionService.getAllowedEntities(identity.userId, Thing)
       dbQuery = { _id: { $in: allowedThings } }
     }
 
@@ -115,7 +116,7 @@ export class ThingsService {
   async findOne(id: ObjectId): Promise<ThingEntityDTO | undefined> {
     const thing = await this.thingModel.findById(id).exec()
 
-    if(!thing)
+    if (!thing)
       return undefined
 
     const coverImage = thing.images?.find(i => i.isCover)
@@ -137,7 +138,7 @@ export class ThingsService {
   async update(id: ObjectId, data: UpdateThingDto): Promise<boolean> {
     const thing = await this.thingModel.findById(id).exec()
 
-    if(!thing)
+    if (!thing)
       return false
 
     await thing.updateOne({ ...data }).exec()
@@ -145,7 +146,7 @@ export class ThingsService {
     return true
   }
 
-  async remove(id: ObjectId):Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     await this.thingModel.deleteOne({ _id: id }).exec()
   }
 

@@ -47,7 +47,7 @@ export class ThingsController {
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   search(@Identifier() identity: IdentityDTO, @Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page: number) {
-    return this.thingsService.search(identity.systemRole, identity.phonenumber, page, query);
+    return this.thingsService.search(identity, page, query);
   }
 
   @Get("all")
@@ -55,7 +55,7 @@ export class ThingsController {
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   async findAll(@Identifier() identity: IdentityDTO, @Query() query: ThingQueryDTO): Promise<ThingListResponseDTO> {
-    const things = await this.thingsService.getAll(identity.systemRole, identity.phonenumber);
+    const things = await this.thingsService.getAll(identity);
 
     return {
       statusCode: 200,

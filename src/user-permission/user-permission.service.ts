@@ -51,10 +51,7 @@ export class UserPermissionService {
     await permission.save()
   }
 
-  async userHavPermissions(phonenumber: string, permissionSubJect: Type<any>, targetEntityId: string | undefined, requiredPermission: PermissionAccess): Promise<boolean> {
-
-    const userId = await this.userService.getUserIdByPhonunmber(phonenumber)
-
+  async userHavPermissions(userId:Types.ObjectId, permissionSubJect: Type<any>, targetEntityId: string | undefined, requiredPermission: PermissionAccess): Promise<boolean> {
     if (!userId)
       return false
 
@@ -64,7 +61,7 @@ export class UserPermissionService {
     const dbQuery = { userId: userId.toString() }
 
     let propertyKey = 'thingsPermissions'//TODO check permissionSunject
-    
+
     dbQuery[propertyKey] = { '$elemMatch': { 'entityId': targetEntityId, 'accesses': requiredPermission } }
 
     const permissions = await this.permissionModel.findOne(dbQuery).exec()
@@ -73,9 +70,7 @@ export class UserPermissionService {
 
   }
 
-  async userHaveCreatePermission(phonenumber: string, permissionSubJect: Type<any>) {
-    const userId = await this.userService.getUserIdByPhonunmber(phonenumber)
-
+  async userHaveCreatePermission(userId: Types.ObjectId, permissionSubJect: Type<any>) {
     if (!userId)
       return false
 
@@ -91,9 +86,7 @@ export class UserPermissionService {
 
   }
 
-  async getAllowedEntities(phonenumber: string, entity: Type<any>): Promise<Types.ObjectId[] | undefined> {
-    const userId = await this.userService.getUserIdByPhonunmber(phonenumber)
-
+  async getAllowedEntities(userId: Types.ObjectId, entity: Type<any>): Promise<Types.ObjectId[] | undefined> {
     if (!userId)
       return undefined
 

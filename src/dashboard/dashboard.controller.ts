@@ -124,11 +124,12 @@ export class DashboardController {
   }
 
   @Patch("change-pin/:id")
-  @ApiOperation({ summary: "change a dashboard pin status" })
+  @ApiOperation({ summary: "change a dashboard pin status", description:"just users with `View` access can change it"})
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the dashboard id" })
   @ApiOkResponse({ type: MessageResponseDTO })
+  @RequiredPermission(PermissionAccess.View)
   async changeDashboardPin(@Param("id") id: ObjectId, @Body() data: UpdateDashboardPinDTO): Promise<MessageResponseDTO> {
     await this.dashboardService.pin(id, data.pin)
 
@@ -139,9 +140,10 @@ export class DashboardController {
   }
 
   @Get("all/pinned")
-  @ApiOperation({ summary: "list of pinned dashboard", description: "this api return all pinned dashboards, that user have access to them" })
+  @ApiOperation({ summary: "list of pinned dashboard", description: "this api return all pinned dashboards, that user have `View` access" })
   @ApiOkResponse({ type: DashboardListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  @RequiredPermission(PermissionAccess.View)
   async getPinnedDashes(@Identifier() identity:IdentityDTO): Promise<DashboardListResponseDTO> {
     const dashboards = await this.dashboardService.getPinnedDashes()
 
