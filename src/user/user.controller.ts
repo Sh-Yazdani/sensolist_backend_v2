@@ -34,7 +34,7 @@ export class UserController {
     return this.userService.findAll(page);
   }
 
-  @Get(':id')
+  @Get('detail/:id')
   @ApiOperation({ summary: "user detail" })
   @ApiOkResponse({ type: UserEntityResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the user id" })

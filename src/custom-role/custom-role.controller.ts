@@ -34,7 +34,7 @@ export class CustomRoleController {
     return this.customRoleService.findAll(page);
   }
 
-  @Get(':id')
+  @Get('detail/:id')
   @ApiOperation({ summary: "role detail" })
   @ApiOkResponse({ type: CustomRoleEntityResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the role id" })

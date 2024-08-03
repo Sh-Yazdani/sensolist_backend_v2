@@ -43,7 +43,7 @@ export class ThingsController {
     return this.thingsService.findAll(request['systemRole'], request['phonumber'], page, query);
   }
 
-  @Get(':id')
+  @Get('detail/:id')
   @ApiOperation({ summary: "thing detail"})
   @ApiOkResponse({ type: ThingEntityResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the thing id" })
