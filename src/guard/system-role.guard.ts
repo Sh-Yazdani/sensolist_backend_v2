@@ -21,7 +21,7 @@ export class SystemRoleGuard implements CanActivate {
             return true
 
         const req: Request = context.switchToHttp().getRequest()
-        const role = req['systemRole']
+        const role = req['identity'].systemRole
 
         const haveRole = requiredRoles.find(r => r == role)
 
