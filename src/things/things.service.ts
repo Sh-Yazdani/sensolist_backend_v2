@@ -5,9 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Thing } from './entities/thing.entity';
 import { Model, ObjectId } from 'mongoose';
 import { ThingQueryDTO, ThingSortOptions } from './dto/thing-search.dto';
-import { MessageResponseDTO } from '../dto/response.dto';
-import { ThingListResponseDTO } from './dto/thing.list.dto';
-import { ThingEntityDTO, ThingEntityResponseDTO } from './dto/thing-entity.dto';
+import { ThingEntityDTO } from './dto/thing-entity.dto';
 import { UserPermissionService } from '../user-permission/user-permission.service';
 import { SystemRoles } from '../enums/role.enum';
 
@@ -19,16 +17,11 @@ export class ThingsService {
     private readonly permissionService: UserPermissionService
   ) { }
 
-  async create(data: CreateThingDto): Promise<MessageResponseDTO> {
-    const newThing = await this.thingModel.create(data)
-
-    return {
-      statusCode: 201,
-      message: "thing was created"
-    }
+  async create(data: CreateThingDto): Promise<void> {
+    await this.thingModel.create(data)
   }
 
-  async search(systemRole: SystemRoles, userPhonenumber: string, page: number, query: ThingQueryDTO): Promise<ThingListResponseDTO> {
+  async search(systemRole: SystemRoles, userPhonenumber: string, page: number, query: ThingQueryDTO): Promise<{list:ThingEntityDTO[], totalPages:number}> {
 
     let dbQuery = {}
 
@@ -70,11 +63,8 @@ export class ThingsService {
 
     const things = await thingsDBQuery.paginate({ page: page })
 
-
     return {
-      statusCode: 200,
-      page: page,
-      pageCount: things.totalPages,
+      totalPages: things.totalPages,
       list: things.docs.map(t => {
         return {
           id: t._id,
@@ -122,52 +112,41 @@ export class ThingsService {
 
   }
 
-  async findOne(id: ObjectId): Promise<ThingEntityResponseDTO> {
+  async findOne(id: ObjectId): Promise<ThingEntityDTO | undefined> {
     const thing = await this.thingModel.findById(id).exec()
 
-    if (!thing)
-      throw new NotFoundException("thing is not exists")
+    if(!thing)
+      return undefined
 
     const coverImage = thing.images?.find(i => i.isCover)
 
     return {
-      statusCode: 200,
-      thing: {
-        id: thing._id,
-        name: thing.name,
-        brand: thing.brand,
-        model: thing.model,
-        type: thing.type,
-        actions: thing.actions,
-        characteristics: thing.characteristics,
-        activition: thing.activition,
-        description: thing.description,
-        images: coverImage ? [coverImage] : []
-      }
+      id: thing._id,
+      name: thing.name,
+      brand: thing.brand,
+      model: thing.model,
+      type: thing.type,
+      actions: thing.actions,
+      characteristics: thing.characteristics,
+      activition: thing.activition,
+      description: thing.description,
+      images: coverImage ? [coverImage] : []
     }
   }
 
-  async update(id: ObjectId, data: UpdateThingDto): Promise<MessageResponseDTO> {
+  async update(id: ObjectId, data: UpdateThingDto): Promise<boolean> {
     const thing = await this.thingModel.findById(id).exec()
 
-    if (thing == undefined)
-      throw new NotFoundException("id is not found")
+    if(!thing)
+      return false
 
     await thing.updateOne({ ...data }).exec()
 
-    return {
-      statusCode: 200,
-      message: "user was updated"
-    }
+    return true
   }
 
-  async remove(id: ObjectId) {
+  async remove(id: ObjectId):Promise<void> {
     await this.thingModel.deleteOne({ _id: id }).exec()
-
-    return {
-      status: 200,
-      message: "user was deleted"
-    }
   }
 
 }

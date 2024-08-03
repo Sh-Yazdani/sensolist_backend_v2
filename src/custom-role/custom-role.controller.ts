@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CustomRoleService } from './custom-role.service';
 import { CreateCustomRoleDto } from './dto/create-custom-role.dto';
 import { UpdateCustomRoleDto } from './dto/update-custom-role.dto';
@@ -21,8 +21,13 @@ export class CustomRoleController {
   @ApiOperation({ summary: "creating new custom role", description: "custom role can create by admin" })
   @ApiCreatedResponse({ type: MessageResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  create(@Body() createCustomRoleDto: CreateCustomRoleDto) {
-    return this.customRoleService.create(createCustomRoleDto);
+  async create(@Body() createCustomRoleDto: CreateCustomRoleDto): Promise<MessageResponseDTO> {
+    await this.customRoleService.create(createCustomRoleDto);
+
+    return {
+      statusCode: 201,
+      message: "role is created"
+    }
   }
 
   @Get(":page")
@@ -30,8 +35,16 @@ export class CustomRoleController {
   @ApiParam({ name: "page", type: Number, description: "page number"})
   @ApiOkResponse({ type: CustomRoleListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  findAll(@Param('page', ParseIntPipe) page: number) {
-    return this.customRoleService.findAll(page);
+  async findAll(@Param('page', ParseIntPipe) page: number): Promise<CustomRoleListResponseDTO> {
+    const roles = await this.customRoleService.findAll();
+
+    return {
+      page:page,
+      pageCount:roles.totalPages,
+      list: roles.list,
+      statusCode: 200
+    }
+
   }
 
   @Get('detail/:id')
@@ -40,17 +53,35 @@ export class CustomRoleController {
   @ApiParam({ name: "id", type: String, description: "the role id" })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  findOne(@Param('id') id: ObjectId) {
-    return this.customRoleService.findOne(id);
+  async findOne(@Param('id') id: ObjectId): Promise<CustomRoleEntityResponseDTO> {
+    const role = await this.customRoleService.findOne(id);
+
+    if (!role)
+      throw new NotFoundException("role is not exists")
+
+    return {
+      statusCode: 200,
+      role: role
+    }
+
   }
 
   @Patch(':id')
   @ApiOperation({ summary: "updating a role via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the role id" })
+  @ApiNotFoundResponse({ type: ErrorResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  update(@Param('id') id: ObjectId, @Body() updateCustomRoleDto: UpdateCustomRoleDto) {
-    return this.customRoleService.update(id, updateCustomRoleDto);
+  async update(@Param('id') id: ObjectId, @Body() updateCustomRoleDto: UpdateCustomRoleDto) {
+    const updated = await this.customRoleService.update(id, updateCustomRoleDto);
+
+    if (!updated)
+      throw new NotFoundException("role is not exists")
+
+    return {
+      statusCode: 200,
+      message: "role was updated"
+    }
   }
 
   @Delete(':id')
@@ -58,8 +89,13 @@ export class CustomRoleController {
   @ApiOkResponse({ type: MessageResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the role id" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  remove(@Param('id') id: ObjectId) {
-    return this.customRoleService.remove(id);
+  async remove(@Param('id') id: ObjectId) {
+    await this.customRoleService.remove(id);
+
+    return {
+      statusCode: 200,
+      message: "role was deleted"
+    }
   }
 }
 

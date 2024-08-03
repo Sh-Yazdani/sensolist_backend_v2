@@ -22,42 +22,35 @@ export class AuthService {
         @Inject("AccessTokenService") private readonly accesshTokenService: JwtService,
     ) { }
 
-    async login(data: LoginDTO): Promise<LoginResponseDTO> {
-        const passHash = await this.userService.getPasswordHash(data.phonenumber)
-
-        let hashIsValid
-        try {
-            hashIsValid = this.checkPasswordHash(data.password, passHash)
-        }
-        catch (e) {
-            throw new ForbiddenException("password is wrong or is not exists")
-        }
-
-        if (hashIsValid) {
-            const otp = await this.generateOTP()
-            const tempToken = await this.apiTokenService.signAsync({ sub: "api token" })
-            const expiresDate = new Date()
-            expiresDate.setSeconds(expiresDate.getSeconds() + 120)
-
-            const newOtpModel = new this.otpModel({
-                date: new Date(),
-                otp: otp,
-                phonenumber: data.phonenumber,
-                token: tempToken
-            })
-
-            await newOtpModel.save()
-
-            return {
-                statusCode: 200,
-                otpToken: tempToken,
-                expiresOn: expiresDate
-            }
-        } else
-            throw new BadRequestException("pass is wrong!")
+    async validateUserCredential(phone: string, password: string) {
+        const passHash = await this.userService.getPasswordHash(phone)
+        const valid = await bcryptCompare(phone, passHash)
+        if (!valid)
+            throw new Error("password is wrong")
     }
 
-    async checkOTP(data: CheckOtpDTO, res: Response): Promise<TokenPairResponseDTO> {
+    async sendOTP(phone: string): Promise<{ tempToken: string; expiresDate: Date }> {
+        const otp = await this.generateOTP()
+        const tempToken = await this.apiTokenService.signAsync({ sub: "api token" })
+        const expiresDate = new Date()
+        expiresDate.setSeconds(expiresDate.getSeconds() + 120)
+
+        const newOtpModel = new this.otpModel({
+            date: new Date(),
+            otp: otp,
+            phonenumber: phone,
+            token: tempToken
+        })
+
+        await newOtpModel.save()
+
+        return {
+            tempToken,
+            expiresDate
+        }
+    }
+
+    async verifyOTP(data: CheckOtpDTO): Promise<{ phone: string, systemRole: SystemRoles }> {
         try {
             await this.apiTokenService.verifyAsync(data.token)
         }
@@ -71,10 +64,13 @@ export class AuthService {
 
         const systemRole = await this.userService.getSystemRole(otpObject.phonenumber)
 
-        return this.generateTokenPair(otpObject.phonenumber, systemRole, res)
+        return {
+            phone: otpObject.phonenumber,
+            systemRole: systemRole
+        }
     }
 
-    async refreshToken(request: Request, response: Response): Promise<TokenPairResponseDTO> {
+    async refresh(request: Request, response: Response): Promise<{ phone: string, systemRole: SystemRoles }> {
         const refreshToken = this.fetchRefreshTokenFromCookie(request.get("cookie"))
         if (!refreshToken)
             throw new UnauthorizedException("refresh token is not exists")
@@ -96,10 +92,32 @@ export class AuthService {
         if (!isNew)
             throw new ForbiddenException("refresh token is not valid please login again")
 
-        return this.generateTokenPair(payload.sub.phonenumber, systemRole, response)
+        return {
+            phone: payload.sub.phonenumber,
+            systemRole: systemRole
+        }
     }
 
-    fetchRefreshTokenFromCookie(cookies: string | undefined): string | undefined {
+    async generateTokenPair(phonenumber: string, systemRole: SystemRoles): Promise<{accessToken:string, refreshToken:string, accessExpire:Date, refreshExpire:Date}> {
+        const accessToken = await this.accesshTokenService.signAsync({ sub: { phonenumber, systemRole } })
+        const refreshToken = await this.refreshTokenService.signAsync({ sub: { phonenumber, systemRole } })
+
+        const accessExpire = new Date()
+        const refreshExpire = new Date()
+        accessExpire.setSeconds(accessExpire.getSeconds() + 900)
+        refreshExpire.setDate(refreshExpire.getDate() + 7)
+
+        await this.userService.storeRefreshToken(refreshToken, phonenumber)
+
+        return {
+            accessToken,
+            refreshToken,
+            accessExpire,
+            refreshExpire
+        }
+    }
+
+    private fetchRefreshTokenFromCookie(cookies: string | undefined): string | undefined {
         if (!cookies)
             return undefined
 
@@ -127,30 +145,6 @@ export class AuthService {
 
         return otp
 
-    }
-
-    async checkPasswordHash(password: string, hash: string): Promise<boolean> {
-        return await bcryptCompare(password, hash);
-    }
-
-    private async generateTokenPair(phonenumber: string, systemRole: SystemRoles, res: Response): Promise<TokenPairResponseDTO> {
-        const accessToken = await this.accesshTokenService.signAsync({ sub: { phonenumber, systemRole } })
-        const refreshToken = await this.refreshTokenService.signAsync({ sub: { phonenumber, systemRole } })
-
-        const accessExpire = new Date()
-        const refreshExpire = new Date()
-        accessExpire.setSeconds(accessExpire.getSeconds() + 900)
-        refreshExpire.setDate(refreshExpire.getDate() + 7)
-
-        await this.userService.storeRefreshToken(refreshToken, phonenumber)
-
-        res.cookie("refresh_token", refreshToken, { httpOnly: true, path: "/auth/refresh", expires: refreshExpire })
-
-        return {
-            statusCode: 200,
-            accessToken: accessToken,
-            expiresOn: accessExpire
-        }
     }
 
 

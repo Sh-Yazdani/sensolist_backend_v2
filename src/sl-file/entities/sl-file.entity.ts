@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ObjectId, Types } from "mongoose";
 import { Factory } from "nestjs-seeder";
 
 export enum FileEntity {
@@ -7,6 +8,8 @@ export enum FileEntity {
 
 @Schema({ timestamps: true })
 export class SLFile {
+
+    _id: Types.ObjectId
 
     @Factory(true)
     @Prop({ required: true, default: false })

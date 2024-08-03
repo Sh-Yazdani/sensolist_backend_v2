@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException } from '@nestjs/common';
 import { ThingsService } from './things.service';
 import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
@@ -30,8 +30,13 @@ export class ThingsController {
   @ApiCreatedResponse({ type: MessageResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @RequiredPermission(PermissionAccess.Add)
-  create(@Body() createThingDto: CreateThingDto) {
-    return this.thingsService.create(createThingDto);
+  async create(@Body() createThingDto: CreateThingDto): Promise<MessageResponseDTO> {
+    await this.thingsService.create(createThingDto);
+
+    return {
+      statusCode: 201,
+      message: "thing was created"
+    }
   }
 
   @Get("search/:page")
@@ -47,14 +52,14 @@ export class ThingsController {
   @ApiOperation({ summary: "list of all things", description: "this api return all things, that user have access to them" })
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  async getAll(@Req() request:Request):Promise<ThingListResponseDTO> {
+  async findAll(@Req() request:Request, @Query() query: ThingQueryDTO): Promise<ThingListResponseDTO> {
     const userPhone = request["phonunumber"]
     const systemRole = request["systemRole"]
 
-    const things = await this.thingsService.getAll(systemRole, userPhone)
+    const things = await this.thingsService.findAll(userPhone, systemRole, query);
 
     return {
-      statusCode : 200,
+      statusCode: 200,
       list: things
     }
   }
@@ -66,8 +71,16 @@ export class ThingsController {
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
   @RequiredPermission(PermissionAccess.View)
-  findOne(@Param('id') id: ObjectId) {
-    return this.thingsService.findOne(id);
+  async findOne(@Param('id') id: ObjectId): Promise<ThingEntityResponseDTO> {
+    const thing = await this.thingsService.findOne(id);
+
+    if (!thing)
+      throw new NotFoundException("thing is not exists")
+
+    return {
+      statusCode: 200,
+      thing: thing
+    }
   }
 
   @Patch(':id')
@@ -77,8 +90,16 @@ export class ThingsController {
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @RequiredPermission(PermissionAccess.Edit)
-  update(@Param('id') id: ObjectId, @Body() updateThingDto: UpdateThingDto) {
-    return this.thingsService.update(id, updateThingDto);
+  async update(@Param('id') id: ObjectId, @Body() updateThingDto: UpdateThingDto) {
+    const updated = await this.thingsService.update(id, updateThingDto);
+
+    if (!updated)
+      throw new NotFoundException("thing not found")
+
+    return {
+      statusCode: 200,
+      message: "user was updated"
+    }
   }
 
   @Delete(':id')
@@ -87,7 +108,12 @@ export class ThingsController {
   @ApiParam({ name: "id", type: String, description: "the thing id" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @RequiredPermission(PermissionAccess.Delete)
-  remove(@Param('id') id: ObjectId) {
-    return this.thingsService.remove(id);
+  async remove(@Param('id') id: ObjectId): Promise<MessageResponseDTO> {
+    await this.thingsService.remove(id);
+
+    return {
+      statusCode: 200,
+      message: "user was deleted"
+    }
   }
 }
