@@ -7,7 +7,7 @@ import { Model, ObjectId } from 'mongoose';
 import { ThingQueryDTO, ThingSortOptions } from './dto/thing-search.dto';
 import { MessageResponseDTO } from '../dto/response.dto';
 import { ThingListResponseDTO } from './dto/thing.list.dto';
-import { ThingEntityResponseDTO } from './dto/thing-entity.dto';
+import { ThingEntityDTO, ThingEntityResponseDTO } from './dto/thing-entity.dto';
 import { UserPermissionService } from '../user-permission/user-permission.service';
 import { SystemRoles } from '../enums/role.enum';
 
@@ -28,10 +28,10 @@ export class ThingsService {
     }
   }
 
-  async findAll(systemRole: SystemRoles, userPhonenumber: string, page: number, query: ThingQueryDTO): Promise<ThingListResponseDTO> {
+  async search(systemRole: SystemRoles, userPhonenumber: string, page: number, query: ThingQueryDTO): Promise<ThingListResponseDTO> {
 
     let dbQuery = {}
-    
+
     if (systemRole != SystemRoles.Admin) {
       const allowedThings = await this.permissionService.getAllowedEntities(userPhonenumber, Thing)
       dbQuery = { _id: { $in: allowedThings } }
@@ -90,6 +90,36 @@ export class ThingsService {
         }
       })
     }
+  }
+
+  async getAll(systemRole: SystemRoles, userPhonenumber: string): Promise<ThingEntityDTO[]> {
+
+    let dbQuery = {}
+
+    if (systemRole != SystemRoles.Admin) {
+      const allowedThings = await this.permissionService.getAllowedEntities(userPhonenumber, Thing)
+      dbQuery = { _id: { $in: allowedThings } }
+    }
+
+    let thingsDBQuery = this.thingModel.find(dbQuery)
+
+    const things = await thingsDBQuery.exec()
+
+    return things.map(t => {
+      return {
+        id: t._id,
+        name: t.name,
+        brand: t.brand,
+        model: t.model,
+        type: t.type,
+        actions: t.actions,
+        characteristics: t.characteristics,
+        activition: t.activition,
+        description: t.description,
+        images: t.images
+      }
+    })
+
   }
 
   async findOne(id: ObjectId): Promise<ThingEntityResponseDTO> {

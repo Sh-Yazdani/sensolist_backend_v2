@@ -34,13 +34,29 @@ export class ThingsController {
     return this.thingsService.create(createThingDto);
   }
 
-  @Get(":page")
-  @ApiOperation({ summary: "list of all things", description: "with this API you can search and filter things, for getting all exists things, dont pass the search and filter params. for nonAdmin users its return just granted things with View access" })
+  @Get("search/:page")
+  @ApiOperation({ summary: "paged list of things", description: "with this API you can search and filter things. for nonAdmin users its return just granted things with View access" })
   @ApiParam({ name: "page", type: Number, description: "page number" })
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  findAll(@Req() request:Request, @Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page: number) {
-    return this.thingsService.findAll(request['systemRole'], request['phonumber'], page, query);
+  search(@Req() request:Request, @Query() query: ThingQueryDTO, @Param("page", ParseIntPipe) page: number) {
+    return this.thingsService.search(request['systemRole'], request['phonunumber'], page, query);
+  }
+
+  @Get("all")
+  @ApiOperation({ summary: "list of all things", description: "this api return all things, that user have access to them" })
+  @ApiOkResponse({ type: ThingListResponseDTO })
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  async getAll(@Req() request:Request):Promise<ThingListResponseDTO> {
+    const userPhone = request["phonunumber"]
+    const systemRole = request["systemRole"]
+
+    const things = await this.thingsService.getAll(systemRole, userPhone)
+
+    return {
+      statusCode : 200,
+      list: things
+    }
   }
 
   @Get('detail/:id')
