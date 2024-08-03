@@ -3,8 +3,8 @@ export default () => ({
   MONGODB_NAME: process.env.MONGODB_NAME || 'sensolist_DB',
   MONGODB_USER: process.env.MONGODB_USER || 'root',
   MONGODB_PASS: process.env.MONGODB_PASS || 'sb2D8ByEtDRvGyiJ',
-  Access_Token_Secret: process.env.Access_Token_Secret || "Access_Token_Secret",
-  Refresh_Token_Secret: process.env.Refresh_Token_Secret || "Refresh_Token_Secret",
-  API_Token_Secret: process.env.Refresh_Token_Secret || "API_Token_Secret",
+  Access_Token_Secret: process.env.Access_Token_Secret || "Access_Token_Secret2",
+  Refresh_Token_Secret: process.env.Refresh_Token_Secret || "Refresh_Token_Secret2",
+  API_Token_Secret: process.env.Refresh_Token_Secret || "API_Token_Secret2",
 });
 
