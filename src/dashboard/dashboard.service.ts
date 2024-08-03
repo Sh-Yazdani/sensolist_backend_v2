@@ -7,23 +7,34 @@ import { Model, ObjectId } from 'mongoose';
 import { DashboardListQueryhDTO } from './dto/dashboard-search.dto';
 import { SortOptions } from '../enums/sort-option.enum';
 import { DashboardEntityDTO } from './dto/dashboard-entity.dto';
+import { IdentityDTO } from 'src/dto/identity.dto';
+import { SystemRoles } from 'src/enums/role.enum';
+import { UserPermissionService } from 'src/user-permission/user-permission.service';
 
 @Injectable()
 export class DashboardService {
 
-  constructor(@InjectModel(Dashboard.name) private readonly dashboardModel: Model<Dashboard>) { }
+  constructor(
+    @InjectModel(Dashboard.name) private readonly dashboardModel: Model<Dashboard>,
+    private readonly permissionService: UserPermissionService
+  ) { }
 
   async create(data: CreateDashboardDto) {
     await this.dashboardModel.create(data)
   }
 
 
-  async search(query: DashboardListQueryhDTO, page: number): Promise<{ totlaPages: number, list: DashboardEntityDTO[] }> {
+  async search(identity: IdentityDTO, query: DashboardListQueryhDTO, page: number): Promise<{ totlaPages: number, list: DashboardEntityDTO[] }> {
 
     const search = query.search ?? ""
     const sort = query.sort ?? SortOptions.Newst
 
     let dbQuery = {}
+
+    if (identity.systemRole != SystemRoles.Admin) {
+      const allowedDashboards = await this.permissionService.getAllowedEntities(identity.userId, Dashboard)
+      dbQuery = { _id: { $in: allowedDashboards } }
+    }
 
     if (search.length > 0)
       dbQuery['name'] = new RegExp(search, 'i')
@@ -55,8 +66,15 @@ export class DashboardService {
 
   }
 
-  async getAll(): Promise<DashboardEntityDTO[]> {
-    const dashboards = await this.dashboardModel.find().exec()
+  async getAll(identity: IdentityDTO): Promise<DashboardEntityDTO[]> {
+    let dbQuery = {}
+
+    if (identity.systemRole != SystemRoles.Admin) {
+      const allowedDashboards = await this.permissionService.getAllowedEntities(identity.userId, Dashboard)
+      dbQuery = { _id: { $in: allowedDashboards } }
+    }
+
+    const dashboards = await this.dashboardModel.find(dbQuery).exec()
 
     return dashboards.map(d => {
       return {

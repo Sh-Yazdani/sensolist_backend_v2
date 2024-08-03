@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, Req, UseGuards, NotFoundException, ParseBoolPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, UseGuards, NotFoundException } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import { CreateDashboardDto } from './dto/create-dashboard.dto';
 import { UpdateDashboardDto, UpdateDashboardPinDTO } from './dto/update-dashboard.dto';
@@ -11,7 +11,6 @@ import { SystemRoles } from '../enums/role.enum';
 import { PermissionSubject, RequiredPermission } from '../decorator/permission.decorator';
 import { Dashboard } from './entities/dashboard.entity';
 import { PermissionAccess } from '../user-permission/dto/permission-model.dto';
-import { Request } from 'supertest';
 import { PermissionGuard } from '../guard/permission.guard';
 import { DashboardListResponseDTO } from './dto/lsit-dashboard.dto';
 import { DashboardListQueryhDTO } from './dto/dashboard-search.dto';
@@ -46,8 +45,8 @@ export class DashboardController {
   @ApiParam({ name: "page", type: Number, description: "page number" })
   @ApiOkResponse({ type: DashboardListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  async search(@Query() query: DashboardListQueryhDTO, @Param("page", ParseIntPipe) page: number): Promise<DashboardListResponseDTO> {
-    const dashboards = await this.dashboardService.search(query, page);
+  async search(@Identifier() identity:IdentityDTO, @Query() query: DashboardListQueryhDTO, @Param("page", ParseIntPipe) page: number): Promise<DashboardListResponseDTO> {
+    const dashboards = await this.dashboardService.search(identity, query, page);
 
     return {
       statusCode: 200,
@@ -62,7 +61,7 @@ export class DashboardController {
   @ApiOkResponse({ type: DashboardListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   async getAll(@Identifier() identity:IdentityDTO): Promise<DashboardListResponseDTO> {
-    const dashboards = await this.dashboardService.getAll()
+    const dashboards = await this.dashboardService.getAll(identity)
 
     return {
       statusCode: 200,
