@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException, Req, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ThingsService } from './things.service';
 import { CreateThingDto } from './dto/create-thing.dto';
 import { UpdateThingDto } from './dto/update-thing.dto';
@@ -56,7 +56,7 @@ export class ThingsController {
     const userPhone = request["phonunumber"]
     const systemRole = request["systemRole"]
 
-    const things = await this.thingsService.findAll(userPhone, systemRole, query);
+    const things = await this.thingsService.getAll(userPhone, systemRole);
 
     return {
       statusCode: 200,

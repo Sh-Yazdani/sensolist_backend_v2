@@ -17,12 +17,12 @@ export class CustomRoleService {
     await this.customRoleModel.create(data)
   }
 
-  async findAll(): Promise<{list:CustomRoleEntity[], totlaPages:number}> {
+  async findAll(page: number): Promise<{ list: CustomRoleEntity[], totalPages: number }> {
     const roles = await this.customRoleModel.find().paginate({ page: page })
 
     return {
-      totlaPages:roles.totalPages,
-      list:roles.map(r => {
+      totalPages: roles.totalPages,
+      list: roles.docs.map(r => {
         return {
           id: r._id,
           name: r.name.toString(),

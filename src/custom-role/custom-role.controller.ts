@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, BadRequestException, ParseIntPipe } from '@nestjs/common';
 import { CustomRoleService } from './custom-role.service';
 import { CreateCustomRoleDto } from './dto/create-custom-role.dto';
 import { UpdateCustomRoleDto } from './dto/update-custom-role.dto';
@@ -36,7 +36,7 @@ export class CustomRoleController {
   @ApiOkResponse({ type: CustomRoleListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   async findAll(@Param('page', ParseIntPipe) page: number): Promise<CustomRoleListResponseDTO> {
-    const roles = await this.customRoleService.findAll();
+    const roles = await this.customRoleService.findAll(page);
 
     return {
       page:page,

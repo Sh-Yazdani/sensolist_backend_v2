@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, NotFoundException, ParseIntPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -44,7 +44,7 @@ export class UserController {
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @ApiOkResponse({ type: UserListResponseDTO })
   async findAll(@Param("page", ParseIntPipe) page: number): Promise<UserListResponseDTO> {
-    const users = await this.userService.findAll();
+    const users = await this.userService.findAll(page);
 
     return {
       statusCode: 200,
