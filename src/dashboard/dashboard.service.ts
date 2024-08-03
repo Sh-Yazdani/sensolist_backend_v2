@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Dashboard } from './entities/dashboard.entity';
 import { Model, ObjectId } from 'mongoose';
 import { DashboardListQueryhDTO } from './dto/dashboard-search.dto';
-import { SortOptions } from 'src/enums/sort-option.enum';
+import { SortOptions } from '../enums/sort-option.enum';
 import { DashboardEntityDTO } from './dto/dashboard-entity.dto';
 
 @Injectable()
