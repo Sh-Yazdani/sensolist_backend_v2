@@ -14,7 +14,7 @@ export class LoginDTO {
 
 export class CheckOtpDTO {
 
-    @ApiProperty({ type: String, description: "the one type password, was sended to user phone", default: "123456" })
+    @ApiProperty({ type: String, description: "the one type password, was sended to user phone", default: "12345" })
     otp: string
 
     @ApiProperty({ type: String, description: "from `/login` route, response" })

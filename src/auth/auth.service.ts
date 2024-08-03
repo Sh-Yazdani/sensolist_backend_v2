@@ -12,7 +12,7 @@ import { SystemRoles } from '../enums/role.enum';
 @Injectable()
 export class AuthService {
 
-    otpLength = 6
+    otpLength = 5
 
     constructor(
         @InjectModel(OTP.name) private readonly otpModel: Model<OTP>,
@@ -115,7 +115,7 @@ export class AuthService {
     }
 
     private async generateOTP() {
-        return "123456" //TODO remove after sending otp functionality was add
+        return "12345" //TODO remove after sending otp functionality was add
 
         const raw = "A1B2C3D4E6F7G9H8I1J2K3L45M60N0O9P8Q7R6S5T4U7V8W9X3Y1Z0"
         let otp = ""
