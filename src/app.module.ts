@@ -16,6 +16,7 @@ import { SystemRoleGuard } from './guard/system-role.guard';
 import { FileModule } from './sl-file/file.module';
 import { UserPermissionModule } from './user-permission/user-permission.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { AppletModule } from './applet/applet.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
     AccessTokenModule,
     FileModule,
     UserPermissionModule,
-    DashboardModule
+    DashboardModule,
+    AppletModule
   ],
   controllers: [AppController],
   providers: [

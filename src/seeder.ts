@@ -13,6 +13,8 @@ import { UserModule } from "./user/user.module";
 import { CustomRoleModule } from "./custom-role/custom-role.module";
 import { DashboardSeeder } from "./dashboard/dashboard.seeder";
 import { Dashboard, DashboardSchema } from "./dashboard/entities/dashboard.entity";
+import { Applet, AppletSchema } from "./applet/entities/applet.entity";
+import { AppletSeeder } from "./applet/applet.seeder";
 
 seeder(
     {
@@ -20,13 +22,14 @@ seeder(
             ConfigModule.forRoot({
                 load: [configuration],
                 isGlobal: true,
-              }),
+            }),
             DatabaseModule,
             MongooseModule.forFeature([
                 { name: User.name, schema: UserSchema },
                 { name: CustomRole.name, schema: CustomRoleSchema },
                 { name: Thing.name, schema: ThingSchema },
                 { name: Dashboard.name, schema: DashboardSchema },
+                { name: Applet.name, schema: AppletSchema },
             ]),
             UserModule,
             CustomRoleModule
@@ -36,7 +39,8 @@ seeder(
     CustomRoleSeeder,
     UserSeeder,
     ThingSeeder,
-    DashboardSeeder
+    DashboardSeeder,
+    AppletSeeder
 ])
 
 
