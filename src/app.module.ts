@@ -17,6 +17,7 @@ import { FileModule } from './sl-file/file.module';
 import { UserPermissionModule } from './user-permission/user-permission.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { AppletModule } from './applet/applet.module';
+import { WidgetModule } from './widget/widget.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { AppletModule } from './applet/applet.module';
     FileModule,
     UserPermissionModule,
     DashboardModule,
-    AppletModule
+    AppletModule,
+    WidgetModule
   ],
   controllers: [AppController],
   providers: [
