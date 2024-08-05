@@ -24,7 +24,7 @@ export class ThingQueryDTO {
     @IsArray({ always: false })
     actions?: string[]
 
-    @ApiProperty({ type: [String], required: false, default: undefined })
+    @ApiProperty({ type: [String], required: false, default: undefined, description:"pass the name of charactristic"})
     @IsArray({ always: false })
     charactristics?: string[]
 

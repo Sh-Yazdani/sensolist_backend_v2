@@ -24,8 +24,8 @@ export class ThingEntityDTO {
     @ApiResponseProperty({ type: [String] })
     actions: string[]
 
-    @ApiResponseProperty({ type: [String] })
-    characteristics: string[]
+    @ApiResponseProperty({ type: [Object] })
+    characteristics: Object[]
 
     @ApiResponseProperty({ type: Date })
     activition: Date

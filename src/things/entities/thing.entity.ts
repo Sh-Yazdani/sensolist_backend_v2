@@ -26,9 +26,8 @@ export class Thing {
     @Prop({ type: [String], required: true })
     actions: string[]
 
-    @Factory(['charachter1', 'charachter2'])
-    @Prop({ type: [String], required: true })
-    characteristics: string[]
+    @Prop({ type: [Object], required: true })
+    characteristics: Object[]
 
     @Factory(faker => faker.date.recent({ days: 30 }))
     @Prop({ type: Date, required: true })

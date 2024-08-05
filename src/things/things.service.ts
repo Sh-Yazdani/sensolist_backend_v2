@@ -47,7 +47,7 @@ export class ThingsService {
       dbQuery['type'] = { $in: type }
 
     if (charactristics.length > 0)
-      dbQuery['charactristics'] = { $in: charactristics }
+      dbQuery['charactristics.name'] = { $in: charactristics }
 
     if (search.length > 0)
       dbQuery['name'] = new RegExp(search, 'i')
