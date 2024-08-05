@@ -1,14 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException } from '@nestjs/common';
 import { WidgetService } from './widget.service';
-import { CreateWidgetDto } from './dto/create-widget.dto';
-import { UpdateWidgetDto } from './dto/update-widget.dto';
 import { RawWidgetGroupesResponseDTO } from './dto/widget-list.dto';
+import { WidgetConfigDTO } from './dto/widget-config.dto';
+import { MessageResponseDTO } from 'src/dto/response.dto';
+import { ConfigWidgetResponseDTO } from './dto/config-widget.dto';
 
 @Controller('widget')
 export class WidgetController {
   constructor(private readonly widgetService: WidgetService) { }
 
-  @Get()
+  @Get("groupes")
   async widgteListWithGroupes(): Promise<RawWidgetGroupesResponseDTO> {
     const groupes = await this.widgetService.widgteListWithGroupes()
 
@@ -18,4 +19,19 @@ export class WidgetController {
     }
   }
 
+  @Post("config")
+  async storeWidgetConfig(@Body() data: WidgetConfigDTO): Promise<ConfigWidgetResponseDTO> {
+    const configId = await this.widgetService.storeWidgetConfig(data)
+
+    if (!configId)
+      throw new BadRequestException("storing config is failed")
+
+    return {
+      statusCode: 200,
+      configId: configId,
+      message: "config is stored"
+    }
+  }
+
 }
+

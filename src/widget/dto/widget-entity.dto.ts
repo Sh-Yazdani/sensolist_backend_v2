@@ -1,37 +1,37 @@
 import { Type } from "@nestjs/common"
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger"
 import { Types } from "mongoose"
 
 export class WidgetFieldDTO {
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
     name: string
 
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
     groupLabel?: string
 
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
     type?: Type<any>
 
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
     enum?: any[]
 
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
     description: string
 }
 
 
 export class RawWidgetEntityDTO {
 
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
     name: string
 
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
     description: string
 
-    @ApiProperty({ type: String })
+    @ApiResponseProperty({ type: String })
     imageId: Types.ObjectId
 
-    @ApiProperty({ type: [WidgetFieldDTO], description:"this widget fields, remember you should also add a field for charachtericts"})
+    @ApiResponseProperty({ type: [WidgetFieldDTO]})
     fields: WidgetFieldDTO[]
 }
 

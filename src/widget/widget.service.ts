@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreateWidgetDto } from './dto/create-widget.dto';
-import { UpdateWidgetDto } from './dto/update-widget.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { WidgetGroup } from './entities/widget-group.entity';
 import { RawWidget } from './entities/raw-widget.entity';
-import { Model } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import { RawWidgetGroupesDTO } from './dto/widget-list.dto';
+import { WidgetConfigDTO } from './dto/widget-config.dto';
+import { WidgetConfig } from './entities/widget-config.entity';
 
 @Injectable()
 export class WidgetService {
@@ -13,6 +13,7 @@ export class WidgetService {
   constructor(
     @InjectModel(WidgetGroup.name) private readonly groupModel: Model<WidgetGroup>,
     @InjectModel(RawWidget.name) private readonly widgetModel: Model<RawWidget>,
+    @InjectModel(WidgetConfig.name) private readonly configModel: Model<WidgetConfig>,
   ) { }
 
 
@@ -40,19 +41,16 @@ export class WidgetService {
     return result
   }
 
-  findAll() {
-    return `This action returns all widget`;
+  async storeWidgetConfig(data: WidgetConfigDTO): Promise<Types.ObjectId | undefined> {
+    const config = new this.configModel({ ...data })
+
+    try {
+      await config.save()
+      return config._id
+    }
+    catch {
+      return undefined
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} widget`;
-  }
-
-  update(id: number, updateWidgetDto: UpdateWidgetDto) {
-    return `This action updates a #${id} widget`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} widget`;
-  }
 }
