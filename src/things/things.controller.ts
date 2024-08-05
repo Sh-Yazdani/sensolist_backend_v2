@@ -53,7 +53,7 @@ export class ThingsController {
   @ApiOperation({ summary: "list of all things", description: "this api return all things, that user have access to them" })
   @ApiOkResponse({ type: ThingListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  async findAll(@Identifier() identity: IdentityDTO, @Query() query: ThingQueryDTO): Promise<ThingListResponseDTO> {
+  async findAll(@Identifier() identity: IdentityDTO): Promise<ThingListResponseDTO> {
     const things = await this.thingsService.getAll(identity);
 
     return {
