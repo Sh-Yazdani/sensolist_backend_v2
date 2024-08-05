@@ -15,6 +15,10 @@ import { DashboardSeeder } from "./dashboard/dashboard.seeder";
 import { Dashboard, DashboardSchema } from "./dashboard/entities/dashboard.entity";
 import { Applet, AppletSchema } from "./applet/entities/applet.entity";
 import { AppletSeeder } from "./applet/applet.seeder";
+import { WidgetSeeder } from "./widget/widget.seeder";
+import { RawWidget, rawWidgetSchema } from "./widget/entities/raw-widget.entity";
+import { WidgetGroup, widgetGroupSchema } from "./widget/entities/widget-group.entity";
+import { WidgetConfig, widgetConfigSchema } from "./widget/entities/widget-config.entity";
 
 seeder(
     {
@@ -30,6 +34,9 @@ seeder(
                 { name: Thing.name, schema: ThingSchema },
                 { name: Dashboard.name, schema: DashboardSchema },
                 { name: Applet.name, schema: AppletSchema },
+                { name: RawWidget.name, schema: rawWidgetSchema },
+                { name: WidgetGroup.name, schema: widgetGroupSchema },
+                { name: WidgetConfig.name, schema: widgetConfigSchema },
             ]),
             UserModule,
             CustomRoleModule
@@ -40,7 +47,8 @@ seeder(
     UserSeeder,
     ThingSeeder,
     DashboardSeeder,
-    AppletSeeder
+    AppletSeeder,
+    WidgetSeeder
 ])
 
 
