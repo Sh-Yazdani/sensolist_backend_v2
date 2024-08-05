@@ -16,7 +16,7 @@ export class WidgetField {
     groupLabel?:string
 
     @Prop()
-    type?: Type
+    type?: string
 
     @Prop()
     enum?: any[]

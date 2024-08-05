@@ -4,6 +4,7 @@ import { WidgetController } from './widget.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RawWidget, rawWidgetSchema } from './entities/raw-widget.entity';
 import { WidgetGroup, widgetGroupSchema } from './entities/widget-group.entity';
+import { WidgetConfig, widgetConfigSchema } from './entities/widget-config.entity';
 
 @Module({
   controllers: [WidgetController],
@@ -12,6 +13,7 @@ import { WidgetGroup, widgetGroupSchema } from './entities/widget-group.entity';
     MongooseModule.forFeature([
       { name: RawWidget.name, schema: rawWidgetSchema },
       { name: WidgetGroup.name, schema: widgetGroupSchema },
+      { name: WidgetConfig.name, schema: widgetConfigSchema },
     ])
   ]
 })

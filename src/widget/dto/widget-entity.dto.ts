@@ -10,7 +10,7 @@ export class WidgetFieldDTO {
     groupLabel?: string
 
     @ApiResponseProperty({ type: String })
-    type?: Type<any>
+    type?: string
 
     @ApiResponseProperty({ type: String })
     enum?: any[]
