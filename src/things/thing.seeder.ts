@@ -17,12 +17,12 @@ export class ThingSeeder implements Seeder {
 
         },
         {
-            name: "illuminance",
+            name: "CO2 measurement",
             sender_id: "sns0000003"
 
         },
         {
-            name: "pressure",
+            name: "PM measurement",
             sender_id: "sns0000004"
 
         }
