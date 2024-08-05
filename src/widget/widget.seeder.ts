@@ -9,15 +9,15 @@ import { RawWidget, WidgetFieldsUnits } from "./entities/raw-widget.entity";
 export class WidgetSeeder implements Seeder {
 
     groupes = [
+        "Charts",
         "Indoor",
         "Outdoor",
-        "Charts"
     ]
 
     widgets = [
         {
             name: "time series chart",
-            widgetGroup: this.groupes[2],
+            widgetGroup: this.groupes[0],
             fields: [
                 {
                     name: "label",
@@ -80,7 +80,7 @@ export class WidgetSeeder implements Seeder {
                 ...w,
                 name: this.widgets[0].name,
                 fields: this.widgets[0].fields,
-                widgetGroup: _groupes[2]._id
+                widgetGroup: _groupes[0]._id
             }
         })
         return this.widgetModel.insertMany(_widgets)

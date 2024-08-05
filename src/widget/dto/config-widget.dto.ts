@@ -1,6 +1,6 @@
 import { ApiResponseProperty } from "@nestjs/swagger";
 import { Types } from "mongoose";
-import { MessageResponseDTO } from "src/dto/response.dto";
+import { MessageResponseDTO } from "../../dto/response.dto";
 
 export class ConfigWidgetResponseDTO extends MessageResponseDTO {
 

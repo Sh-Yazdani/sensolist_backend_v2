@@ -1,6 +1,6 @@
 import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger";
 import { ObjectId, Types } from "mongoose";
-import { ListResponseDTO } from "src/dto/response.dto";
+import { ListResponseDTO } from "../../dto/response.dto";
 import { RawWidgetEntityDTO } from "./widget-entity.dto";
 
 export class RawWidgetGroupesDTO {

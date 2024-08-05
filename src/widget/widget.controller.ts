@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException 
 import { WidgetService } from './widget.service';
 import { RawWidgetGroupesResponseDTO } from './dto/widget-list.dto';
 import { WidgetConfigDTO } from './dto/widget-config.dto';
-import { ErrorResponseDTO } from 'src/dto/response.dto';
+import { ErrorResponseDTO } from '../dto/response.dto';
 import { ConfigWidgetResponseDTO } from './dto/config-widget.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CheckSystemRole } from 'src/decorator/role.decorator';
-import { SystemRoles } from 'src/enums/role.enum';
+import { CheckSystemRole } from '../decorator/role.decorator';
+import { SystemRoles } from '../enums/role.enum';
 
 @Controller('widget')
 @ApiTags("widget")
@@ -29,7 +29,7 @@ export class WidgetController {
   }
 
   @Post("config")
-  @ApiOperation({ summary: "storing widget config", description: "when user adding a widget to a dashboard you should use this api for storing widget config that user insert, then this api retirn a id you should send this id`s to `dashboard/update` api" })
+  @ApiOperation({ summary: "storing widget config", description: "when user adding a widget to a dashboard you should use this api for storing widget config that user insert, then this api retirn a id you should send this id's to `dashboard/update` api" })
   @ApiCreatedResponse({ type: ConfigWidgetResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @ApiBadRequestResponse({ type: ErrorResponseDTO })
