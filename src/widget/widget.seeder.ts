@@ -23,36 +23,36 @@ export class WidgetSeeder implements Seeder {
                     name: "label",
                     groupLabel: "X Axes",
                     description: "",
-                    type: String
+                    type: String.name
                 },
                 {
                     name: "label",
                     groupLabel: "Y Axes",
                     description: "",
-                    type: String
+                    type: String.name
                 },
                 {
                     name: "min",
                     groupLabel: "Y Axes",
                     description: "",
-                    type: Number
+                    type: Number.name
                 },
                 {
                     name: "max",
                     groupLabel: "Y Axes",
                     description: "",
-                    type: Number
+                    type: Number.name
                 },
                 {
                     name: "unit",
                     groupLabel: "Y Axes",
                     description: "",
-                    type: WidgetFieldsUnits
+                    enum: WidgetFieldsUnits
                 },
                 {
                     name: "description",
                     description: "",
-                    type: String
+                    type: String.name
                 },
             ]
         }
@@ -65,14 +65,14 @@ export class WidgetSeeder implements Seeder {
 
     async seed(): Promise<any> {
 
-        let groupes = DataFactory.createForClass(WidgetGroup).generate(3)
-        groupes = groupes.map((g, index) => {
+        let _groupes = DataFactory.createForClass(WidgetGroup).generate(3)
+        _groupes = _groupes.map((g, index) => {
             return {
                 ...g,
-                name: groupes[index]
+                name: this.groupes[index]
             }
         })
-        groupes = await this.groupModel.insertMany(groupes)
+        _groupes = await this.groupModel.insertMany(_groupes)
 
         let _widgets = DataFactory.createForClass(RawWidget).generate(2)
         _widgets = _widgets.map((w, index) => {
@@ -80,7 +80,7 @@ export class WidgetSeeder implements Seeder {
                 ...w,
                 name: this.widgets[0].name,
                 fields: this.widgets[0].fields,
-                widgetGroup: groupes[2]._id
+                widgetGroup: _groupes[2]._id
             }
         })
         return this.widgetModel.insertMany(_widgets)
