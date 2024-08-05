@@ -39,7 +39,7 @@ export class RawWidget {
 
     @Factory("imageId")
     @Prop({ type: Types.ObjectId, required: true })
-    imageId: ObjectId
+    imageId: Types.ObjectId
 
     @Prop({ type: Types.ObjectId, required: true, ref: "WidgetGroup" })
     widgetGroup: ObjectId

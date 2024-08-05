@@ -15,7 +15,7 @@ export class WidgetGroup {
 
     @Factory("imageId")
     @Prop({ type: Types.ObjectId, required: true })
-    imageId: ObjectId
+    imageId: Types.ObjectId
 }
 
 export const widgetGroupSchema = SchemaFactory.createForClass(WidgetGroup)

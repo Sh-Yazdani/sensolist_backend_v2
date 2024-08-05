@@ -2,19 +2,20 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { WidgetService } from './widget.service';
 import { CreateWidgetDto } from './dto/create-widget.dto';
 import { UpdateWidgetDto } from './dto/update-widget.dto';
+import { RawWidgetGroupesResponseDTO } from './dto/widget-list.dto';
 
 @Controller('widget')
 export class WidgetController {
-  constructor(private readonly widgetService: WidgetService) {}
+  constructor(private readonly widgetService: WidgetService) { }
 
   @Get()
-  getGroups() {
-    return this.widgetService.findAll();
-  }
+  async widgteListWithGroupes(): Promise<RawWidgetGroupesResponseDTO> {
+    const groupes = await this.widgetService.widgteListWithGroupes()
 
-  @Get(':group')
-  getGroupWi(@Param('id') id: string) {
-    return this.widgetService.findOne(+id);
+    return {
+      statusCode: 200,
+      list: groupes
+    }
   }
 
 }
