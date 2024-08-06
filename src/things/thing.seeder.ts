@@ -5,42 +5,38 @@ import { Model } from "mongoose";
 
 export class ThingSeeder implements Seeder {
 
-    characteristics = [
+    realThings = [
         {
-            name: "temperature",
-            sender_id: "sns0000001"
-
+            name: "indoor 1",
+            senderId: "sns00000001",
+            chars: ["pm1", "pm2.5", "pm4", "pm10", "temperature", "humidity", "pressure", "co2", "vnc"]
         },
         {
-            name: "humidity",
-            sender_id: "sns0000002"
-
+            name: "indoor 2",
+            senderId: "sns00000002",
+            chars: ["pm1", "pm2.5", "pm4", "pm10", "temperature", "humidity", "pressure", "co2", "vnc", "nox", "lux", "noise"]
         },
         {
-            name: "CO2 measurement",
-            sender_id: "sns0000003"
-
-        },
-        {
-            name: "PM measurement",
-            sender_id: "sns0000004"
-
+            name: "outdoor 1",
+            senderId: "sns00000003",
+            chars: ["pm1", "pm2.5", "pm4", "pm10", "temperature", "humidity", "pressure"]
         }
     ]
 
     constructor(@InjectModel(Thing.name) private readonly thingModel: Model<Thing>) { }
 
     seed(): Promise<any> {
-        let things = DataFactory.createForClass(Thing).generate(4)
+        let things = DataFactory.createForClass(Thing).generate(3)
 
         things = things.map((thing, index) => {
             return {
                 ...thing,
+                senderId: this.realThings[index].senderId,
                 brand: index % 5 == 0 ? null : thing.brand,
                 model: index % 5 == 0 ? null : `${thing.model}${index + 1}`,
-                name: `${thing.name} ${index + 1}`,
+                name: this.realThings[index].name,
                 type: `${thing.type}${index + 1}`,
-                characteristics: this.characteristics[index]
+                characteristics: this.realThings[index].chars
             }
         })
 
