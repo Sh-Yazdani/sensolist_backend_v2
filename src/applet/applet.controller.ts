@@ -143,8 +143,8 @@ export class AppletController {
   @ApiOkResponse({ type: AppletListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @RequiredPermission(PermissionAccess.View)
-  async getPinnedDashes(@Identifier() identity:IdentityDTO): Promise<AppletListResponseDTO> {
-    const applets = await this.appletService.getPinnedDashes()
+  async getPinnedApplets(@Identifier() identity:IdentityDTO): Promise<AppletListResponseDTO> {
+    const applets = await this.appletService.getPinnedApplets()
 
     return {
       statusCode: 200,

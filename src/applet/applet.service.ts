@@ -119,19 +119,19 @@ export class AppletService {
   }
 
   async pin(id: ObjectId, pin: boolean): Promise<boolean> {
-    const dash = await this.appletModel.findById(id)
+    const applet = await this.appletModel.findById(id)
 
-    if (!dash)
+    if (!applet)
       return false
 
-    dash.pinned = pin
+    applet.pinned = pin
 
-    await dash.save()
+    await applet.save()
 
     return true
   }
 
-  async getPinnedDashes(): Promise<AppletEntityDTO[]> {
+  async getPinnedApplets(): Promise<AppletEntityDTO[]> {
     const applets = await this.appletModel.find({ pinned: true }).exec()
 
     return applets.map(d => {
