@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDashboardDto } from './dto/create-dashboard.dto';
-import { UpdateDashboardDto } from './dto/update-dashboard.dto';
+import { UpdateDashboardDto, UpdateDashboardWidgetsDTO } from './dto/update-dashboard.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Dashboard } from './entities/dashboard.entity';
 import { Model, ObjectId } from 'mongoose';
@@ -143,6 +143,19 @@ export class DashboardService {
         pinned: d.pinned,
       }
     })
+  }
+
+  async updateWidgets(dashId: ObjectId, data: UpdateDashboardWidgetsDTO): Promise<boolean> {
+    const dashboard = await this.dashboardModel.findById(dashId).exec()
+
+    if (!dashboard)
+      return false
+
+    dashboard.widgetConfigsId = data.widgetConfigsId
+
+    await dashboard.save()
+
+    return true
   }
 
 }

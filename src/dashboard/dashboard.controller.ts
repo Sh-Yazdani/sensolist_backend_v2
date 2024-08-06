@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, UseGuards, NotFoundException } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import { CreateDashboardDto } from './dto/create-dashboard.dto';
-import { UpdateDashboardDto, UpdateDashboardPinDTO } from './dto/update-dashboard.dto';
+import { UpdateDashboardDto, UpdateDashboardPinDTO, UpdateDashboardWidgetsDTO } from './dto/update-dashboard.dto';
 import { ObjectId } from 'mongoose';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ErrorResponseDTO, MessageResponseDTO } from '../dto/response.dto';
@@ -89,7 +89,7 @@ export class DashboardController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: "updating a dashboard via id" })
+  @ApiOperation({ summary: "updating a dashboard info via id" })
   @ApiOkResponse({ type: MessageResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the dashboard id" })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
@@ -149,6 +149,25 @@ export class DashboardController {
     return {
       statusCode: 200,
       list: dashboards
+    }
+  }
+
+  @Patch('update-widgets/:id')
+  @ApiOperation({ summary: "updating a dashboard widgets", description:"this api accept new widget configs,new widget configs was replaced to all old configs" })
+  @ApiOkResponse({ type: MessageResponseDTO })
+  @ApiParam({ name: "id", type: String, description: "the target dashboard id" })
+  @ApiNotFoundResponse({ type: ErrorResponseDTO })
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  @RequiredPermission(PermissionAccess.Edit)
+  async updateWidgets(@Param('id') id: ObjectId, @Body() data: UpdateDashboardWidgetsDTO): Promise<MessageResponseDTO> {
+    const updated = await this.dashboardService.updateWidgets(id, data);
+
+    if (!updated)
+      throw new NotFoundException("dashboard not found")
+
+    return {
+      statusCode: 200,
+      message: "dashboard widgets was updated"
     }
   }
 

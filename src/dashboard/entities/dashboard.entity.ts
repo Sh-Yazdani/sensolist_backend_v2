@@ -26,6 +26,10 @@ export class Dashboard {
     @Factory(false)
     @Prop({ type: Boolean, require: true, default: false })
     pinned: boolean
+
+    @Factory([])
+    @Prop({ type: [Types.ObjectId], required: true, default: [] })
+    widgetConfigsId: Types.ObjectId[]
 }
 
 export const DashboardSchema = SchemaFactory.createForClass(Dashboard);
