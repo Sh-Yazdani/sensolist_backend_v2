@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDashboardDto } from './dto/create-dashboard.dto';
-import { UpdateDashboardDto } from './dto/update-dashboard.dto';
+import { UpdateDashboardDto, UpdateDashboardWidgetsDTO } from './dto/update-dashboard.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Dashboard } from './entities/dashboard.entity';
 import { Model, ObjectId } from 'mongoose';
@@ -10,13 +10,18 @@ import { DashboardEntityDTO } from './dto/dashboard-entity.dto';
 import { IdentityDTO } from '../dto/identity.dto';
 import { SystemRoles } from '../enums/role.enum';
 import { UserPermissionService } from '../user-permission/user-permission.service';
+import { DashboardWidgetDTO } from './dto/dashboard-widget-list.dto';
+import { WidgetService } from 'src/widget/widget.service';
+import { ThingsService } from 'src/things/things.service';
 
 @Injectable()
 export class DashboardService {
 
   constructor(
     @InjectModel(Dashboard.name) private readonly dashboardModel: Model<Dashboard>,
-    private readonly permissionService: UserPermissionService
+    private readonly permissionService: UserPermissionService,
+    private readonly widgetService: WidgetService,
+    private readonly thingService: ThingsService,
   ) { }
 
   async create(data: CreateDashboardDto) {
@@ -143,6 +148,43 @@ export class DashboardService {
         pinned: d.pinned,
       }
     })
+  }
+
+  async updateWidgets(dashId: ObjectId, data: UpdateDashboardWidgetsDTO): Promise<boolean> {
+    const dashboard = await this.dashboardModel.findById(dashId).exec()
+
+    if (!dashboard)
+      return false
+
+    dashboard.widgetConfigsId = data.widgetConfigsId
+
+    await dashboard.save()
+
+    return true
+  }
+
+  async getAllWidgets(dashId: ObjectId): Promise<DashboardWidgetDTO[]> {
+    const result: DashboardWidgetDTO[] = []
+
+    const dash = await this.dashboardModel.findById(dashId, { widgetConfigsId: 1 }).exec()
+    const configIds = dash.widgetConfigsId
+
+    const widgetConfigs = await this.widgetService.getWidgetConfigs(configIds)
+
+    for (let widgetConfig of widgetConfigs) {
+      const thing = await this.thingService.findOne(widgetConfig.thingId)
+      const characteristics = widgetConfig.resourceCharachter
+      const widget = await this.widgetService.getRawWidget(widgetConfig.widgetId)
+
+      result.push({
+        thing: thing,
+        widget: widget,
+        resourceCharachter: characteristics,
+        config: widgetConfig.config
+      })
+    }
+
+    return result
   }
 
 }

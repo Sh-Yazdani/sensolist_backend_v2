@@ -11,6 +11,7 @@ import { UserPermissionModule } from '../user-permission/user-permission.module'
   imports: [
     MongooseModule.forFeature([{ name: Thing.name, schema: ThingSchema }]),
     UserPermissionModule
-  ]
+  ],
+  exports:[ThingsService]
 })
 export class ThingsModule { }

@@ -15,6 +15,7 @@ import { WidgetConfig, widgetConfigSchema } from './entities/widget-config.entit
       { name: WidgetGroup.name, schema: widgetGroupSchema },
       { name: WidgetConfig.name, schema: widgetConfigSchema },
     ])
-  ]
+  ],
+  exports:[WidgetService]
 })
 export class WidgetModule { }
