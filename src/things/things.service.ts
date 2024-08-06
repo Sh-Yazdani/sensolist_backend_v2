@@ -22,7 +22,7 @@ export class ThingsService {
     await this.thingModel.create(data)
   }
 
-  async search(identity:IdentityDTO, page: number, query: ThingQueryDTO): Promise<{ list: ThingEntityDTO[], totalPages: number }> {
+  async search(identity: IdentityDTO, page: number, query: ThingQueryDTO): Promise<{ list: ThingEntityDTO[], totalPages: number }> {
 
     let dbQuery = {}
 
@@ -75,6 +75,7 @@ export class ThingsService {
           type: t.type,
           actions: t.actions,
           characteristics: t.characteristics,
+          senderId: t.senderId,
           activition: t.activition,
           description: t.description,
           images: t.images
@@ -83,7 +84,7 @@ export class ThingsService {
     }
   }
 
-  async getAll(identity:IdentityDTO): Promise<ThingEntityDTO[]> {
+  async getAll(identity: IdentityDTO): Promise<ThingEntityDTO[]> {
 
     let dbQuery = {}
 
@@ -105,6 +106,7 @@ export class ThingsService {
         type: t.type,
         actions: t.actions,
         characteristics: t.characteristics,
+        senderId: t.senderId,
         activition: t.activition,
         description: t.description,
         images: t.images
@@ -129,6 +131,7 @@ export class ThingsService {
       type: thing.type,
       actions: thing.actions,
       characteristics: thing.characteristics,
+      senderId: thing.senderId,
       activition: thing.activition,
       description: thing.description,
       images: coverImage ? [coverImage] : []

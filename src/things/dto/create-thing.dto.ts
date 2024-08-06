@@ -26,10 +26,13 @@ export class CreateThingDto {
     @ApiProperty({ type: String })
     actions: string[]
 
-    @ApiProperty({ type: [Object]})
-    characteristics: Object[]
+    @ApiProperty({ type: [String] })
+    characteristics: string[]
 
-    @ApiProperty({ type: String, default: new Date()})
+    @ApiProperty({ type: String })
+    senderId: string
+
+    @ApiProperty({ type: String, default: new Date() })
     @IsDate()
     activition: Date
 
