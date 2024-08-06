@@ -53,4 +53,16 @@ export class WidgetService {
     }
   }
 
+  async getWidgetConfigs(configsId: Types.ObjectId[]): Promise<WidgetConfig[]> {
+    const configs = await this.configModel.find({ _id: { $in: configsId } })
+
+    return configs
+  }
+
+  async getRawWidget(id: ObjectId): Promise<RawWidget> {
+    const widget = await this.widgetModel.findById(id).exec()
+
+    return widget
+  }
+
 }

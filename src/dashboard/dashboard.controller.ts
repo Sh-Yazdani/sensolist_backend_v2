@@ -12,10 +12,11 @@ import { PermissionSubject, RequiredPermission } from '../decorator/permission.d
 import { Dashboard } from './entities/dashboard.entity';
 import { PermissionAccess } from '../user-permission/dto/permission-model.dto';
 import { PermissionGuard } from '../guard/permission.guard';
-import { DashboardListResponseDTO } from './dto/lsit-dashboard.dto';
+import { DashboardListResponseDTO } from './dto/dashboard-list.dto';
 import { DashboardListQueryhDTO } from './dto/dashboard-search.dto';
 import { Identifier } from '../decorator/auth-decorator';
 import { IdentityDTO } from '../dto/identity.dto';
+import { DashboardWidgetListResponseDTO } from './dto/dashboard-widget-list.dto';
 
 @Controller('dashboard')
 @ApiTags("Dashboard")
@@ -45,7 +46,7 @@ export class DashboardController {
   @ApiParam({ name: "page", type: Number, description: "page number" })
   @ApiOkResponse({ type: DashboardListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  async search(@Identifier() identity:IdentityDTO, @Query() query: DashboardListQueryhDTO, @Param("page", ParseIntPipe) page: number): Promise<DashboardListResponseDTO> {
+  async search(@Identifier() identity: IdentityDTO, @Query() query: DashboardListQueryhDTO, @Param("page", ParseIntPipe) page: number): Promise<DashboardListResponseDTO> {
     const dashboards = await this.dashboardService.search(identity, query, page);
 
     return {
@@ -60,7 +61,7 @@ export class DashboardController {
   @ApiOperation({ summary: "list of all dashboard", description: "this api return all dashboard, that user have access to them" })
   @ApiOkResponse({ type: DashboardListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
-  async getAll(@Identifier() identity:IdentityDTO): Promise<DashboardListResponseDTO> {
+  async getAll(@Identifier() identity: IdentityDTO): Promise<DashboardListResponseDTO> {
     const dashboards = await this.dashboardService.getAll(identity)
 
     return {
@@ -123,7 +124,7 @@ export class DashboardController {
   }
 
   @Patch("change-pin/:id")
-  @ApiOperation({ summary: "change a dashboard pin status", description:"just users with `View` access can change it"})
+  @ApiOperation({ summary: "change a dashboard pin status", description: "just users with `View` access can change it" })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the dashboard id" })
@@ -139,11 +140,11 @@ export class DashboardController {
   }
 
   @Get("all/pinned")
-  @ApiOperation({ summary: "list of pinned dashboard", description: "this api return all pinned dashboards, that user have `View` access" })
+  @ApiOperation({ summary: "list of pinned dashboards", description: "this api return all pinned dashboards, that user have `View` access" })
   @ApiOkResponse({ type: DashboardListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   @RequiredPermission(PermissionAccess.View)
-  async getPinnedDashes(@Identifier() identity:IdentityDTO): Promise<DashboardListResponseDTO> {
+  async getPinnedDashes(@Identifier() identity: IdentityDTO): Promise<DashboardListResponseDTO> {
     const dashboards = await this.dashboardService.getPinnedDashes()
 
     return {
@@ -152,8 +153,8 @@ export class DashboardController {
     }
   }
 
-  @Patch('update-widgets/:id')
-  @ApiOperation({ summary: "updating a dashboard widgets", description:"this api accept new widget configs,new widget configs was replaced to all old configs" })
+  @Patch('widgets/update/:id')
+  @ApiOperation({ summary: "updating a dashboard widgets", description: "this api accept new widget configs,new widget configs was replaced to all old configs" })
   @ApiOkResponse({ type: MessageResponseDTO })
   @ApiParam({ name: "id", type: String, description: "the target dashboard id" })
   @ApiNotFoundResponse({ type: ErrorResponseDTO })
@@ -168,6 +169,22 @@ export class DashboardController {
     return {
       statusCode: 200,
       message: "dashboard widgets was updated"
+    }
+  }
+
+  @Get("widgets/all/:id")
+  @ApiOperation({ summary: "dashboard all widgets", description: "this list contain widgets info and user configs" })
+  @ApiOkResponse({ type: DashboardWidgetListResponseDTO })
+  @ApiParam({ name: "id", type: String, description: "the dashboard id" })
+  @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
+  @ApiNotFoundResponse({ type: ErrorResponseDTO })
+  @RequiredPermission(PermissionAccess.View)
+  async getAllWidgets(@Param('id') id: ObjectId): Promise<DashboardWidgetListResponseDTO> {
+    const widgets = await this.dashboardService.getAllWidgets(id)
+
+    return {
+      statusCode: 200,
+      list: widgets
     }
   }
 
