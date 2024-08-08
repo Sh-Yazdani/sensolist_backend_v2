@@ -48,7 +48,7 @@ export class AuthController {
 
         const tokens = await this.authService.generateTokenPair(identity)
 
-        response.cookie("refresh_token", tokens.refreshToken, { httpOnly: true, path: "/auth/refresh", expires: tokens.refreshExpire })
+        response.cookie("refresh_token", tokens.refreshToken, { httpOnly: true, path: "api/v2/auth/refresh", expires: tokens.refreshExpire })
 
         return {
             statusCode: 200,
@@ -68,7 +68,7 @@ export class AuthController {
 
         const newTokens = await this.authService.generateTokenPair(identity)
 
-        response.cookie("refresh_token", newTokens.refreshToken, { httpOnly: true, path: "/auth/refresh", expires: newTokens.refreshExpire })
+        response.cookie("refresh_token", newTokens.refreshToken, { httpOnly: true, path: "api/v2/auth/refresh", expires: newTokens.refreshExpire })
 
         return {
             statusCode: 200,
