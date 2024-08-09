@@ -8,17 +8,17 @@ export class ThingSeeder implements Seeder {
     realThings = [
         {
             name: "indoor 1",
-            senderId: "sns00000001",
+            senderId: "sns0000001",
             chars: ["pm1", "pm2.5", "pm4", "pm10", "temperature", "humidity", "pressure", "co2", "vnc"]
         },
         {
             name: "indoor 2",
-            senderId: "sns00000002",
+            senderId: "sns0000002",
             chars: ["pm1", "pm2.5", "pm4", "pm10", "temperature", "humidity", "pressure", "co2", "vnc", "nox", "lux", "noise"]
         },
         {
             name: "outdoor 1",
-            senderId: "sns00000003",
+            senderId: "sns0000003",
             chars: ["pm1", "pm2.5", "pm4", "pm10", "temperature", "humidity", "pressure"]
         }
     ]
