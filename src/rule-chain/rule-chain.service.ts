@@ -7,19 +7,35 @@ import { Model, ObjectId, Types } from 'mongoose';
 import { MessageResponseDTO } from '../dto/response.dto';
 import { RuleChainListResponseDTO } from './dto/rule-chain-list.dto';
 import { RuleChainEntity, RuleChainEntityResponseDTO } from './dto/rule-chain-entity.dto';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class RuleChainService {
 
   constructor(
     @InjectModel(RuleChain.name) private readonly customRoleModel: Model<RuleChain>,
-    private readonly httpService:HService
+    private readonly httpService: HttpService
   ) { }
 
-  async sendRuleToMQTTServer(data:RuleChainEntity){
+  async sendRuleToMQTTServer(data: RuleChainEntity, authHeader): Promise<boolean> {
 
+    const post = await this.httpService.axiosRef.post("http://185.110.189.232:3123/api/rule", {
+      sender_id: data.sender_id,
+      sensor: data.sensor,
+      parameter: data.parameter,
+      condition: data.condition,
+      value: data.value,
+      email: data.email,
+    },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": authHeader
+        }
+      }
+    )
 
-
+    return post.status == 200
   }
 
   async create(data: CreateRuleChainDto): Promise<void> {
