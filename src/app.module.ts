@@ -18,6 +18,7 @@ import { UserPermissionModule } from './user-permission/user-permission.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { AppletModule } from './applet/applet.module';
 import { WidgetModule } from './widget/widget.module';
+import { RuleChainModule } from './rule-chain/rule-chain.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { WidgetModule } from './widget/widget.module';
     UserPermissionModule,
     DashboardModule,
     AppletModule,
-    WidgetModule
+    WidgetModule,
+    RuleChainModule
   ],
   controllers: [AppController],
   providers: [
