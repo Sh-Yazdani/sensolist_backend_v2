@@ -102,7 +102,7 @@ export class AuthService {
 
         const accessExpire = new Date()
         const refreshExpire = new Date()
-        accessExpire.setSeconds(accessExpire.getSeconds() + 900)
+        accessExpire.setDate(accessExpire.getDate() + 2)
         refreshExpire.setDate(refreshExpire.getDate() + 7)
 
         await this.userService.storeRefreshToken(refreshToken, identity.userId)
