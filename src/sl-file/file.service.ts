@@ -14,9 +14,9 @@ export class FileService {
 
   constructor(@InjectModel(SLFile.name) private readonly fileModel: Model<SLFile>) { }
 
-  async writeFileIntoStorage(file: Express.Multer.File, fileEntity: SLFile): Promise<void> {
+  async writeFileIntoStorage(file: Buffer, fileEntity: SLFile): Promise<void> {
     const filename = join(fileEntity.dir, `${fileEntity._id}.${fileEntity.extension}`)
-    await writeFile(filename, file.buffer)
+    await writeFile(filename, file)
   }
 
   async storeFileInfo(entity: FileEntity, originalname: string, mime: string): Promise<SLFile> {
