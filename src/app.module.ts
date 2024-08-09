@@ -19,9 +19,11 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { AppletModule } from './applet/applet.module';
 import { WidgetModule } from './widget/widget.module';
 import { RuleChainModule } from './rule-chain/rule-chain.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'node_modules', 'swagger-ui-dist')
     }),
