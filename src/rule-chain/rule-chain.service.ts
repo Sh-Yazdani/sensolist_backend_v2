@@ -17,7 +17,7 @@ export class RuleChainService {
     private readonly httpService: HttpService
   ) { }
 
-  async sendRuleToMQTTServer(data: RuleChainEntity, authHeader): Promise<boolean> {
+  async sendRuleToMQTTServer(data: RuleChainEntity, authHeader:string): Promise<boolean> {
 
     const post = await this.httpService.axiosRef.post("http://185.110.189.232:3123/api/rule", {
       sender_id: data.sender_id,
@@ -35,7 +35,7 @@ export class RuleChainService {
       }
     )
 
-    return post.status == 200
+    return post.status == 201
   }
 
   async create(data: CreateRuleChainDto): Promise<void> {
