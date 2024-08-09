@@ -37,7 +37,7 @@ export class RuleChainController {
 
   @Get(":appletId")
   @ApiOperation({ summary: "a list of applet rules" })
-  @ApiParam({ name: "appletId", type: Number, description: "the applet id" })
+  @ApiParam({ name: "appletId", type: String, description: "the applet id" })
   @ApiOkResponse({ type: RuleChainListResponseDTO })
   @ApiInternalServerErrorResponse({ type: ErrorResponseDTO })
   async findAll(@Param('appletId') appletId: ObjectId): Promise<RuleChainListResponseDTO> {
